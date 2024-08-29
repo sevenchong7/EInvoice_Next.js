@@ -77,7 +77,11 @@ const authConfig = {
               "profile.access",
               "profile.all",
               "user.access",
-              "user.all"
+              "user.all",
+              "createMerchant.all",
+              "document.access",
+              "document.all",
+              "subscription.all",
             ],
             "role": "ADMIN"
           }

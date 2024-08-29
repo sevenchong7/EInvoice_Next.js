@@ -18,8 +18,12 @@ export default function GoogleSignInButton() {
         signIn('github', { callbackUrl: callbackUrl ?? '/dashboard' })
       }
     >
-      <Icons.gitHub className="mr-2 h-4 w-4" />
-      Continue with Github
+      <div className='rounded-full border bg-stone-100 p-1'>
+        <Icons.gmail className="mr-2 h-4 w-4 " />
+      </div>
+      <div className='flex-1'>
+        Continue with Gmail
+      </div>
     </Button>
   );
 }

@@ -76,12 +76,12 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
   const defaultValues = initialData
     ? initialData
     : {
-        name: '',
-        description: '',
-        price: 0,
-        imgUrl: [],
-        category: ''
-      };
+      name: '',
+      description: '',
+      price: 0,
+      imgUrl: [],
+      category: ''
+    };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -143,8 +143,8 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
         {initialData && (
           <Button
             disabled={loading}
-            variant="destructive"
-            size="sm"
+            // variant="destructive"
+            // size="sm"
             onClick={() => setOpen(true)}
           >
             <Trash className="h-4 w-4" />

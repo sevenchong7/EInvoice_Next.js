@@ -6,6 +6,7 @@ import NextAuth from 'next-auth';
 import authConfig from './auth.config';
 import { NextResponse } from 'next/server';
 import { notFound } from 'next/navigation';
+import path from 'path';
 
 const { auth } = NextAuth(authConfig);
 
@@ -54,7 +55,7 @@ export default auth(async (req) => {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|auth/|access-denied|permission-denied|not-found|$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|auth/|access-denied|permission-denied|register|forgetPassword|resetPassword|not-found|$).*)",
   ]
 };
 
@@ -73,6 +74,18 @@ const paths = [
     permission: ["employee.access"],
   },
   {
+    path: "/dashboard/document",
+    permission: ["document.access"],
+  },
+  {
+    path: "/dashboard/document/createDocument",
+    permission: ["document.all"],
+  },
+  {
+    path: "/dashboard/document/createDocument/documentDownload",
+    permission: ["document.all"],
+  },
+  {
     path: "/dashboard/employee/[id]",
     permission: ["employee.all"],
   },
@@ -80,4 +93,32 @@ const paths = [
     path: "/dashboard/profile",
     permission: ["profile.access"],
   },
+  {
+    path: "/dashboard/user/createMerchant",
+    permission: ["createMerchant.all"],
+  },
+  {
+    path: "/dashboard/user/userListing",
+    permission: ["user.all"],
+  },
+  {
+    path: "/dashboard/user/userListing/[id]",
+    permission: ["user.all"],
+  },
+  {
+    path: "/dashboard/profile/subscription",
+    permission: ["subscription.all"],
+  },
+  {
+    path: "/dashboard/profile/subscription/information",
+    permission: ["subscription.all"],
+  },
+  {
+    path: "/dashboard/profile/subscription/payment",
+    permission: ["subscription.all"],
+  },
+  {
+    path: "/dashboard/profile/subscription/payment/information",
+    permission: ["subscription.all"],
+  }
 ];

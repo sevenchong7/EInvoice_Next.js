@@ -29,7 +29,7 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
 interface ProfileFormType {
@@ -57,22 +57,9 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
   const [data, setData] = useState({});
   const delta = currentStep - previousStep;
 
-  const defaultValues = {
-    jobs: [
-      {
-        jobtitle: '',
-        employer: '',
-        startdate: '',
-        enddate: '',
-        jobcountry: '',
-        jobcity: ''
-      }
-    ]
-  };
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues,
     mode: 'onChange'
   });
 
@@ -150,6 +137,20 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
     { id: 'Step 3', name: 'Complete' }
   ];
 
+  useEffect(() => {
+    console.log("profile : ", fields
+      ?.map((_, index) => [
+        `jobs.${index}.jobtitle`,
+        `jobs.${index}.employer`,
+        `jobs.${index}.startdate`,
+        `jobs.${index}.enddate`,
+        `jobs.${index}.jobcountry`,
+        `jobs.${index}.jobcity`
+        // Add other field names as needed
+      ])
+      .flat())
+  }, [])
+
   const next = async () => {
     const fields = steps[currentStep].fields;
 
@@ -185,8 +186,8 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
         {initialData && (
           <Button
             disabled={loading}
-            variant="destructive"
-            size="sm"
+            // variant="destructive"
+            // size="sm"
             onClick={() => setOpen(true)}
           >
             <Trash className="h-4 w-4" />
@@ -398,8 +399,8 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                         {`Work Experience ${index + 1}`}
 
                         <Button
-                          variant="outline"
-                          size="icon"
+                          // variant="outline"
+                          // size="icon"
                           className="absolute right-8"
                           onClick={() => remove(index)}
                         >
@@ -562,7 +563,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                   <Button
                     type="button"
                     className="flex justify-center"
-                    size={'lg'}
+                    // size={'lg'}
                     onClick={() =>
                       append({
                         jobtitle: '',

@@ -8,6 +8,7 @@ export type User = {
   role: string;
   verified: boolean;
   status: string;
+  email: string;
 };
 export const users: User[] = [
   {
@@ -16,7 +17,8 @@ export const users: User[] = [
     company: 'Dell',
     role: 'Frontend Developer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
   },
   {
     id: 2,
@@ -24,7 +26,8 @@ export const users: User[] = [
     company: 'TechCorp',
     role: 'Backend Developer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
   },
   {
     id: 3,
@@ -32,7 +35,9 @@ export const users: User[] = [
     company: 'WebTech',
     role: 'UI Designer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 4,
@@ -40,7 +45,9 @@ export const users: User[] = [
     company: 'Innovate Inc.',
     role: 'Fullstack Developer',
     verified: false,
-    status: 'Inactive'
+    status: 'Inactive',
+    email: 'test@gmail.com'
+
   },
   {
     id: 5,
@@ -48,7 +55,9 @@ export const users: User[] = [
     company: 'TechGuru',
     role: 'Product Manager',
     verified: true,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 6,
@@ -56,7 +65,9 @@ export const users: User[] = [
     company: 'CodeGenius',
     role: 'QA Engineer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 7,
@@ -64,7 +75,9 @@ export const users: User[] = [
     company: 'SoftWorks',
     role: 'UX Designer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 8,
@@ -72,7 +85,9 @@ export const users: User[] = [
     company: 'DevCraft',
     role: 'DevOps Engineer',
     verified: false,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 9,
@@ -80,7 +95,9 @@ export const users: User[] = [
     company: 'WebSolutions',
     role: 'Frontend Developer',
     verified: true,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   },
   {
     id: 10,
@@ -88,9 +105,36 @@ export const users: User[] = [
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
-    status: 'Active'
+    status: 'Active',
+    email: 'test@gmail.com'
+
   }
 ];
+
+export type Company = {
+  companyName: string;
+  regNo: string;
+  email: string;
+  businessTinNo: string;
+  address?: string;
+  apt_suite_building?: string
+  zipCode?: string;
+  state?: string;
+  town_city?: string;
+  country?: string;
+  contactNo?: string;
+  subscription?: string;
+}
+
+export const companys: Company =
+{
+  companyName: 'Systech Berhad',
+  regNo: '202401000001',
+  email: 'syscatech2008@gmail.com',
+  businessTinNo: 'IG115002000',
+  subscription: 'Standard'
+}
+
 
 export type Employee = {
   id: number;
@@ -135,24 +179,47 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'User',
-    href: '/dashboard/profile',
+    href: '/dashboard/user',
     icon: 'profile',
-    label: 'profile',
+    label: 'User',
     permission: ["profile.access", "profile.all"],
     children: [
       {
         title: 'Create Merchant',
-        href: '/dashboard/profile',
+        href: '/dashboard/user/createMerchant',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["profile.access", "profile.all"]
+        permission: ["user.access", "createMerchant.all"]
       },
       {
         title: 'User Listing',
-        href: '/dashboard/profile',
+        href: '/dashboard/user/userListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["profile.access", "profile.all"]
+        permission: ["user.access", "user.all"],
+        // children: [
+        //   {
+        //     title: 'Add User',
+        //     href: '/dashboard/user/userListing/AddUser',
+        //     // icon: 'profile',
+        //     // label: 'profile',
+        //     permission: ["user.access", "user.all"]
+        //   },
+        // ]
+      }
+    ]
+  },
+  {
+    title: "Document",
+    href: '/dashboard/document',
+    icon: "document",
+    label: "Document",
+    permission: ["document.access", "document.all"],
+    children: [
+      {
+        title: "Create Document",
+        href: "/dashboard/document/createDocument",
+        permission: ["document.access", "document.all"]
       }
     ]
   },

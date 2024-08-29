@@ -1,44 +1,64 @@
 'use client';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { User } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 
 export const columns: ColumnDef<User>[] = [
+  // {
+  //   id: 'select',
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={table.getIsAllPageRowsSelected()}
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false
+  // },
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false
+    accessorKey: 'id',
+    header: 'No.'
   },
   {
     accessorKey: 'name',
-    header: 'NAME'
-  },
-  {
-    accessorKey: 'company',
-    header: 'COMPANY'
+    header: 'Name'
   },
   {
     accessorKey: 'role',
-    header: 'ROLE'
+    header: 'Role'
   },
   {
     accessorKey: 'status',
-    header: 'STATUS'
+    header: 'Status',
+    cell: (status: CellContext<User, any>) => {
+
+      return (
+        <div className='flex text-white'>
+          {
+            status.getValue() == "Active" ?
+              <div className='flex items-center justify-center rounded-lg bg-blue-800 px-5 p-2 space-x-2 w-[120px]'>
+                <div>{status.getValue()}</div>
+                <div className='bg-white rounded-full w-5 h-5' /></div> :
+              status.getValue() == "Inactive" ?
+                <div className='flex items-center rounded-lg bg-black px-5 p-2 space-x-2 w-[120px]'>
+                  <div className='bg-white rounded-full w-5 h-5' />
+                  <div>{status.getValue()}</div>
+                </div> :
+                <div className='text-yellow-600'>{status.getValue()}</div>
+          }
+        </div>
+      )
+    }
   },
   {
     id: 'actions',
