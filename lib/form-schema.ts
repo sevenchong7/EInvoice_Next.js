@@ -42,27 +42,37 @@ export type ProfileFormValues = z.infer<typeof profileSchema>;
 
 
 export const registerSchema = z.object({
-  email: z.string().email({ message: "Please Enter a valid Email Address ! " }),
-  companyName: z.string().min(3, { message: "Company Name must be at least 3 characters !" }),
-  registerNo: z.string().min(3, { message: "Register No must be at least 3 characters !" }),
-  businessTinNo: z.string().min(3, { message: "Business Tin No must be at least 3 characters !" }),
-  password: z.string().min(3, { message: "Password must be enter !" }),
-  confirmPw: z.string().min(3, { message: "Confirm Password must be enter !" }),
-  streetAddress: z.string().min(3, { message: "Address must at least 3 characters !" }),
-  aptSuite: z.string().optional(),
-  zipCode: z.string().min(5, { message: "Zip Code must be 5 characters !" }).max(5, { message: 'Zip code must be 5 character !' }),
-  townCity: z.string().min(3, { message: "Town must at least 3 characters !" }),
-  state: z.string().min(3, { message: "State must at least 3 characters !" }),
-  country: z.string().min(1, { message: "Please Select a Country !" }),
-  contactNo: z.string().optional(),
-  package: z.string().min(1, { message: 'Please select one Package!' }),
-  paymentMethod: z.string().min(1, { message: 'Please select a payment method!' })
+  email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
+  companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
+  registerNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
+  businessTinNo: z.string().trim().min(3, { message: "Business Tin No must be at least 3 characters !" }),
+  password: z.string().trim().min(3, { message: "Password must be enter !" }),
+  confirmPw: z.string().trim().min(3, { message: "Confirm Password must be enter !" }),
+  streetAddress: z.string().trim().optional(),
+  aptSuite: z.string().trim().optional(),
+  zipCode: z.string().trim().optional(),
+  townCity: z.string().trim().optional(),
+  state: z.string().trim().optional(),
+  country: z.string().trim().optional(),
+  contactNo: z.string().trim().optional(),
+  package: z.string().trim().min(1, { message: 'Please select one Package!' }),
+  paymentMethod: z.string().optional()
 }).refine((data) => {
   console.log('Refine Triggered');
   return data.password === data.confirmPw;
 }, {
   path: ["confirmPw"],
   message: "Password and Confirm Password didn't match!",
+}).superRefine((data, ctx) => {
+  if (data.package !== '1') {
+    if (!data.paymentMethod) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['paymentMethod'],
+        message: 'Please select a payment method!'
+      })
+    }
+  }
 });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -102,28 +112,28 @@ const IMG_MAX_LIMIT = 3;
 
 export const registerUserAdminSchema = z.object({
 
-  email: z.string().email({ message: "Please Enter a valid Email Address ! " }),
-  companyName: z.string().min(3, { message: "Company Name must be at least 3 characters !" }),
-  registerNo: z.string().min(3, { message: "Register No must be at least 3 characters !" }),
-  businessTinNo: z.string().min(3, { message: "Business Tin No must be at least 3 characters !" }),
-  password: z.string().min(3, { message: "Password must be enter !" }),
-  confirmPw: z.string().min(3, { message: "Confirm Password must be enter !" }),
-  streetAddress: z.string().min(3, { message: "Address must at least 3 characters !" }),
-  aptSuite: z.string().optional(),
-  zipCode: z.string().min(5, { message: "Zip Code must be 5 characters !" }).max(5, { message: 'Zip code must be 5 character !' }),
-  townCity: z.string().min(3, { message: "Town must at least 3 characters !" }),
-  state: z.string().min(3, { message: "State must at least 3 characters !" }),
-  country: z.string().min(1, { message: "Please Select a Country !" }),
-  contactNo: z.string().optional(),
+  email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
+  companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
+  registerNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
+  businessTinNo: z.string().trim().min(3, { message: "Business Tin No must be at least 3 characters !" }),
+  password: z.string().trim().min(3, { message: "Password must be enter !" }),
+  confirmPw: z.string().trim().min(3, { message: "Confirm Password must be enter !" }),
+  streetAddress: z.string().trim().optional(),
+  aptSuite: z.string().trim().optional(),
+  zipCode: z.string().trim().optional(),
+  townCity: z.string().trim().optional(),
+  state: z.string().trim().optional(),
+  country: z.string().trim().optional(),
+  contactNo: z.string().trim().optional(),
   package: z.string().min(1, { message: 'Please select one Package!' }),
   payment: z.array(
     z.object({
-      paymentMethod: z.string().min(1, { message: 'Please Select one Payment Method! ' }),
-      paymentAmount: z.coerce.number().gt(0, { message: 'Amount must more than 0!' }),
-      referenceNo: z.string(),
+      paymentMethod: z.string().optional(),
+      paymentAmount: z.coerce.number().optional(),
+      referenceNo: z.string().trim(),
       imgUrl: z
         .array(ImgSchema)
-        .max(IMG_MAX_LIMIT, { message: 'You can only add up to 3 images' }).optional()
+        .max(IMG_MAX_LIMIT, { message: 'You can only add up to 3 images' })
       // .min(1, { message: 'At least one image must be added.' }),
     })
   ),
@@ -133,6 +143,25 @@ export const registerUserAdminSchema = z.object({
 }, {
   path: ["confirmPw"],
   message: "Password and Confirm Password didn't match!",
+}).superRefine((data, ctx) => {
+  if (data.package !== '1') {
+    data.payment.forEach((payment, index) => {
+      if (!payment.paymentMethod) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [`payment.${index}.paymentMethod`],
+          message: 'Please Select one Payment Method!',
+        });
+      }
+      if (!payment.paymentAmount || payment.paymentAmount <= 0) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [`payment.${index}.paymentAmount`],
+          message: 'Amount must be more than 0!',
+        });
+      }
+    });
+  }
 });
 
 export type RegisterUserAdminFormValues = z.infer<typeof registerUserAdminSchema>;
@@ -140,21 +169,16 @@ export type RegisterUserAdminFormValues = z.infer<typeof registerUserAdminSchema
 export const documentFormSchema = z.object({
   invoiceId: z.string().trim().min(1, { message: 'Please Insert the Invioce Id!' }),
   issuesDateTime: z
-    .string()
-    .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-      message: 'Start date should be in the format DD-MM-YYYY'
-    }),
+    .string().date("Please select a date."),
   currencyCode: z.string().trim().min(1, { message: "Please Insert the currency code" }),
   invoiceType: z.string().trim().min(1, "Please select one Invoice Type"),
   versionId: z.string().trim().min(1, "Please insert the Version Id"),
   startdate: z
-    .string()
-    .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-      message: 'Start date should be in the format DD-MM-YYYY'
-    }),
-  enddate: z.string().refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-    message: 'End date should be in the format DD-MM-YYYY'
-  }),
+    .string().date("Please select a date."),
+  enddate: z.string().date("Please select a date."),
+  // .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
+  //   message: 'End date should be in the format DD-MM-YYYY'
+  // }),
   description: z.string().trim().optional(),
   invoiceDocRef: z.string().trim().min(1, "Please insert the Invoice Document Reference!"),
   additionalInvoiceDocRef: z.string().trim().min(1, "Please insert the Additional Invoice Document Reference!"),
@@ -181,9 +205,9 @@ export const documentFormSchema = z.object({
   supplierState: z.string().trim().min(1, { message: 'Please enter the State !' }),
   supplierCountry: z.string().trim().min(1, { message: 'Please enter the country !' }),
   supplierContact: z.string().trim().optional(),
-  supplierEmail: z.string().trim().optional(),
-  buyerIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
-  buyerIndustryName: z.string().trim().min(1, { message: 'Please enter the Industry Name !' }),
+  supplierEmail: z.string().email().trim().optional(),
+  // buyerIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
+  // buyerIndustryName: z.string().trim().min(1, { message: 'Please enter the Industry Name !' }),
   buyerRegisterName: z.string().trim().min(1, { message: 'Please enter the Registration Name !' }),
   buyerPartyInformation: z.array(
     z.object({
@@ -201,7 +225,7 @@ export const documentFormSchema = z.object({
   buyerState: z.string().trim().min(1, { message: 'Please enter the State !' }),
   buyerCountry: z.string().trim().min(1, { message: 'Please enter the country !' }),
   buyerContact: z.string().trim().optional(),
-  buyerEmail: z.string().trim().optional(),
+  buyerEmail: z.string().email().trim().optional(),
   deliveryRegistrationName: z.string().trim().min(1, { message: 'Please enter the Registration Name !' }),
   deliverypartyInformation: z.array(
     z.object({
@@ -266,12 +290,12 @@ export const documentFormSchema = z.object({
   paymentAmount: z.string().trim().optional(),
   paymentIssuedDateTime: z
     .string()
-    .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-      message: 'Start date should be in the format DD-MM-YYYY'
-    }).optional(),
+    .date().optional(),
 })
 
 export type DocumentFormValues = z.infer<typeof documentFormSchema>;
+
+
 
 
 

@@ -1,13 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import tick from '@/public/Done.png'
 import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 
 export default function RegisterUserStep3Admin({ form }: { form: UseFormReturn<RegisterUserAdminFormValues> }) {
     const [selectPackage, setSelectPackage] = useState('');
+
+    useEffect(() => {
+        setSelectPackage(form.getValues('package'));
+    }, [])
 
     const HandlePackageSelect = (selection: string) => {
         setSelectPackage(selection)

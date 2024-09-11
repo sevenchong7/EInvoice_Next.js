@@ -117,7 +117,7 @@ const EditUser = ({ data }: { data: User }) => {
   const [viewUser, setViewUser] = useState(false)
   const [updateUser, setUpdateUser] = useState(false)
   const [deleteUser, setDeleteUser] = useState(false)
-  const [textVisible, setTextVisible] = useState(false);
+  const [textVisible, setTextVisible] = useState(true);
 
   useEffect(() => {
     if (dashboardCheck) {
@@ -214,17 +214,17 @@ const EditUser = ({ data }: { data: User }) => {
       </SheetDescription> */}
       </SheetHeader>
       <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
+        {/* <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="name" >
             Name
           </Label>
           <Input id="name" value={name} placeholder={data.name} onChange={(e) => setName(e.target.value)} className="col-span-3" />
-        </div>
+        </div> */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="email" >
             Email
           </Label>
-          <Input id="emial" value={email} placeholder={data.email} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
+          <Input id="email" value={data.email} disabled={true} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="role">

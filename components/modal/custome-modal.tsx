@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 interface CustomeModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm?: () => void;
     loading: boolean;
     title?: any;
     description?: any;

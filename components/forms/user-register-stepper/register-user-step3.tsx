@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import tick from '@/public/Done.png'
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 
 export default function RegisterUserStep3({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [selectPackage, setSelectPackage] = useState('');
+    useEffect(() => {
+        setSelectPackage(form.getValues('package'));
+    }, [])
 
     const HandlePackageSelect = (selection: string) => {
         setSelectPackage(selection)
@@ -18,7 +21,7 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
         return (
             <>
                 <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${id == selectPackage && "ring-2 ring-blue-800"} `}>
-                    <div className="min-h-[480px] w-[230px] flex flex-col justify-between">
+                    <div className="min-h-[480px] w-[250px] flex-auto flex flex-col justify-between">
                         <div className="p-[10px]">
                             <div className="flex flex-col items-center justify-center pt-[10px]">
                                 <h1 className="text-2xl">{title}</h1>
@@ -39,7 +42,7 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center pb-[20px]">
-                            <Button className={`rounded-lg bg-gray-400 px-[20px] py-[5px] text-white ${id == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
+                            <Button className={`rounded-lg bg-gray-400 hover:bg-blue-900 px-[20px] py-[5px] text-white ${id == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
                         </div>
                     </div>
                 </div>
@@ -58,13 +61,13 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                     <FormItem>
                         <FormControl>
                             <div className="flex flex-row justify-between w-full grid-col-3 ">
-                                <div className='col-span-1 mr-[20px]'>
+                                <div className='col-span-1 mr-[10px]'>
                                     <PackageSelection id='1' title='test' price='test' content={['test', 'test', 'test', 'test', 'test']} onClick={() => HandlePackageSelect("1")} />
                                 </div>
-                                <div className='col-span-1 mr-[20px]'>
-                                    <PackageSelection id='2' title='test' price='test' content={['test test test test test test test test']} onClick={() => HandlePackageSelect("2")} />
+                                <div className='col-span-1 mr-[10px]'>
+                                    <PackageSelection id='2' title='test' price='test' content={['test test test test test test test test test test test test']} onClick={() => HandlePackageSelect("2")} />
                                 </div>
-                                <div className='col-span-1 mr-[20px]'>
+                                <div className='col-span-1 mr-[10px]'>
                                     <PackageSelection id='3' title='test' price='test' content={['test']} onClick={() => HandlePackageSelect("3")} />
                                 </div>
                             </div>

@@ -13,7 +13,7 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
     const [payment, setPayment] = useState('');
 
     const HandlePayment = () => {
-        if (payment == '') return
+        // if (payment == '') return
 
         router.push('/dashboard/profile/subscription/payment/information')
     }
@@ -33,24 +33,27 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
     }
 
     return (
-        <>
-            <div className='flex flex-col h-full overflow-y-scroll space-y-5'>
-                <div className='flex flex-col flex-1 h-full '>
-                    <div className="flex items-center justify-between mb-[10px]">
-                        <Heading title="Subscriptions" description="Manage your access to various packages and services" />
-                    </div>
-                    <Separator />
+        <div className='flex flex-col h-full overflow-y-scroll space-y-5'>
+            <div className='flex flex-col  '>
+                <div className="flex items-center justify-between mb-[10px]">
+                    <Heading title="Subscriptions" description="Manage your access to various packages and services" />
                 </div>
-                <div className="p-1">
-                    <Summary subPackage={subPackage} />
+                <Separator />
+            </div>
+            <div className="p-1">
+                <Summary subPackage={subPackage} />
+                {
+                    subPackage !== 'Free' &&
                     <PaymentMethod />
-                </div>
-                <div className="flex flex-row justify-between items-center">
+                }
+            </div>
+            <div className="flex flex-col h-full justify-end pb-4">
+                <div className="flex flex-row  justify-between items-center">
                     <Button onClick={() => router.back()} className="">Back</Button>
-                    <Button onClick={() => HandlePayment()} className="">Continue to Payment</Button>
+                    <Button onClick={() => HandlePayment()} className="">{subPackage === 'Free' ? "Confirm" : "Continue to Payment"}</Button>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

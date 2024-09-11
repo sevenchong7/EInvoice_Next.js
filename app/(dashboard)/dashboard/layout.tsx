@@ -20,7 +20,7 @@ export default function DashboardLayout({
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
         <Suspense fallback={<Loading />}>
-          <main className="w-full pt-16 overflow-hidden">{children}</main>
+          <main className="h-full w-full pt-16 overflow-hidden">{children}</main>
         </Suspense>
       </div>
     </>

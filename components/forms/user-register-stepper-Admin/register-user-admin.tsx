@@ -74,7 +74,15 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
     country: "",
     contactNo: "",
     package: '',
-    payment: [],
+    payment: [
+      {
+        paymentMethod: '',
+        paymentAmount: 0,
+        referenceNo: '',
+        imgUrl: []
+      }
+    ],
+
   }
 
 
@@ -198,7 +206,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 
   return (
     <>
-      <div className='flex flex-col h-full overflow-y-scroll'>
+      <div className='flex flex-col h-full overflow-y-scroll p-1'>
         <div className='flex flex-col flex-1 h-full '>
           <div className="flex items-center justify-between mb-[10px]">
             <Heading title={headerTitle} description={headerDescription} />
@@ -277,7 +285,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
                 }
                 {
                   currentStep === 3 && (
-                    <RegisterUserStep4Admin form={form} append={append} remove={remove} fields={fields} />
+                    <RegisterUserStep4Admin form={form} />
                   )
                 }
                 {

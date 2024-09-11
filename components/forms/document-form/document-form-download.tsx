@@ -1,7 +1,98 @@
+'use client';
 import { useStore } from "@/action/action"
 import { Button } from "@/components/ui/button"
+import { jsPDF } from "jspdf";
+import html2pdf from 'jspdf-html2canvas';
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
 
 export default function DocumentDownload() {
+    let docDownloadRef = useRef(null!);
+
+    const HandleDownload = async () => {
+        try {
+            const inputData = docDownloadRef.current;
+            const canvas = await html2canvas(inputData);
+
+            var opt = {
+                margin: 1,
+                filename: "output.pdf",
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: "px", format: "a4", orientation: "portrait" }
+            };
+
+            html2pdf(
+                inputData,
+                {
+                    // margin: 3,
+                    // image: { type: "jpeg", quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: "px", format: "a4", orientation: "portrait" },
+                    imageType: 'image/jpeg',
+                    output: 'e-invoice.pdf'
+                },
+            );
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    return (
+        <ScrollArea className="h-full">
+            <div className="flex flex-col flex-1 h-full space-y-1 p-5 overscroll-y-auto">
+                <div className="flex justify-end w-full pb-[20px] ">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="outline">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 17V3" /><path d="m6 11 6 6 6-6" /><path d="M19 21H5" /></svg>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent className="min-w-fit overscroll-y-auto">
+                            <ScrollArea className="h-full">
+                                <div className="p-4 space-y-5 overscroll-y-auto">
+                                    <div className="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
+                                        PDF
+                                    </div>
+                                    <div className="border border-black">
+                                        <DocumentInfo />
+                                    </div>
+                                    <SheetFooter className="justify-end">
+                                        <Button onClick={() => HandleDownload()} className="bg-blue-800 hover:bg-blue-700">Confirm</Button>
+                                    </SheetFooter>
+                                </div>
+                            </ScrollArea>
+                        </SheetContent>
+
+                    </Sheet>
+
+                </div>
+                <div className="border border-black">
+                    <div ref={docDownloadRef} >
+                        <DocumentInfo />
+                    </div>
+                </div>
+
+            </div>
+        </ScrollArea>
+    )
+}
+
+const DocumentInfo = () => {
     const { data } = useStore()
     return (
         <div className="flex flex-col w-full">

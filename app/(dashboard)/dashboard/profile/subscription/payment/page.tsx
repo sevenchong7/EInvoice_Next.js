@@ -1,6 +1,5 @@
 'use client';
 import BreadCrumb from "@/components/breadcrumb";
-import Subscriptions from "@/components/profile/subscription";
 import SubscriptionPayment from "@/components/profile/subscription-payment";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSearchParams } from "next/navigation";
@@ -16,11 +15,11 @@ export default function page() {
     ];
 
     return (
-        <ScrollArea className="h-full">
-            <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
-                <BreadCrumb items={breadcrumbItems} />
-                <SubscriptionPayment subPackage={subPackage} />
-            </div>
-        </ScrollArea>
+        // <ScrollArea className="h-full">
+        <div className="h-full space-y-4 p-4 pt-6 md:p-8">
+            <BreadCrumb items={breadcrumbItems} />
+            <SubscriptionPayment subPackage={subPackage} />
+        </div>
+        // </ScrollArea>
     )
 }

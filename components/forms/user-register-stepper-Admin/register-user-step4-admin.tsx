@@ -32,19 +32,16 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { number } from "zod";
 import FileUpload from "@/components/file-upload";
 
 export default function RegisterUserStep4Admin(
     {
-        form, append, remove, fields
+        form,
     }: {
         form: UseFormReturn<RegisterUserAdminFormValues>;
-        append: UseFieldArrayAppend<RegisterUserAdminFormValues, 'payment'>;
-        remove: UseFieldArrayRemove;
-        fields: FieldArrayWithId<RegisterUserAdminFormValues, 'payment'>[]
     }) {
 
     const [loading, setLoading] = useState(false);
@@ -54,147 +51,168 @@ export default function RegisterUserStep4Admin(
         formState: { errors }
     } = form;
 
+    const { append, remove, fields } = useFieldArray({
+        control,
+        name: 'payment'
+    });
+
+    useEffect(() => {
+        // if (form.getValues('package') === '1') {
+        //     fields?.map((field, index) => {
+        //         form.setValue(`payment.${index}.paymentMethod`, )
+        //         form.setValue(`payment.${index}.paymentAmount`, )
+        //     })
+        // }
+    }, [])
+
+
     return (
         <>
             <div className="flex flex-col w-3/4 items-center justify-center mx-auto">
                 <Summary />
-                <div className="w-full pt-[20px]">
-                    {fields?.map((field, index) => (
-                        <Accordion
-                            type="single"
-                            collapsible
-                            defaultValue="item-1"
-                            key={field.id}
-                        >
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger
-                                    className={cn(
-                                        'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
-                                        errors?.payment?.[index] && 'text-red-700'
-                                    )}
-                                >
-                                    <h1 className="text-2xl">
-                                        {`Payment Method ${index + 1}`}
-                                    </h1>
-
-                                    <Button
-                                        // variant="outline"
-                                        // size="icon"
-                                        className="absolute right-8"
-                                        onClick={() => remove(index)}
-                                    >
-                                        <Trash2Icon className="h-4 w-4 " />
-                                    </Button>
-                                    {errors?.payment?.[index] && (
-                                        <span className="alert absolute right-8">
-                                            <AlertTriangleIcon className="h-4 w-4 text-red-700" />
-                                        </span>
-                                    )}
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    <div
+                {
+                    form.getValues('package') !== '1' &&
+                    <div className="w-full pt-[20px]">
+                        {fields?.map((field, index) => (
+                            <Accordion
+                                type="single"
+                                collapsible
+                                defaultValue="item-1"
+                                key={field.id}
+                            >
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger
                                         className={cn(
-                                            'relative mb-4 gap-8 rounded-md border p-4 md:grid md:grid-cols-3'
+                                            'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
+                                            errors?.payment?.[index] && 'text-red-700'
                                         )}
                                     >
-                                        <FormField
-                                            control={form.control}
-                                            name={`payment.${index}.paymentMethod`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Payment Method*</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="text"
-                                                            disabled={loading}
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                        <h1 className="text-2xl">
+                                            {`Payment Method ${index + 1}`}
+                                        </h1>
 
-                                        <FormField
-                                            control={form.control}
-                                            name={`payment.${index}.paymentAmount`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Payment Amount*</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="number"
-                                                            disabled={loading}
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                        {
+                                            index !== 0 &&
+                                            <Button
+                                                // variant="outline"
+                                                // size="icon"
+                                                className="absolute right-8"
+                                                onClick={() => remove(index)}
+                                            >
+                                                <Trash2Icon className="h-4 w-4 " />
+                                            </Button>
+                                        }
 
-                                        <FormField
-                                            control={form.control}
-                                            name={`payment.${index}.referenceNo`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Reference No.</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="text"
-                                                            disabled={loading}
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
+                                        {errors?.payment?.[index] && (
+                                            <span className="alert absolute right-8">
+                                                <AlertTriangleIcon className="h-4 w-4 text-red-700" />
+                                            </span>
+                                        )}
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div
+                                            className={cn(
+                                                'relative mb-4 gap-8 rounded-md border p-4 md:grid md:grid-cols-3'
                                             )}
-                                        />
-
-                                        <div className="w-3/4 col-span-3 mx-auto">
+                                        >
                                             <FormField
                                                 control={form.control}
-                                                name={`payment.${index}.imgUrl`}
+                                                name={`payment.${index}.paymentMethod`}
                                                 render={({ field }) => (
                                                     <FormItem>
+                                                        <FormLabel>Payment Method*</FormLabel>
                                                         <FormControl>
-                                                            <FileUpload
-                                                                onChange={field.onChange}
-                                                                value={field.value}
-                                                                onRemove={field.onChange}
+                                                            <Input
+                                                                type="text"
+                                                                disabled={loading}
+                                                                {...field}
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
+
+                                            <FormField
+                                                control={form.control}
+                                                name={`payment.${index}.paymentAmount`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Payment Amount*</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                type="number"
+                                                                disabled={loading}
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name={`payment.${index}.referenceNo`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Reference No.</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                type="text"
+                                                                disabled={loading}
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <div className="w-3/4 col-span-3 mx-auto">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`payment.${index}.imgUrl`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <FileUpload
+                                                                    onChange={field.onChange}
+                                                                    onRemove={field.onChange}
+                                                                    value={field.value}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
                                         </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
 
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
+                        ))}
 
-                    ))}
-
-                    <div className="mt-4 flex justify-center">
-                        <Button
-                            type="button"
-                            className="flex justify-center"
-                            // size={'lg'}
-                            onClick={() =>
-                                append({
-                                    paymentMethod: '',
-                                    paymentAmount: 0,
-                                    referenceNo: '',
-                                    imgUrl: [],
-                                })
-                            }
-                        >
-                            Add More
-                        </Button>
+                        <div className="mt-4 flex justify-center">
+                            <Button
+                                type="button"
+                                className="flex justify-center"
+                                // size={'lg'}
+                                onClick={() =>
+                                    append({
+                                        paymentMethod: '',
+                                        paymentAmount: 0,
+                                        referenceNo: '',
+                                        imgUrl: [],
+                                    })
+                                }
+                            >
+                                Add More
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </>
     )

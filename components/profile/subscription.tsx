@@ -149,25 +149,25 @@ export default function Subscriptions() {
                             <div className="grid gap-4 grid-rows-4 py-10 space-y-3">
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
@@ -188,25 +188,25 @@ export default function Subscriptions() {
                             <div className="grid gap-4 grid-rows-4 py-10 space-y-3">
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
@@ -227,25 +227,25 @@ export default function Subscriptions() {
                             <div className="grid gap-4 grid-rows-4 py-10 space-y-3">
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>
                                 <div className="flex space-x-5 items-center">
                                     <div className="text-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M20 6 9 17l-5-5" /></svg>
                                     </div>
                                     <h1 className="text-2xl font-semibold">Corporate Tax Filing(for SMEs)</h1>
                                 </div>

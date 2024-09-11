@@ -109,7 +109,7 @@ export default function UserProfile() {
         }
 
         return (
-            <SheetContent>
+            <SheetContent className="min-w-[500px]">
                 <SheetHeader>
                     <SheetTitle className='text-2xl'>Company Information</SheetTitle>
                     {/* <SheetDescription>

@@ -5,7 +5,7 @@ import React from 'react';
 export default function page() {
     const breadcrumbItems = [
         { title: 'Document', link: '/dashboard/document' },
-        { title: 'Create Merchant', link: '/dashboard/document/createDocument' }
+        { title: 'Create Document', link: '/dashboard/document/createDocument' }
     ];
     return (
         <div className="flex flex-col flex-1 h-full space-y-1 p-5">

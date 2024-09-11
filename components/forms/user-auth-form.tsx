@@ -18,6 +18,7 @@ import * as z from 'zod';
 import GoogleSignInButton from '../github-auth-button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
+import { PasswordInput } from '../ui/passwordInput';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
@@ -63,7 +64,6 @@ export default function UserAuthForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Email</FormLabel> */}
                   <FormControl>
                     <Input
                       type="email"
@@ -85,11 +85,9 @@ export default function UserAuthForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Email</FormLabel> */}
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
+                    <PasswordInput
+                      placeholder='Password'
                       disabled={loading}
                       {...field}
                     />
@@ -124,7 +122,7 @@ export default function UserAuthForm() {
           </div>
 
           <div className='pt-[50px] flex-1'>
-            <Button disabled={loading} className="ml-auto w-full bg-blue-900 " type="submit">
+            <Button disabled={loading} className="ml-auto w-full bg-blue-900 hover:bg-blue-800" type="submit">
               Sign In
             </Button>
           </div>

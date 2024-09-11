@@ -2,7 +2,7 @@ import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/f
 import Image from "next/image";
 import eghl from '@/public/eGHL.png'
 import rm from '@/public/RM.png'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 
@@ -39,12 +39,18 @@ export default function RegisterUserStep4({ form }: { form: UseFormReturn<Regist
                         <FormControl>
                             <div>
                                 <Summary />
-                                <PaymentMethod />
+                                {
+                                    form.getValues('package') !== '1' &&
+                                    <PaymentMethod />
+                                }
                             </div>
                         </FormControl>
-                        <div className='flex item-center justify-center'>
-                            <FormMessage />
-                        </div>
+                        {
+                            form.getValues('package') !== '1' &&
+                            <div className='flex item-center justify-center'>
+                                <FormMessage />
+                            </div>
+                        }
                     </FormItem>
                 )}
             />

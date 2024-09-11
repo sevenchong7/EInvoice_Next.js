@@ -4,6 +4,7 @@ import { CellAction } from './cell-action';
 import { User } from '@/constants/data';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+import StatusAction from './status-action';
 
 export const columns: ColumnDef<User>[] = [
   // {
@@ -40,25 +41,26 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: (status: CellContext<User, any>) => {
+    cell: ({ row }) => <StatusAction data={row.original} />
+    // cell: (status: CellContext<User, any>) => {
 
-      return (
-        <div className='flex text-white'>
-          {
-            status.getValue() == "Active" ?
-              <div className='flex items-center justify-center rounded-lg bg-blue-800 px-5 p-2 space-x-2 w-[120px]'>
-                <div>{status.getValue()}</div>
-                <div className='bg-white rounded-full w-5 h-5' /></div> :
-              status.getValue() == "Inactive" ?
-                <div className='flex items-center rounded-lg bg-black px-5 p-2 space-x-2 w-[120px]'>
-                  <div className='bg-white rounded-full w-5 h-5' />
-                  <div>{status.getValue()}</div>
-                </div> :
-                <div className='text-yellow-600'>{status.getValue()}</div>
-          }
-        </div>
-      )
-    }
+    //   return (
+    //     <div className='flex text-white'>
+    //       {
+    //         status.getValue() == "Active" ?
+    //           <div className='flex items-center justify-center rounded-lg bg-blue-800 px-5 p-2 space-x-2 w-[120px]'>
+    //             <div>{status.getValue()}</div>
+    //             <div className='bg-white rounded-full w-5 h-5' /></div> :
+    //           status.getValue() == "Inactive" ?
+    //             <div className='flex items-center rounded-lg bg-black px-5 p-2 space-x-2 w-[120px]'>
+    //               <div className='bg-white rounded-full w-5 h-5' />
+    //               <div>{status.getValue()}</div>
+    //             </div> :
+    //             <div className='text-yellow-600'>{status.getValue()}</div>
+    //       }
+    //     </div>
+    //   )
+    // }
   },
   {
     id: 'actions',

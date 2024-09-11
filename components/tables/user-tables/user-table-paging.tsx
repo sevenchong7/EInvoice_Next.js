@@ -28,19 +28,14 @@ export default function Paginator({
                     <PaginationItem className={currentPage - 1 < 1 ? "invisible" : ""}>
                         <PaginationPrevious
                             onClick={() => onPageChange(currentPage - 1)}
-                        // disabled={currentPage - 1 < 1}
                         />
                     </PaginationItem>
                 ) : null}
                 {generatePaginationLinks(currentPage, totalPages, onPageChange)}
-                <PaginationItem>
-                    <PaginationEllipsis />
-                </PaginationItem>
                 {showPreviousNext && totalPages ? (
                     <PaginationItem className={currentPage > totalPages - 1 ? "invisible" : ""}>
                         <PaginationNext
                             onClick={() => onPageChange(currentPage + 1)}
-                        // disabled={currentPage >= totalPages - 1}
                         />
                     </PaginationItem>
                 ) : null}

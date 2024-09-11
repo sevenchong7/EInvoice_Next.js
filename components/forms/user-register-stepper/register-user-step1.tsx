@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
+import { PasswordInput } from "@/components/ui/passwordInput";
 
 export default function RegisterUserStep1({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);
@@ -94,7 +95,8 @@ export default function RegisterUserStep1({ form }: { form: UseFormReturn<Regist
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input
+                                    <PasswordInput
+                                        type="password"
                                         disabled={loading}
                                         {...field}
                                         placeholder='Password*'
@@ -113,11 +115,18 @@ export default function RegisterUserStep1({ form }: { form: UseFormReturn<Regist
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input
+                                    <PasswordInput
+                                        type="password"
                                         disabled={loading}
                                         {...field}
                                         placeholder='Confirmation Password*'
                                     />
+                                    {/* <Input
+                                        type="password"
+                                        disabled={loading}
+                                        {...field}
+                                        placeholder='Confirmation Password*'
+                                    /> */}
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

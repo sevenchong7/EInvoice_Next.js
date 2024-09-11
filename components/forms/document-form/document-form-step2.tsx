@@ -159,7 +159,7 @@ export default function DocumentFormStep2(
             setSupplierError(true)
         }
 
-        if (errors.buyerIndustryClassCode || errors.buyerIndustryName || errors.buyerRegisterName) {
+        if (errors.buyerRegisterName) {
             setBuyerError(false)
         } else {
             setBuyerError(true)
@@ -171,7 +171,7 @@ export default function DocumentFormStep2(
             setDeliveryError(true)
         }
 
-    }, [errors.supplierId, errors.agencyName, errors.supplierIndustryClassCode, errors.supplierIndustryName, errors.supplierRegisterName, errors.buyerIndustryClassCode, errors.buyerIndustryName, errors.buyerRegisterName, errors.deliveryRegistrationName])
+    }, [errors.supplierId, errors.agencyName, errors.supplierIndustryClassCode, errors.supplierIndustryName, errors.supplierRegisterName, errors.buyerRegisterName, errors.deliveryRegistrationName])
 
     useEffect(() => {
         console.log(supplierError)
@@ -328,11 +328,11 @@ export default function DocumentFormStep2(
                                 />
                                 {index === 0 ?
                                     <div className={`flex ${errors.supplierPartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddSupplierPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                        <button onClick={() => { HandleAddSupplierPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
                                     </div>
                                     :
                                     <div className={`flex ${errors.supplierPartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeSupplierPartyInformation(index) }} disabled={fieldsSupplierPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                        <button onClick={() => { removeSupplierPartyInformation(index) }} disabled={fieldsSupplierPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
                                     </div>
                                 }
                             </div>
@@ -367,10 +367,10 @@ export default function DocumentFormStep2(
 
                                 {index === 0 ?
                                     <div className={`flex col-span-2 ${errors.supplierAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddSupplierAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                        <button onClick={() => { HandleAddSupplierAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
                                     </div> :
                                     <div className={`flex col-span-2 ${errors.supplierAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeSupplierAddress(index) }} disabled={fieldsSupplierAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                        <button onClick={() => { removeSupplierAddress(index) }} disabled={fieldsSupplierAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
                                     </div>
                                 }
                             </div>
@@ -564,7 +564,7 @@ export default function DocumentFormStep2(
                     <h1 className="text-2xl font-semibold">Party Information</h1>
                     <div className="w-full h-[1px] bg-gray-300"></div>
                     <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name={'buyerIndustryClassCode'}
                             render={({ field }) => (
@@ -598,14 +598,14 @@ export default function DocumentFormStep2(
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
 
                         <FormField
                             control={form.control}
                             name={'buyerRegisterName'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Register Name <span className="text-red-500">*</span></FormLabel>
+                                    <FormLabel>Registration Name <span className="text-red-500">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -660,11 +660,11 @@ export default function DocumentFormStep2(
                                     />
                                     {index === 0 ?
                                         <div className={`flex ${errors.buyerPartyInformation ? "items-center" : "items-end"}`}>
-                                            <button onClick={() => { HandleAddBuyerPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                            <button onClick={() => { HandleAddBuyerPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
                                         </div>
                                         :
                                         <div className={`flex ${errors.buyerPartyInformation ? "items-center" : "items-end"}`}>
-                                            <button onClick={() => { removeBuyerPartyInformation(index) }} disabled={fieldsBuyerPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                            <button onClick={() => { removeBuyerPartyInformation(index) }} disabled={fieldsBuyerPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
                                         </div>
                                     }
                                 </div>
@@ -698,10 +698,10 @@ export default function DocumentFormStep2(
 
                                 {index === 0 ?
                                     <div className={`flex col-span-2 ${errors.buyerAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddBuyerAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                        <button onClick={() => { HandleAddBuyerAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
                                     </div> :
                                     <div className={`flex col-span-2 ${errors.buyerAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeBuyerAddress(index) }} disabled={fieldsBuyerAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                        <button onClick={() => { removeBuyerAddress(index) }} disabled={fieldsBuyerAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
                                     </div>
                                 }
                             </div>
@@ -956,11 +956,11 @@ export default function DocumentFormStep2(
                                 />
                                 {index === 0 ?
                                     <div className={`flex  ${errors.deliverypartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddDeliverypartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                        <button onClick={() => { HandleAddDeliverypartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 ">+</button>
                                     </div>
                                     :
                                     <div className={`flex  ${errors.deliverypartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeDeliverypartyInformation(index) }} disabled={fieldsDeliverypartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                        <button onClick={() => { removeDeliverypartyInformation(index) }} disabled={fieldsDeliverypartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 ">-</button>
                                     </div>
 
                                 }
@@ -997,11 +997,11 @@ export default function DocumentFormStep2(
                                 />
                                 {index === 0 ?
                                     <div className={`flex col-span-2 ${errors.deliveryAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddDeliveryAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 mb-2">+</button>
+                                        <button onClick={() => { HandleAddDeliveryAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
                                     </div>
                                     :
                                     <div className={`flex col-span-2 ${errors.deliveryAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeDeliveryAddress(index) }} disabled={fieldsDeliveryAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 mb-2">-</button>
+                                        <button onClick={() => { removeDeliveryAddress(index) }} disabled={fieldsDeliveryAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
                                     </div>
                                 }
                             </div>

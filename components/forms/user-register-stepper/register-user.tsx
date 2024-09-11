@@ -144,6 +144,10 @@ export default function RegisterUserForm() {
     }, [currentStep])
 
     const prev = () => {
+        if (currentStep == 0) {
+            router.back();
+        }
+
         if (currentStep > 0) {
             setPreviousStep(currentStep);
             setCurrentStep((step) => step - 1);
@@ -171,13 +175,13 @@ export default function RegisterUserForm() {
                                             </h1>
                                             <p className='text-base font-light '>{currentStep == index && "Required field *"}</p>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             {currentStep == index &&
                                                 <Button className='w-[100px]'>
                                                     Skip
                                                 </Button>
                                             }
-                                        </div>
+                                        </div> */}
                                     </div> : currentStep == 4 ?
                                         <div className='flex flex-col items-center justify-center w-full space-y-5'>
                                             {currentStep == index && <Image src={approve} alt='approve' />}
@@ -225,7 +229,6 @@ export default function RegisterUserForm() {
                                 <button
                                     type="button"
                                     onClick={prev}
-                                    disabled={currentStep === 0}
                                     className="rounded bg-slate-600 px-5 py-1 text-base font-semibold text-white shadow-sm hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-[100px]"
                                 >
                                     Back
@@ -237,7 +240,7 @@ export default function RegisterUserForm() {
                                     className="rounded bg-blue-900 px-2 py-1 text-sm font-semibold text-white shadow-sm  hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50 min-w-[100px]"
                                 >
                                     {
-                                        currentStep === 3 ? "Continue to Payment" : "Next"
+                                        currentStep === 3 ? form.getValues('package') === '1' ? "register" : "Continue to Payment" : currentStep === 1 ? "Skip" : "Next"
                                     }
                                 </button>
                             </div> :

@@ -405,11 +405,11 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
 
 
     const processForm: SubmitHandler<DocumentFormValues> = (data) => {
-        console.log('test')
         console.log('data ==>', data);
         setData(data);
-        router.push("/dashboard/document/createDocument/documentDownload")
         setDocData(data)
+        router.push("/dashboard/document/createDocument/documentDownload")
+
 
         // api call and reset
         // form.reset();
@@ -433,7 +433,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         }
 
         if (currentStep === steps.length - 1) {
-            console.log('test')
             await form.handleSubmit(processForm)();
         }
     };

@@ -18,7 +18,7 @@ export const users: User[] = [
     role: 'Frontend Developer',
     verified: false,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'CS@gmail.com'
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ export const users: User[] = [
     role: 'Backend Developer',
     verified: true,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'JD@gmail.com'
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ export const users: User[] = [
     role: 'UI Designer',
     verified: true,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'AJ@gmail.com'
 
   },
   {
@@ -46,7 +46,7 @@ export const users: User[] = [
     role: 'Fullstack Developer',
     verified: false,
     status: 'Inactive',
-    email: 'test@gmail.com'
+    email: 'DS@gmail.com'
 
   },
   {
@@ -56,7 +56,7 @@ export const users: User[] = [
     role: 'Product Manager',
     verified: true,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'EW@gmail.com'
 
   },
   {
@@ -66,7 +66,7 @@ export const users: User[] = [
     role: 'QA Engineer',
     verified: false,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'JB@gmail.com'
 
   },
   {
@@ -76,7 +76,7 @@ export const users: User[] = [
     role: 'UX Designer',
     verified: true,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'LW@gmail.com'
 
   },
   {
@@ -86,7 +86,7 @@ export const users: User[] = [
     role: 'DevOps Engineer',
     verified: false,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'ML@gmail.com'
 
   },
   {
@@ -96,7 +96,7 @@ export const users: User[] = [
     role: 'Frontend Developer',
     verified: true,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'OG@gmail.com'
 
   },
   {
@@ -106,9 +106,209 @@ export const users: User[] = [
     role: 'Data Analyst',
     verified: false,
     status: 'Active',
-    email: 'test@gmail.com'
+    email: 'RT@gmail.com'
 
-  }
+  },
+  {
+    id: 11,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 12,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 13,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 14,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 15,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 16,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 17,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 18,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 19,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 20,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 21,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 22,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 23,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 24,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 25,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 26,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 27,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 28,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 29,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
+  {
+    id: 30,
+    name: 'Robert Taylor',
+    company: 'DataTech',
+    role: 'Data Analyst',
+    verified: false,
+    status: 'Active',
+    email: 'RT@gmail.com'
+
+  },
 ];
 
 export type Company = {

@@ -34,8 +34,8 @@ export default function AuthenticationPage() {
             <h1 className="text-2xl font-semibold tracking-tight">
               Sign In
             </h1>
-            <p className="text-sm pt-[5px]">
-              Enter your email and password below to sign in your account
+            <p className="text-sm pt-[5px] text-nowrap">
+              Enter your email and password below to sign in your account.
             </p>
           </div>
           <UserAuthForm />
