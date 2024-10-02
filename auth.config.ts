@@ -1,13 +1,22 @@
-import { NextAuthConfig } from 'next-auth';
+import { AuthError, NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
+import { decryptAES, encryptAES } from './lib/api';
+import { login } from './lib/services/authService';
+
+class AuthErrorWithMsg extends AuthError {
+  constructor(message: string) {
+    super()
+    this.message = message
+  }
+}
 
 const authConfig = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? ''
-    }),
+    // GithubProvider({
+    //   clientId: process.env.GITHUB_ID ?? '',
+    //   clientSecret: process.env.GITHUB_SECRET ?? ''
+    // }),
     CredentialProvider({
       credentials: {
         email: {
@@ -21,17 +30,19 @@ const authConfig = {
 
         // call auth service and call login api
         // get user data
+        const bodyData = {
+          loginId: credentials.email,
+          password: credentials.password
+        };
 
-        const response = await fetch("https://c385-121-121-106-195.ngrok-free.app/api/loginuser/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            loginId: credentials.email,
-            password: "123qwe"
-          })
-        })
+        const loginUser = await login(bodyData);
+        console.log("loginUser ", loginUser)
+        if (!loginUser.status) {
+          console.error("Invalid Cred");
+          throw new AuthErrorWithMsg(JSON.stringify({ errors: loginUser.error.errors[0], status: false }))
+        }
+
+        return loginUser.data
         // const data = await response.json();
         // console.log("response ", data)
 
@@ -58,43 +69,6 @@ const authConfig = {
         //     permissionSet2: '["dashboard.all", "dashboard.access", "dashboard.download", "employee.all", "employee.access", "user.all", "user.access", "profile.all", "profile.access"]',
         //     role: 'ADMIN'
         //   }
-
-        const data = {
-          "loginId": "ben@admin.com",
-          "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXJjaGFudDNAZ21haWwuY29tIiwiaWF0IjoxNzIwMTQ0NjE5LCJleHAiOjE3MjAxNDQ2Nzl9.sc_9p3bxxtdLYToq9WneDcH1fRWIf5DYEZTMa9U4qew",
-          "accessTokenExpiry": "60000",
-          "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXJjaGFudDNAZ21haWwuY29tIiwiaWF0IjoxNzIwMTQ0NjE5LCJleHAiOjE3MjAxNDQ3MDZ9.ZSZHBYgbRcVkhIQ4cUtBqa0UI5kgzzeQIqYeG_43XT8",
-          "refreshTokenExpiry": "86400",
-          "merchantResponse": {
-            "belongToMerchant": 3,
-            "packageName": "packageC",
-            "permissionSet": [
-              "dashboard.access",
-              "dashboard.all",
-              "dashboard.download",
-              "employee.access",
-              "employee.all",
-              "profile.access",
-              "profile.all",
-              "user.access",
-              "user.all",
-              "createMerchant.all",
-              "document.access",
-              "document.all",
-              "subscription.all",
-            ],
-            "role": "ADMIN"
-          }
-        };
-        if (data) {
-          // Any object returned will be saved in `user` property of the JWT
-          return data;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-        }
       }
     })
   ],
@@ -112,17 +86,26 @@ const authConfig = {
     session({ session, token }) {
       session.user = {
         ...session.user,
-        permissions: token.merchantResponse.permissionSet,
+        permissions: token.merchantPermissResponse.permission,
         accessToken: token.accessToken,
         accessTokenExpiry: token.accessTokenExpiry,
-        // refreshToken: token.refreshToken,
-        // refreshTokenExpiry: token.refreshTokenExpiry,
+        refreshToken: token.refreshToken,
+        refreshTokenExpiry: token.refreshTokenExpiry,
+        merchantId: token.merchantResponse.merchantId
       }
 
       // console.log("Session ", session)
       return session;
-    }
-  }
+    },
+    // async signIn({ user }) {
+    //   console.log(user)
+    //   if (user?.error) {
+    //     throw new Error(user?.error)
+    //   }
+    //   return true;
+    // },
+  },
+  // secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthConfig;
 
 export default authConfig;

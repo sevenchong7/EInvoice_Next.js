@@ -19,9 +19,11 @@ import GoogleSignInButton from '../github-auth-button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import { PasswordInput } from '../ui/passwordInput';
+import { useToast } from '../ui/use-toast';
+import { login } from '@/action/auth';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' }),
+  email: z.string(),
   password: z.string().min(1, { message: "Please enter the password" }),
   rmbMe: z.boolean().default(false).optional()
 
@@ -32,6 +34,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: '',
@@ -43,11 +46,28 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      callbackUrl: callbackUrl ?? '/dashboard'
-    });
+    
+      // const signInStatus = await signIn('credentials', {
+      //   email: data.email,
+      //   password: data.password,
+      //   callbackUrl: callbackUrl ?? '/dashboard',
+      //   redirect: false
+      // })
+      const signInStatus = await login(data.email, data.password);
+
+      console.log("signInStatus ", signInStatus);
+      if (signInStatus?.error)
+        toast({
+          title: 'Invalid Credentials',
+          variant: 'destructive',
+          description: `Your username or password is incorrect.`
+        });
+        
+      // toast({
+      //   variant: 'destructive',
+      //   title: signInStatus?.error,
+      //   description: 'There was a problem with your request.'
+      // });
   };
 
   return (
@@ -66,7 +86,6 @@ export default function UserAuthForm() {
                 <FormItem>
                   <FormControl>
                     <Input
-                      type="email"
                       placeholder="Email Address"
                       disabled={loading}
                       {...field}

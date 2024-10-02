@@ -11,6 +11,7 @@ declare module 'next-auth' {
       accessTokenExpiry: string
       refreshToken: string
       refreshTokenExpiry: string
+      merchantId: number
     } & UserSession;
   }
 
@@ -22,16 +23,20 @@ declare module 'next-auth' {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role: { id: number, name: string, permissions: string[] };
-    loginId: number;
+    // role: { id: number, name: string, permissions: string[] };
+    loginId: string;
     accessToken: string;
     accessTokenExpiry: string;
     refreshToken: string;
     refreshTokenExpiry: string;
     merchantResponse: {
-      belongToMerchant: number;
+      merchantId: number;
+      registrationNo: number;
+    };
+    merchantPermissResponse: {
       packageName: string;
-      permissionSet: string[];
+      permission: string[];
+      role: string;
     }
   }
 }
