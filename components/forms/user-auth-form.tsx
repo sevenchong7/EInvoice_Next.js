@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { PasswordInput } from '../ui/passwordInput';
 import { useToast } from '../ui/use-toast';
 import { login } from '@/action/auth';
+import React from 'react';
 
 const formSchema = z.object({
   email: z.string(),
@@ -46,28 +47,28 @@ export default function UserAuthForm() {
   });
 
   const onSubmit = async (data: UserFormValue) => {
-    
-      // const signInStatus = await signIn('credentials', {
-      //   email: data.email,
-      //   password: data.password,
-      //   callbackUrl: callbackUrl ?? '/dashboard',
-      //   redirect: false
-      // })
-      const signInStatus = await login(data.email, data.password);
 
-      console.log("signInStatus ", signInStatus);
-      if (signInStatus?.error)
-        toast({
-          title: 'Invalid Credentials',
-          variant: 'destructive',
-          description: `Your username or password is incorrect.`
-        });
-        
-      // toast({
-      //   variant: 'destructive',
-      //   title: signInStatus?.error,
-      //   description: 'There was a problem with your request.'
-      // });
+    // const signInStatus = await signIn('credentials', {
+    //   email: data.email,
+    //   password: data.password,
+    //   callbackUrl: callbackUrl ?? '/dashboard',
+    //   redirect: false
+    // })
+    const signInStatus = await login(data.email, data.password);
+
+    console.log("signInStatus ", signInStatus);
+    if (signInStatus?.error)
+      toast({
+        title: 'Invalid Credentials',
+        variant: 'destructive',
+        description: `Your username or password is incorrect.`
+      });
+
+    // toast({
+    //   variant: 'destructive',
+    //   title: signInStatus?.error,
+    //   description: 'There was a problem with your request.'
+    // });
   };
 
   return (

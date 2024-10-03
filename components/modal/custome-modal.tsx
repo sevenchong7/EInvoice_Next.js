@@ -50,7 +50,7 @@ export const CustomeModal: React.FC<CustomeModalProps> = ({
             onClose={onClose}
             titleClassName={titleClassName}
         >
-            <div>{content}</div>
+            <div className='text-center w-full whitespace-pre-wrap'>{content}</div>
             {/* <div className=" w-full items-center space-x-2 pt-6">
                 <Button disabled={loading} variant="outline" onClick={onClose}>
                     Cancel
@@ -88,7 +88,7 @@ export const Modal: React.FC<ModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onChange} >
-            <DialogContent className='min-w-[600px]'>
+            <DialogContent className='md:min-w-[600px]'>
                 <DialogHeader className={titleClassName}>
                     <DialogTitle className={titleClassName}>{title}</DialogTitle>
                     <DialogDescription className='text-center w-full'>{description}</DialogDescription>

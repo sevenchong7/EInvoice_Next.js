@@ -1,12 +1,15 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/constants/data';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
+import { DataTable } from './user-data-table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useTranslations } from 'next-intl';
+import React from 'react';
 
 interface ProductsClientProps {
   data: User[];
@@ -14,24 +17,25 @@ interface ProductsClientProps {
 
 export const UserClient: React.FC<ProductsClientProps> = ({ data }) => {
   const router = useRouter();
-
+  const t = useTranslations();
   return (
     <>
-      <div className="flex items-start justify-between">
-        <Heading
-          title={`Users (${data.length})`}
-          description="Manage users"
-        />
-        <Button
-          className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/user/userListing/new`)}
-        >
-          <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
-      </div>
-      {/* <Separator /> */}
-      <div className='space-y-5'>
-        <DataTable searchKey="name" columns={columns} data={data} />
+      <div className='space-y-2 overflow-y-scroll'>
+        <div className="flex items-start justify-between">
+          <Heading
+            title={`${t('TAG_USER')} (${data.length})`}
+            description={t('TAG_MANAGE_USERS')}
+          />
+          <Button
+            className="text-xs md:text-sm"
+            onClick={() => router.push(`/dashboard/user/userListing/new`)}
+          >
+            <Plus className="mr-2 h-4 w-4" /> {t('TAG_ADD_NEW')}
+          </Button>
+        </div>
+        <div className='space-y-5 p-1'>
+          <DataTable columns={columns} data={data} />
+        </div>
       </div>
     </>
   );

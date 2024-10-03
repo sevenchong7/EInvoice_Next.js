@@ -19,16 +19,16 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentFormValues } from "@/lib/form-schema";
 import { useEffect, useState } from "react";
-import { FieldArrayWithId, useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, UseFormReturn } from "react-hook-form";
-import fav from '@/public/favorite.svg'
-import Image from "next/image";
-import alertIcon from '@/public/alert.svg'
+import { UseFormReturn } from "react-hook-form";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Separator } from "@/components/ui/separator";
+import Required from "@/components/ui/required";
+import { useTranslations } from "next-intl";
+import React from "react";
 
 export default function DocumentFormStep2(
     {
@@ -36,113 +36,19 @@ export default function DocumentFormStep2(
     }: {
         form: UseFormReturn<DocumentFormValues>;
     }) {
-
+    const t = useTranslations();
+    const [editable, setEditable] = useState(true);
     const [loading, setLoading] = useState(false);
     const [tabs, setTabs] = useState('0')
     const [fav, setFav] = useState(false);
     const [FavDeli, setFavDeli] = useState(false);
     const [supplierError, setSupplierError] = useState(false);
     const [buyerError, setBuyerError] = useState(false);
-    const [deliveryError, setDeliveryError] = useState(false)
 
     const {
         control,
         formState: { errors }
     } = form;
-
-    const {
-        append: appendSupplierPartyInformation,
-        remove: removeSupplierPartyInformation,
-        fields: fieldsSupplierPartyInformation,
-    } = useFieldArray({
-        control,
-
-        name: 'supplierPartyInformation',
-    });
-
-    const {
-        append: appendSupplierAddress,
-        remove: removeSupplierAddress,
-        fields: fieldsSupplierAddress,
-    } = useFieldArray({
-        control,
-        name: 'supplierAddress',
-    });
-
-    const {
-        append: appendBuyerPartyInformation,
-        remove: removeBuyerPartyInformation,
-        fields: fieldsBuyerPartyInformation
-    } = useFieldArray({
-        control,
-        name: 'buyerPartyInformation'
-    })
-
-    const {
-        append: appendBuyerAddress,
-        remove: removeBuyerAddress,
-        fields: fieldsBuyerAddress
-    } = useFieldArray({
-        control,
-        name: 'buyerAddress'
-    })
-
-    const {
-        append: appendDeliverypartyInformation,
-        remove: removeDeliverypartyInformation,
-        fields: fieldsDeliverypartyInformation,
-    } = useFieldArray({
-        control,
-        name: 'deliverypartyInformation'
-    })
-
-    const {
-        append: appendDeliveryAddress,
-        remove: removeDeliveryAddress,
-        fields: fieldsDeliveryAddress,
-    } = useFieldArray({
-        control,
-        name: 'deliveryAddress'
-    })
-
-    const HandleAddSupplierPartyInformation = () => {
-        appendSupplierPartyInformation({
-            supplierIdentificationId: '',
-            supplierSchemeId: '',
-        })
-    }
-
-    const HandleAddSupplierAddress = () => {
-        appendSupplierAddress({
-            supplierLine: '',
-        })
-    }
-
-    const HandleAddBuyerPartyInformation = () => {
-        appendBuyerPartyInformation({
-            buyerIdentificationId: '',
-            buyerSchemeId: '',
-        })
-    }
-
-    const HandleAddBuyerAddress = () => {
-        appendBuyerAddress({
-            buyerLine: '',
-        })
-    }
-
-    const HandleAddDeliverypartyInformation = () => {
-        appendDeliverypartyInformation({
-            deliveryIdentificationId: '',
-            deliverySchemeId: '',
-        })
-    }
-
-    const HandleAddDeliveryAddress = () => {
-        appendDeliveryAddress({
-            deliveryLine: '',
-        })
-    }
 
     const HandleFav = () => {
         setFav(true)
@@ -153,44 +59,35 @@ export default function DocumentFormStep2(
     }
 
     useEffect(() => {
-        if (errors.supplierId || errors.agencyName || errors.supplierIndustryClassCode || errors.supplierIndustryName || errors.supplierRegisterName) {
+        if (errors.supplierIndustryClassCode) {
             setSupplierError(false)
         } else {
             setSupplierError(true)
         }
 
-        if (errors.buyerRegisterName) {
+        if (errors.buyerRegisterName || errors.buyerSSTRegisterNumber || errors.buyerContact) {
             setBuyerError(false)
         } else {
             setBuyerError(true)
         }
 
-        if (errors.deliveryRegistrationName) {
-            setDeliveryError(false)
-        } else {
-            setDeliveryError(true)
-        }
-
-    }, [errors.supplierId, errors.agencyName, errors.supplierIndustryClassCode, errors.supplierIndustryName, errors.supplierRegisterName, errors.buyerRegisterName, errors.deliveryRegistrationName])
-
-    useEffect(() => {
-        console.log(supplierError)
-        console.log(buyerError)
-    }, [supplierError, buyerError])
+    }, [errors.supplierIndustryClassCode, errors.buyerRegisterName, errors.buyerSSTRegisterNumber, errors.buyerContact])
 
     const SupplierContent = () => {
         return (
             <>
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Account Information</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_ACCOUNT_INFORMATION')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
-                            name="supplierId"
+                            name="supplierIndustryClassCode"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Supplier ID</FormLabel>
+                                    <FormLabel>{t('TAG_INDUSTRY_CLASSIFICATION_CODE')} <Required /></FormLabel>
                                     <FormControl>
                                         <Input
                                             type='text'
@@ -205,15 +102,96 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name="agencyName"
+                            name="supplierIndustryName"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Agency Name <span className={"text-red-500"}>*</span></FormLabel>
+                                    <FormLabel>{t('TAG_REGISTRATION_NAME')} <Required /></FormLabel>
                                     <FormControl>
                                         <Input
                                             type='text'
-                                            disabled={loading}
+                                            disabled={true}
                                             {...field}
+                                        // defaultValue={''}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name="supplierTaxIndentificationNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_TAX_IDENTIFICATION_NUMBER')} (TIN)</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='text'
+                                            disabled={true}
+                                            {...field}
+                                        // defaultValue={''}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="supplierBusinessRegNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_BUSINESS_REGISTRATION_NUMBER')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='text'
+                                            disabled={true}
+                                            {...field}
+                                        // defaultValue={''}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name="sstRegNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_SST_REGISTRATION_NUMBER')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='text'
+                                            disabled={true}
+                                            {...field}
+                                        // defaultValue={''}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="tourismTaxRegistrationNum"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_TOURISM_TAX_REGISTRATION_NUMBER')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='text'
+                                            disabled={true}
+                                            {...field}
+                                        // defaultValue={''}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -223,171 +201,51 @@ export default function DocumentFormStep2(
                     </div>
                 </div>
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Party Information</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        <div>
-                            <FormField
-                                control={form.control}
-                                name="supplierIndustryClassCode"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Industry Classification Code <span className={"text-red-500"}>*</span></FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type='text'
-                                                disabled={loading}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <div className="flex justify-between items-centers pb-1">
+                            <h1 className="text-2xl font-semibold">{t('TAG_ADDRESS')}</h1>
+                            <Button onClick={() => setEditable(!editable)}>{t('TAG_EDIT')}</Button>
                         </div>
-
-                        <div>
-                            <FormField
-                                control={form.control}
-                                name="supplierIndustryName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Industry Name <span className={"text-red-500"}>*</span></FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type='text'
-                                                disabled={loading}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div>
-                            <FormField
-                                control={form.control}
-                                name="supplierRegisterName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Registration Name <span className={"text-red-500"}>*</span></FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type='text'
-                                                disabled={loading}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        {fieldsSupplierPartyInformation?.map((field, index) => (
-                            <div key={`${field.id}-${index}`} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name={`supplierPartyInformation.${index}.supplierIdentificationId`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Identification ID</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    placeholder="C20792859020"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name={`supplierPartyInformation.${index}.supplierSchemeId`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Scheme ID</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    placeholder="TIN"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                {index === 0 ?
-                                    <div className={`flex ${errors.supplierPartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddSupplierPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
-                                    </div>
-                                    :
-                                    <div className={`flex ${errors.supplierPartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeSupplierPartyInformation(index) }} disabled={fieldsSupplierPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
-                                    </div>
-                                }
-                            </div>
-                        ))}
-
+                        <Separator />
                     </div>
-                </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Address</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        {fieldsSupplierAddress?.map((field, index) => (
-                            <div key={`${field.id}-${index}`} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name={`supplierAddress.${index}.supplierLine`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Line {index + 1}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {index === 0 ?
-                                    <div className={`flex col-span-2 ${errors.supplierAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddSupplierAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
-                                    </div> :
-                                    <div className={`flex col-span-2 ${errors.supplierAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeSupplierAddress(index) }} disabled={fieldsSupplierAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
-                                    </div>
-                                }
-                            </div>
-
-                        ))}
+                        <div className="col-span-2">
+                            <FormField
+                                control={form.control}
+                                name={'supplierLine'}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('TAG_ADDRESS')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                disabled={editable}
+                                                {...field}
+                                            // defaultValue={''}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
 
                         <FormField
                             control={form.control}
                             name={'supplierZipCode'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Zip Code</FormLabel>
+                                    <FormLabel>{t('TAG_ZIPCODE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
-                                            disabled={loading}
+                                            disabled={editable}
                                             {...field}
+                                        // defaultValue={''}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -400,12 +258,13 @@ export default function DocumentFormStep2(
                             name={'supplierCity'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>City</FormLabel>
+                                    <FormLabel>{t('TAG_CITY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
-                                            disabled={loading}
+                                            disabled={editable}
                                             {...field}
+                                        // defaultValue={''}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -418,30 +277,13 @@ export default function DocumentFormStep2(
                             name={'supplierState'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>State</FormLabel>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
-                                            disabled={loading}
+                                            disabled={editable}
                                             {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name={'supplierCountry'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Country</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
+                                        // defaultValue={''}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -450,23 +292,46 @@ export default function DocumentFormStep2(
                         />
 
                     </div>
+                    <div className="grid grid-cols-3 gap-8 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'supplierCountry'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={editable}
+                                            {...field}
+                                        // defaultValue={''}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                 </div>
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Contact</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_CONTACT')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'supplierContact'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Contact No.</FormLabel>
+                                    <FormLabel>{t('TAG_CONTACT_NO')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
-                                            disabled={loading}
+                                            disabled={editable}
                                             {...field}
+                                        // defaultValue={''}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -479,12 +344,13 @@ export default function DocumentFormStep2(
                             name={'supplierEmail'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>{t('TAG_EMAIL')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
-                                            disabled={loading}
+                                            disabled={editable}
                                             {...field}
+                                            onChange={(e) => field.onChange(e)}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -503,11 +369,11 @@ export default function DocumentFormStep2(
             <>
                 <div className="flex flex-row justify-between mt-[20px]">
                     <div className="flex items-center">
-                        <p>Favorite User</p>
+                        <p>{t('TAG_FAVORITE_USER')}</p>
                         <div className="ml-[20px]">
                             <Select >
                                 <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a User" />
+                                    <SelectValue placeholder={t('TAG_SELECT_USER')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -525,7 +391,7 @@ export default function DocumentFormStep2(
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button onClick={() => { }} className="flex flex-row items-center justify-between">
-                                Favorite
+                                {t('TAG_FAVORITE')}
                                 <div className={` ml-2 ${!fav ? "text-gray-500 " : " text-yellow-400"} `}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
                                 </div>
@@ -533,79 +399,40 @@ export default function DocumentFormStep2(
                         </DialogTrigger>
                         <DialogContent className="min-w-fit">
                             <DialogHeader className="items-center">
-                                <DialogTitle className="text-2xl">My Favorite Confirmation</DialogTitle>
+                                <DialogTitle className="text-2xl">{t('TAG_FAVORITE_MODAL_TITLE')}</DialogTitle>
                             </DialogHeader>
                             <div className="p-[10px]">
                                 <div className="flex flex-col items-center justify-center">
-                                    <p className="text-center text-sm">
-                                        Please double-check the details to ensure they are correct.<br />
-                                        If you confirm, this information will be saved for quick access next time.
-                                    </p>
-                                    <p className="text-center text-sm pt-[20px]">
-                                        To confirm, please click "Confirm". <br />
-                                        If you do not want to save this information, click "Cancel".
+                                    <p className="text-center text-sm whitespace-pre-wrap">
+                                        {t('TAG_FAVORITE_MODAL_DESC')}
                                     </p>
                                 </div>
 
                             </div>
                             <DialogFooter className="flex flex-row justify-between w-full sm:justify-between pt-[20px]">
                                 <DialogClose asChild>
-                                    <Button onClick={() => { setFav(false) }} type="button" variant="secondary">Cancel</Button>
+                                    <Button onClick={() => { setFav(false) }} type="button" variant="secondary">{t('TAG_CANCEL')}</Button>
                                 </DialogClose>
                                 <DialogClose>
-                                    <Button onClick={() => { HandleFav() }} type="submit">Confirm</Button>
+                                    <Button onClick={() => { HandleFav() }} type="submit">{t('TAG_CONFIRM')}</Button>
                                 </DialogClose>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog >
                 </div >
 
-                <div className="pt-[30px]">
-                    <h1 className="text-2xl font-semibold">Party Information</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        {/* <FormField
-                            control={form.control}
-                            name={'buyerIndustryClassCode'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Industry Classification Code <span className="text-red-500">*</span></FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name={'buyerIndustryName'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Industry Name <span className="text-red-500">*</span></FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        /> */}
-
+                <div className="pt-[30px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_PARTY_INFORMATION')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'buyerRegisterName'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Registration Name <span className="text-red-500">*</span></FormLabel>
+                                    <FormLabel>{t('TAG_REGISTRATION_NAME')} <Required /></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -618,102 +445,131 @@ export default function DocumentFormStep2(
                             )}
                         />
 
-                        {
-                            fieldsBuyerPartyInformation?.map((field, index) => (
-                                <div key={field.id} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                    <FormField
-                                        control={form.control}
-                                        name={`buyerPartyInformation.${index}.buyerIdentificationId`}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Identification ID</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="text"
-                                                        disabled={loading}
-                                                        placeholder="C20792859020"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name={`buyerPartyInformation.${index}.buyerSchemeId`}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Scheme ID</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="text"
-                                                        disabled={loading}
-                                                        placeholder="TIN"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    {index === 0 ?
-                                        <div className={`flex ${errors.buyerPartyInformation ? "items-center" : "items-end"}`}>
-                                            <button onClick={() => { HandleAddBuyerPartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
-                                        </div>
-                                        :
-                                        <div className={`flex ${errors.buyerPartyInformation ? "items-center" : "items-end"}`}>
-                                            <button onClick={() => { removeBuyerPartyInformation(index) }} disabled={fieldsBuyerPartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
-                                        </div>
-                                    }
-                                </div>
-                            ))}
+                        <FormField
+                            control={form.control}
+                            name={'buyerSSTRegisterNumber'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_SST_REGISTRATION_NUMBER')} <Required /></FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div >
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'buyerIdType'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_ID_TYPE')}</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            disabled={loading}
+                                            onValueChange={field.onChange}
+                                            // defaultValue={field.value}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger >
+                                                <SelectValue placeholder={t('TAG_ID_TYPE')} />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="ic">{t('TAG_IDENTIFICATION_CARD_NO')}</SelectItem>
+                                                    <SelectItem value="passport">{t('TAG_PASSPORT_NO')}</SelectItem>
+                                                    <SelectItem value="business">{t('TAG_BUSINESS_REGISTRATION_NO')}</SelectItem>
+                                                    <SelectItem value="army">{t('TAG_ARMY_NO')}</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'buyerRegistration_Identification_PassportNumber'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_REGISTRATION_IDENTIFICATION_PASSPORT_NUMBER')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name={'buyerTaxIdentificationNumber'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_TAX_IDENTIFICATION_NUMBER')} (TIN)</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="flex flex-col items-start justify-end">
+                            <Button className="bg-blue-800 hover:bg-blue-900 ">{t('TAG_VALIDATE')}</Button>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Address</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        {fieldsBuyerAddress?.map((field, index) => (
-                            <div key={field.id} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name={`buyerAddress.${index}.buyerLine`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Line {index + 1}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {index === 0 ?
-                                    <div className={`flex col-span-2 ${errors.buyerAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddBuyerAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
-                                    </div> :
-                                    <div className={`flex col-span-2 ${errors.buyerAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeBuyerAddress(index) }} disabled={fieldsBuyerAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
-                                    </div>
-                                }
-                            </div>
-
-                        ))}
-
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_ADDRESS')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <div className="col-span-2">
+                            <FormField
+                                control={form.control}
+                                name={'buyerLine'}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('TAG_ADDRESS')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                disabled={loading}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'buyerZipCode'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Zip Code</FormLabel>
+                                    <FormLabel>{t('TAG_ZIPCODE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -731,7 +587,7 @@ export default function DocumentFormStep2(
                             name={'buyerCity'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>City</FormLabel>
+                                    <FormLabel>{t('TAG_TOWN_CITY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -749,7 +605,7 @@ export default function DocumentFormStep2(
                             name={'buyerState'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>State</FormLabel>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -761,13 +617,15 @@ export default function DocumentFormStep2(
                                 </FormItem>
                             )}
                         />
+                    </div>
 
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'buyerCountry'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Country</FormLabel>
+                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -779,21 +637,21 @@ export default function DocumentFormStep2(
                                 </FormItem>
                             )}
                         />
-
                     </div>
                 </div>
 
-
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Contact</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_CONTACT')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'buyerContact'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Contact No.</FormLabel>
+                                    <FormLabel>{t('TAG_CONTACT_NO')} <Required /></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -811,7 +669,7 @@ export default function DocumentFormStep2(
                             name={'buyerEmail'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>{t('TAG_EMAIL')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
@@ -823,7 +681,6 @@ export default function DocumentFormStep2(
                                 </FormItem>
                             )}
                         />
-
                     </div>
                 </div>
             </>
@@ -835,11 +692,11 @@ export default function DocumentFormStep2(
             <>
                 <div className="flex flex-row justify-between mt-[20px]">
                     <div className="flex items-center">
-                        <p>Favorite Delivery</p>
+                        <p>{t('TAG_FAVORITE_DELIVERY')}</p>
                         <div className="ml-[20px]">
                             <Select >
                                 <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a Delivery" />
+                                    <SelectValue placeholder={t('TAG_SELECT_DELIVERY')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -857,7 +714,7 @@ export default function DocumentFormStep2(
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button onClick={() => { }} className="flex flex-row items-center justify-between">
-                                Favorite
+                                {t('TAG_FAVORITE')}
                                 <div className={` ml-2 ${!FavDeli ? "text-gray-500 " : " text-yellow-400"} `}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
                                 </div>
@@ -865,43 +722,90 @@ export default function DocumentFormStep2(
                         </DialogTrigger>
                         <DialogContent className="min-w-fit">
                             <DialogHeader className="items-center">
-                                <DialogTitle className="text-2xl">My Favorite Confirmation</DialogTitle>
+                                <DialogTitle className="text-2xl">{t('TAG_FAVORITE_MODAL_TITLE')}</DialogTitle>
                             </DialogHeader>
                             <div className="p-[10px]">
                                 <div className="flex flex-col items-center justify-center">
-                                    <p className="text-center text-sm">
-                                        Please double-check the details to ensure they are correct.<br />
-                                        If you confirm, this information will be saved for quick access next time.
-                                    </p>
-                                    <p className="text-center text-sm pt-[20px]">
-                                        To confirm, please click "Confirm". <br />
-                                        If you do not want to save this information, click "Cancel".
+                                    <p className="text-center text-sm whitespace-pre-wrap">
+                                        {t('TAG_FAVORITE_MODAL_DESC')}
                                     </p>
                                 </div>
-
                             </div>
                             <DialogFooter className="flex flex-row justify-between w-full sm:justify-between pt-[20px]">
                                 <DialogClose asChild>
-                                    <Button onClick={() => { setFavDeli(false) }} type="button" variant="secondary">Cancel</Button>
+                                    <Button onClick={() => { setFavDeli(false) }} type="button" variant="secondary">{t('TAG_CANCEL')}</Button>
                                 </DialogClose>
                                 <DialogClose>
-                                    <Button onClick={() => { HandleFavDeli() }} type="submit">Confirm</Button>
+                                    <Button onClick={() => { HandleFavDeli() }} type="submit">{t('TAG_CONFIRM')}</Button>
                                 </DialogClose>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog >
                 </div >
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Party Information</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_PARTY_INFORMATION')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
-                            name={'deliveryRegistrationName'}
+                            name={'deliveryName'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Registration Name <span className="text-red-500">*</span></FormLabel>
+                                    <FormLabel>{t('TAG_NAME')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'deliveryIdType'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_ID_TYPE')}</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            disabled={loading}
+                                            onValueChange={field.onChange}
+                                            // defaultValue={field.value}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger >
+                                                <SelectValue placeholder="Invoice Type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="ic">{t('TAG_IDENTIFICATION_CARD_NO')}</SelectItem>
+                                                    <SelectItem value="passport">{t('TAG_PASSPORT_NO')}</SelectItem>
+                                                    <SelectItem value="business">{t('TAG_BUSINESS_REGISTRATION_NO')}</SelectItem>
+                                                    <SelectItem value="army">{t('TAG_ARMY_NO')}</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'deliveryRegistration_Identification_PassportNumber'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_REGISTRATION_IDENTIFICATION_PASSPORT_NUMBER')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -914,104 +818,64 @@ export default function DocumentFormStep2(
                             )}
                         />
 
-                        <div className="col-span-2"></div>
-                        {fieldsDeliverypartyInformation.map((field, index) => (
-                            <div key={field.id} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name={`deliverypartyInformation.${index}.deliveryIdentificationId`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Identification ID</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    placeholder="C20792859020"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                        <FormField
+                            control={form.control}
+                            name={'deliveryShippingRecipientTin'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_SHIPPING_RECIPIENT_TIN')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                                <FormField
-                                    control={form.control}
-                                    name={`deliverypartyInformation.${index}.deliverySchemeId`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Scheme ID</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    placeholder="TIN"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                {index === 0 ?
-                                    <div className={`flex  ${errors.deliverypartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddDeliverypartyInformation() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700 ">+</button>
-                                    </div>
-                                    :
-                                    <div className={`flex  ${errors.deliverypartyInformation ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeDeliverypartyInformation(index) }} disabled={fieldsDeliverypartyInformation.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200 ">-</button>
-                                    </div>
-
-                                }
-                            </div>
-
-                        ))}
-
-
+                        <div className="flex flex-col items-start justify-end">
+                            <Button className="bg-blue-800 hover:bg-blue-900">{t('TAG_VALIDATE')}</Button>
+                        </div>
                     </div>
                 </div>
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Address</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
-                        {fieldsDeliveryAddress.map((field, index) => (
-                            <div key={field.id} className="col-span-3 gap-8 md:grid md:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name={`deliveryAddress.${index}.deliveryLine`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Line {index + 1}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    disabled={loading}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                {index === 0 ?
-                                    <div className={`flex col-span-2 ${errors.deliveryAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { HandleAddDeliveryAddress() }} className="bg-black text-white rounded-full w-[35px] h-[35px] hover:bg-gray-700">+</button>
-                                    </div>
-                                    :
-                                    <div className={`flex col-span-2 ${errors.deliveryAddress ? "items-center" : "items-end"}`}>
-                                        <button onClick={() => { removeDeliveryAddress(index) }} disabled={fieldsDeliveryAddress.length - 1 === 0} className=" rounded-full border bg-white text-black w-[35px] h-[35px] hover:bg-gray-200">-</button>
-                                    </div>
-                                }
-                            </div>
-                        ))}
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_ADDRESS')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <div className="col-span-2">
+                            <FormField
+                                control={form.control}
+                                name={'deliveryLine'}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('TAG_ADDRESS')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                disabled={loading}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+
                         <FormField
                             control={form.control}
                             name={'deliveryZipCode'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Zip Code</FormLabel>
+                                    <FormLabel>{t('TAG_ZIPCODE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1029,7 +893,7 @@ export default function DocumentFormStep2(
                             name={'deliveryCity'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>City</FormLabel>
+                                    <FormLabel>{t('TAG_TOWN_CITY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1047,7 +911,7 @@ export default function DocumentFormStep2(
                             name={'deliveryState'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>State</FormLabel>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1060,12 +924,14 @@ export default function DocumentFormStep2(
                             )}
                         />
 
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
                             name={'deliveryCountry'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Country</FormLabel>
+                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1080,35 +946,18 @@ export default function DocumentFormStep2(
                     </div>
                 </div>
 
-                <div className="pt-[20px]">
-                    <h1 className="text-2xl font-semibold">Shipment</h1>
-                    <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[20px]">
+                <div className="pt-[20px] space-y-3">
+                    <div>
+                        <h1 className="text-2xl font-semibold">{t('TAG_IMPORT_EXPORT_INFORMATION')}</h1>
+                        <Separator />
+                    </div>
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
-                            name={'deliveryShipmentId'}
+                            name={'deliveryReferenceNumber'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Shipment ID</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <div className="col-span-2" />
-
-                        <FormField
-                            control={form.control}
-                            name={'deliveryAllowanceChargeReason'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Allowance Charge Reason</FormLabel>
+                                    <FormLabel>{t('TAG_DELIVERY_REFERENCE_NUMBER')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1123,10 +972,10 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name={'deliveryCurrency'}
+                            name={'deliveryRefNumIncoterm'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Currency</FormLabel>
+                                    <FormLabel>{t('TAG_INCOMTERMS')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="text"
@@ -1141,10 +990,67 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name={'deliveryAmount'}
+                            name={'deliveryFreeTradeAgreement'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Amount</FormLabel>
+                                    <FormLabel>{t('TAG_DELIVERY_FREE_TRADE_AGREEMENT')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                    </div>
+
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px] items-end">
+                        <FormField
+                            control={form.control}
+                            name={'deliveryAuth_No_for_Cert_Export'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_DELIVERY_AUTH_NO_FOR_CERT_EXPORT')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name={'deliveryAuth_No_Incoterm'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_INCOMTERMS')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            disabled={loading}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name={'deliveryDetailofOtherCharges'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_DETAIL_OF_OTHER_CHARGE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
@@ -1156,6 +1062,29 @@ export default function DocumentFormStep2(
                                 </FormItem>
                             )}
                         />
+
+                    </div>
+
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <div className="col-span-3">
+                            <FormField
+                                control={form.control}
+                                name={'deliveryDetailofOtherChargesDescirption'}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('TAG_DETAILS_OF_OTHER_CHARGES_DESCRIPTION')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                disabled={loading}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </div>
                 </div>
             </>
@@ -1163,11 +1092,11 @@ export default function DocumentFormStep2(
     }
 
     return (
-        <>
+        <div className="p-1">
             <Tabs defaultValue="supplier" className="w-full ">
                 <TabsList className="flex w-full h-full">
                     <TabsTrigger onClick={() => { setTabs('0') }} value="supplier" className={`flex-1 h-[40px] ${tabs == '0' && 'flex-[2]'}`}>
-                        Supplier
+                        {t('TAG_SUPPLIER')}
                         {!supplierError &&
                             <div className="ml-[10px] text-orange-500">
                                 <HoverCard>
@@ -1176,7 +1105,7 @@ export default function DocumentFormStep2(
                                     </HoverCardTrigger>
                                     <HoverCardContent className="w-fit">
                                         <h1>
-                                            There are still required field that are empty in the Supplier Form!
+                                            {t('TAG_SUPPLIER_ERROR')}
                                         </h1>
                                     </HoverCardContent>
                                 </HoverCard>
@@ -1184,7 +1113,7 @@ export default function DocumentFormStep2(
                         }
                     </TabsTrigger>
                     <TabsTrigger onClick={() => { setTabs('1') }} value="buyer" className={`flex-1 h-[40px] ${tabs == '1' && 'flex-[2]'}`}>
-                        Buyer
+                        {t('TAG_BUYER')}
                         {!buyerError &&
                             <div className="ml-[10px] text-orange-500">
                                 <HoverCard>
@@ -1193,7 +1122,7 @@ export default function DocumentFormStep2(
                                     </HoverCardTrigger>
                                     <HoverCardContent className="w-fit">
                                         <h1>
-                                            There are still required field that are empty in the Buyer Form!
+                                            {t('TAG_BUYER_ERROR')}
                                         </h1>
                                     </HoverCardContent>
                                 </HoverCard>
@@ -1201,8 +1130,8 @@ export default function DocumentFormStep2(
                         }
                     </TabsTrigger>
                     <TabsTrigger onClick={() => { setTabs('2') }} value="delivery" className={`flex-1 h-[40px] ${tabs == '2' && 'flex-[2]'}`}>
-                        Delivery
-                        {!deliveryError &&
+                        {t('TAG_DELIVERY')}
+                        {/* {!deliveryError &&
                             <div className="ml-[10px] text-orange-500">
                                 <HoverCard>
                                     <HoverCardTrigger>
@@ -1215,7 +1144,7 @@ export default function DocumentFormStep2(
                                     </HoverCardContent>
                                 </HoverCard>
                             </div>
-                        }
+                        } */}
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="supplier">
@@ -1228,6 +1157,6 @@ export default function DocumentFormStep2(
                     <DeliveryContent />
                 </TabsContent>
             </Tabs >
-        </>
+        </div>
     )
 }

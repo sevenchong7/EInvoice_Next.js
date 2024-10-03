@@ -102,6 +102,14 @@ const paths = [
     permission: ["user.all"],
   },
   {
+    path: "/dashboard/user/merchantListing",
+    permission: ["user.all"],
+  },
+  {
+    path: "/dashboard/user/roleListing",
+    permission: ["user.all"],
+  },
+  {
     path: "/dashboard/user/userListing/[id]",
     permission: ["user.all"],
   },
@@ -120,5 +128,9 @@ const paths = [
   {
     path: "/dashboard/profile/subscription/payment/information",
     permission: ["subscription.all"],
+  },
+  {
+    path: "/dashboard/updatePassword",
+    permission: ["updatePassword.all"],
   }
 ];

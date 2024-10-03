@@ -7,13 +7,23 @@ import rm from '@/public/RM.png';
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function SubscriptionPayment({ subPackage }: { subPackage: string | null }) {
     const router = useRouter();
     const [payment, setPayment] = useState('');
+    const [error, setError] = useState(false)
+    const t = useTranslations()
 
     const HandlePayment = () => {
-        // if (payment == '') return
+        if (subPackage !== 'Free') {
+            if (payment == '') {
+                setError(true);
+                return
+            } else {
+                setError(false);
+            }
+        }
 
         router.push('/dashboard/profile/subscription/payment/information')
     }
@@ -23,10 +33,11 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
             <>
                 <div className='pt-[30px] space-y-3'>
                     <div className='flex flex-col items-center justify-center'>
-                        <h1 className='text-3xl font-semibold'>Payment Method:</h1>
+                        <h1 className='text-3xl font-semibold'>{t('TAG_PAYMENT_METHOD')}:</h1>
                     </div>
                     <PaymentButton id={"eghl"} payment={payment} src={eghl} name={"EGHL"} onClick={() => setPayment('eghl')} />
                     <PaymentButton id={"rm"} payment={payment} src={rm} name={"Revenue Monster"} onClick={() => setPayment('rm')} />
+                    {error && <div><h1 className="flex justify-center items-center text-red-500">Please Select a Payment method</h1></div>}
                 </div>
             </>
         )
@@ -36,7 +47,7 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
         <div className='flex flex-col h-full overflow-y-scroll space-y-5'>
             <div className='flex flex-col  '>
                 <div className="flex items-center justify-between mb-[10px]">
-                    <Heading title="Subscriptions" description="Manage your access to various packages and services" />
+                    <Heading title={t('TAG_SUBSCRIPTIONS')} description={t('TAG_SUBSCRIPTIONS_DESC')} />
                 </div>
                 <Separator />
             </div>
@@ -47,10 +58,10 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
                     <PaymentMethod />
                 }
             </div>
-            <div className="flex flex-col h-full justify-end pb-4">
+            <div className="flex flex-col h-full justify-end md:pb-4 pb-10">
                 <div className="flex flex-row  justify-between items-center">
-                    <Button onClick={() => router.back()} className="">Back</Button>
-                    <Button onClick={() => HandlePayment()} className="">{subPackage === 'Free' ? "Confirm" : "Continue to Payment"}</Button>
+                    <Button onClick={() => router.back()} className="">{t('TAG_BACK')}</Button>
+                    <Button onClick={() => HandlePayment()} className="">{subPackage === 'Free' ? t('TAG_CONFIRM') : t('TAG_CONTINUE_TO_PAYMENT')}</Button>
                 </div>
             </div>
         </div>
@@ -74,12 +85,13 @@ const PaymentButton = ({ id, payment, src, name, onClick }: { id: string, paymen
 
 
 const Summary = ({ subPackage }: { subPackage: string | null }) => {
+    const t = useTranslations()
     return (
         <>
             <div className='border rounded-lg w-full shadow-xl'>
                 <div className='p-[20px]'>
                     <div className=' flex flex-col items-center justify-center'>
-                        <h1 className='text-2xl font-semibold'>Summary</h1>
+                        <h1 className='text-2xl font-semibold'>{t('TAG_SUMMARY')}</h1>
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
                     </div>
 

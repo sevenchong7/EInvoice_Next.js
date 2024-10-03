@@ -1,19 +1,15 @@
 import BreadCrumb from '@/components/breadcrumb';
-import { ProductForm } from '@/components/forms/product-form';
 import AddUser from '@/components/tables/user-tables/addUser';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Heading } from '@/components/ui/heading';
-import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { useTranslations } from 'next-intl';
 
 
 export default function Page() {
+    const t = useTranslations()
     const breadcrumbItems = [
-        { title: 'User', link: '/dashboard/user' },
-        { title: 'User Listing', link: '/dashboard/user/userListing' },
-        { title: 'Add Users', link: '/dashboard/user/userListing/addUser' }
+        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_USER_LISTING'), link: '/dashboard/user/userListing' },
+        { title: t('TAG_ADD_USER'), link: '/dashboard/user/userListing/addUser' }
     ];
     return (
         <ScrollArea className="h-full">

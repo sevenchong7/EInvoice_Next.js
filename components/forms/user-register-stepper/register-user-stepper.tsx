@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function RegisterUserStepper(
     { steps, currentStep }: { steps: any, currentStep: number }
 ) {

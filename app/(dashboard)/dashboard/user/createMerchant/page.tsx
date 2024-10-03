@@ -1,13 +1,13 @@
 import BreadCrumb from '@/components/breadcrumb';
-import { ProductForm } from '@/components/forms/product-form';
 import { RegisterUserStepperAdmin } from '@/components/forms/user-register-stepper-Admin/register-user-admin';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 export default function page() {
+    const t = useTranslations()
     const breadcrumbItems = [
-        { title: 'User', link: '/dashboard/user' },
-        { title: 'Create Merchant', link: '/dashboard/user/createMerchant' }
+        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_CREATE_MERCHANT'), link: '/dashboard/user/createMerchant' }
     ];
     return (
         <div className="flex flex-col flex-1 h-full space-y-1 p-5">

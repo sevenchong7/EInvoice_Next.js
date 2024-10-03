@@ -1,12 +1,14 @@
 import BreadCrumb from "@/components/breadcrumb";
 import UnsubscribeInformation from "@/components/profile/unsubscribe-Information";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslations } from "next-intl";
 
 export default function page() {
+    const t = useTranslations()
     const breadcrumbItems = [
-        { title: 'Profile', link: '/dashboard/profile' },
-        { title: 'Subscription', link: '/dashboard/profile/subscription' },
-        { title: 'Information', link: '/dashboard/profile/subscription/information' }
+        { title: t('TAG_PROFILE'), link: '/dashboard/profile' },
+        { title: t('TAG_SUBSCRIPTIONS'), link: '/dashboard/profile/subscription' },
+        { title: t('TAG_INFORMATION'), link: '/dashboard/profile/subscription/information' }
     ];
 
     return (

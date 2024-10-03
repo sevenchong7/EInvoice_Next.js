@@ -1,10 +1,5 @@
 'use client';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from '@/components/ui/accordion';
+
 import { Button } from '@/components/ui/button';
 import {
     Form,
@@ -14,24 +9,12 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form';
-import { Heading } from '@/components/ui/heading';
-import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { registerSchema, type RegisterFormValues } from '@/lib/form-schema';
-import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangleIcon, Divide, Trash, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import RegisterUserStepper from './register-user-stepper';
 import RegisterUserStep1 from './register-user-step1';
 import RegisterUserStep2 from './register-user-step2';
@@ -39,6 +22,7 @@ import RegisterUserStep3 from './register-user-step3';
 import RegisterUserStep4 from './register-user-step4';
 import RegisterUserStep5 from './register-user-step5';
 import approve from '@/public/Approval.png'
+import React from 'react';
 
 export default function RegisterUserForm() {
     const [previousStep, setPreviousStep] = useState(0);

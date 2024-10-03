@@ -1,21 +1,17 @@
 'use client';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import UserAuthForm from '@/components/forms/user-auth-form';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { url } from 'inspector';
+
+import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import bgImg from '@/public/bgImg.png'
 import resetPwImage from '@/public/resetPassword.png'
 import { useState } from 'react';
-import { Span } from 'next/dist/trace';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forgetPasswordSchema, ForgetPasswordValues, resetPasswordSchema, ResetPasswordValues } from '@/lib/form-schema';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function UserResetPassword() {
     const [currentStep, setCurrentStep] = useState(0);

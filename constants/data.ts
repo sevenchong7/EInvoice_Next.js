@@ -1,5 +1,121 @@
 import { Icons } from '@/components/icons';
 import { NavItem, SidebarNavItem } from '@/types';
+import { tr } from 'date-fns/locale';
+
+// import { useTranslations } from 'next-intl';
+// const t = useTranslations();
+
+export type Merchant = {
+  id: number;
+  username: string;
+  role: string;
+  companyName: string;
+  email: string;
+  regNo: string;
+  tinNo: string;
+  status: string;
+  address: string;
+
+};
+
+export const merchants: Merchant[] = [
+  {
+    id: 1,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'Techcasys Berhad',
+    email: 'Techcasys@gmail.com',
+    regNo: '202410123457',
+    tinNo: 'C20830570211',
+    status: 'Active',
+    address: 'test',
+  },
+  {
+    id: 2,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantA Berhad',
+    email: 'MerchantA@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Active',
+    address: 'test',
+
+  },
+  {
+    id: 3,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantB Berhad',
+    email: 'MerchantB@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Inactive',
+    address: 'test',
+
+  },
+  {
+    id: 4,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantC Berhad',
+    email: 'MerchantC@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Pending Verification',
+    address: 'test',
+
+  },
+  {
+    id: 5,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantD Berhad',
+    email: 'MerchantD@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Active',
+    address: 'test',
+
+  },
+  {
+    id: 6,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantE Berhad',
+    email: 'MerchantE@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Active',
+    address: 'test',
+
+  },
+  {
+    id: 7,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantF Berhad',
+    email: 'MerchantF@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Active',
+    address: 'test',
+
+  },
+  {
+    id: 8,
+    username: 'Ali@gmail.com',
+    role: 'Admin',
+    companyName: 'MerchantG Berhad',
+    email: 'MerchantG@gmail.com',
+    regNo: '202410123456',
+    tinNo: 'C20830570210',
+    status: 'Active',
+    address: 'test',
+
+  },
+
+]
 
 export type User = {
   id: number;
@@ -9,11 +125,13 @@ export type User = {
   verified: boolean;
   status: string;
   email: string;
+  merchant: string;
 };
 export const users: User[] = [
   {
     id: 1,
     name: 'Candice Schiner',
+    merchant: 'MerchantA',
     company: 'Dell',
     role: 'Frontend Developer',
     verified: false,
@@ -23,6 +141,7 @@ export const users: User[] = [
   {
     id: 2,
     name: 'John Doe',
+    merchant: 'MerchantA',
     company: 'TechCorp',
     role: 'Backend Developer',
     verified: true,
@@ -32,16 +151,18 @@ export const users: User[] = [
   {
     id: 3,
     name: 'Alice Johnson',
+    merchant: 'MerchantB',
     company: 'WebTech',
     role: 'UI Designer',
     verified: true,
-    status: 'Active',
+    status: 'Pending Verification',
     email: 'AJ@gmail.com'
 
   },
   {
     id: 4,
     name: 'David Smith',
+    merchant: 'MerchantB',
     company: 'Innovate Inc.',
     role: 'Fullstack Developer',
     verified: false,
@@ -52,6 +173,7 @@ export const users: User[] = [
   {
     id: 5,
     name: 'Emma Wilson',
+    merchant: 'MerchantC',
     company: 'TechGuru',
     role: 'Product Manager',
     verified: true,
@@ -62,6 +184,7 @@ export const users: User[] = [
   {
     id: 6,
     name: 'James Brown',
+    merchant: 'MerchantC',
     company: 'CodeGenius',
     role: 'QA Engineer',
     verified: false,
@@ -72,6 +195,7 @@ export const users: User[] = [
   {
     id: 7,
     name: 'Laura White',
+    merchant: 'MerchantC',
     company: 'SoftWorks',
     role: 'UX Designer',
     verified: true,
@@ -82,6 +206,7 @@ export const users: User[] = [
   {
     id: 8,
     name: 'Michael Lee',
+    merchant: 'MerchantC',
     company: 'DevCraft',
     role: 'DevOps Engineer',
     verified: false,
@@ -92,6 +217,7 @@ export const users: User[] = [
   {
     id: 9,
     name: 'Olivia Green',
+    merchant: 'MerchantB',
     company: 'WebSolutions',
     role: 'Frontend Developer',
     verified: true,
@@ -102,6 +228,7 @@ export const users: User[] = [
   {
     id: 10,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -112,6 +239,7 @@ export const users: User[] = [
   {
     id: 11,
     name: 'Robert Taylor',
+    merchant: 'MerchantA',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -122,6 +250,7 @@ export const users: User[] = [
   {
     id: 12,
     name: 'Robert Taylor',
+    merchant: 'MerchantA',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -132,6 +261,7 @@ export const users: User[] = [
   {
     id: 13,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -142,6 +272,7 @@ export const users: User[] = [
   {
     id: 14,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -152,6 +283,7 @@ export const users: User[] = [
   {
     id: 15,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -162,6 +294,7 @@ export const users: User[] = [
   {
     id: 16,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -172,6 +305,7 @@ export const users: User[] = [
   {
     id: 17,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -182,6 +316,7 @@ export const users: User[] = [
   {
     id: 18,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -192,6 +327,7 @@ export const users: User[] = [
   {
     id: 19,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -202,6 +338,7 @@ export const users: User[] = [
   {
     id: 20,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -212,6 +349,7 @@ export const users: User[] = [
   {
     id: 21,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -222,6 +360,7 @@ export const users: User[] = [
   {
     id: 22,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -232,6 +371,7 @@ export const users: User[] = [
   {
     id: 23,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -242,6 +382,7 @@ export const users: User[] = [
   {
     id: 24,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -252,6 +393,7 @@ export const users: User[] = [
   {
     id: 25,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -262,6 +404,7 @@ export const users: User[] = [
   {
     id: 26,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -272,6 +415,7 @@ export const users: User[] = [
   {
     id: 27,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -282,6 +426,7 @@ export const users: User[] = [
   {
     id: 28,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -292,6 +437,7 @@ export const users: User[] = [
   {
     id: 29,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -302,6 +448,7 @@ export const users: User[] = [
   {
     id: 30,
     name: 'Robert Taylor',
+    merchant: 'MerchantB',
     company: 'DataTech',
     role: 'Data Analyst',
     verified: false,
@@ -328,12 +475,259 @@ export type Company = {
 
 export const companys: Company =
 {
-  companyName: 'Systech Berhad',
+  companyName: 'Syscatech Berhad',
   regNo: '202401000001',
-  email: 'syscatech2008@gmail.com',
+  email: 'syscatech@gmail.com',
   businessTinNo: 'IG115002000',
   subscription: 'Standard'
 }
+
+export type Role = {
+  id: number;
+  role: string;
+  merchant: string;
+  amount: number;
+  lastUpdate: string;
+  user: User[],
+  accessControl: AccessControl
+};
+
+export const roles: Role[] = [
+  {
+    id: 1,
+    role: 'Admin',
+    merchant: 'MerchantA',
+    amount: 3,
+    lastUpdate: '27/08/2024',
+    user: [
+      {
+        id: 1,
+        name: 'Candice Schiner',
+        merchant: 'MerchantA',
+        company: 'Dell',
+        role: 'Frontend Developer',
+        verified: false,
+        status: 'Active',
+        email: 'CS@gmail.com'
+      },
+      {
+        id: 2,
+        name: 'John Doe',
+        merchant: 'MerchantA',
+        company: 'TechCorp',
+        role: 'Backend Developer',
+        verified: true,
+        status: 'Active',
+        email: 'JD@gmail.com'
+      },
+      {
+        id: 3,
+        name: 'Alice Johnson',
+        merchant: 'MerchantB',
+        company: 'WebTech',
+        role: 'UI Designer',
+        verified: true,
+        status: 'Pending Verification',
+        email: 'AJ@gmail.com'
+
+      },
+    ],
+    accessControl: {
+      dashboard: {
+        add: true,
+        edit: true,
+        view: true,
+
+      },
+      user: {
+        createMerchant: {
+          create: true,
+          upload: true,
+          multi: true,
+        },
+        userListing: {
+          view: true,
+          update: true,
+          delete: true,
+        }
+      }
+    }
+  },
+  {
+    id: 2,
+    role: 'Accountant',
+    merchant: 'MerchantB',
+    amount: 2,
+    lastUpdate: '26/08/2024',
+    user: [
+      {
+        id: 1,
+        name: 'Candice Schiner',
+        merchant: 'MerchantA',
+        company: 'Dell',
+        role: 'Frontend Developer',
+        verified: false,
+        status: 'Active',
+        email: 'CS@gmail.com'
+      },
+      {
+        id: 2,
+        name: 'John Doe',
+        merchant: 'MerchantA',
+        company: 'TechCorp',
+        role: 'Backend Developer',
+        verified: true,
+        status: 'Active',
+        email: 'JD@gmail.com'
+      },
+    ],
+    accessControl: {
+      dashboard: {
+        add: true,
+        edit: true,
+        view: false,
+
+      },
+      user: {
+        createMerchant: {
+          create: true,
+          upload: true,
+          multi: true,
+        },
+        userListing: {
+          view: true,
+          update: true,
+          delete: true,
+        }
+      }
+    }
+  },
+  {
+    id: 3,
+    role: 'Financial',
+    merchant: 'MerchantA',
+    amount: 1,
+    lastUpdate: '27/08/2024',
+    user: [
+      {
+        id: 1,
+        name: 'Alice Johnson',
+        merchant: 'MerchantB',
+        company: 'WebTech',
+        role: 'UI Designer',
+        verified: true,
+        status: 'Pending Verification',
+        email: 'AJ@gmail.com'
+
+      },
+    ],
+    accessControl: {
+      dashboard: {
+        add: true,
+        edit: true,
+        view: false,
+
+      },
+      user: {
+        createMerchant: {
+          create: true,
+          upload: true,
+          multi: true,
+        },
+        userListing: {
+          view: true,
+          update: true,
+          delete: true,
+        }
+      }
+    }
+  },
+  {
+    id: 4,
+    role: 'Developer',
+    merchant: 'MerchantC',
+    amount: 3,
+    lastUpdate: '27/08/2024',
+    user: [
+      {
+        id: 1,
+        name: 'Candice Schiner',
+        merchant: 'MerchantA',
+        company: 'Dell',
+        role: 'Frontend Developer',
+        verified: false,
+        status: 'Active',
+        email: 'CS@gmail.com'
+      },
+      {
+        id: 2,
+        name: 'John Doe',
+        merchant: 'MerchantA',
+        company: 'TechCorp',
+        role: 'Backend Developer',
+        verified: true,
+        status: 'Active',
+        email: 'JD@gmail.com'
+      },
+      {
+        id: 3,
+        name: 'Alice Johnson',
+        merchant: 'MerchantB',
+        company: 'WebTech',
+        role: 'UI Designer',
+        verified: true,
+        status: 'Pending Verification',
+        email: 'AJ@gmail.com'
+
+      },
+    ],
+    accessControl: {
+      dashboard: {
+        add: true,
+        edit: true,
+        view: false,
+
+      },
+      user: {
+        createMerchant: {
+          create: true,
+          upload: true,
+          multi: true,
+        },
+        userListing: {
+          view: true,
+          update: true,
+          delete: true,
+        }
+      }
+    }
+  }
+]
+
+export type AccessControl = {
+  dashboard:
+  {
+    add: boolean,
+    edit: boolean,
+    view: boolean
+  },
+  user:
+  {
+    createMerchant:
+    {
+      create: boolean,
+      upload: boolean,
+      multi: boolean
+    }
+    userListing:
+    {
+      view: boolean,
+      update: boolean,
+      delete: boolean
+    }
+  }
+
+};
 
 
 export type Employee = {
@@ -357,7 +751,7 @@ export type Employee = {
 
 export const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
+    title: 'TAG_DASHBOARD',
     href: '/dashboard',
     icon: 'dashboard',
     label: 'Dashboard',
@@ -370,30 +764,62 @@ export const navItems: NavItem[] = [
   //   label: 'user',
   //   permission: ["user.access", "user.all"]
   // },
+  // {
+  //   title: 'Employee',
+  //   href: '/dashboard/employee',
+  //   icon: 'employee',
+  //   label: 'employee',
+  //   permission: ["employee.access", "employee.all"]
+  // },
   {
-    title: 'Employee',
-    href: '/dashboard/employee',
-    icon: 'employee',
-    label: 'employee',
-    permission: ["employee.access", "employee.all"]
-  },
-  {
-    title: 'User',
+    title: 'TAG_USER',
     href: '/dashboard/user',
     icon: 'profile',
     label: 'User',
     permission: ["profile.access", "profile.all"],
     children: [
       {
-        title: 'Create Merchant',
+        title: 'TAG_CREATE_MERCHANT',
         href: '/dashboard/user/createMerchant',
         // icon: 'profile',
         // label: 'profile',
         permission: ["user.access", "createMerchant.all"]
       },
       {
-        title: 'User Listing',
+        title: 'TAG_USER_LISTING',
         href: '/dashboard/user/userListing',
+        // icon: 'profile',
+        // label: 'profile',
+        permission: ["user.access", "user.all"],
+        // children: [
+        //   {
+        //     title: 'Add User',
+        //     href: '/dashboard/user/userListing/AddUser',
+        //     // icon: 'profile',
+        //     // label: 'profile',
+        //     permission: ["user.access", "user.all"]
+        //   },
+        // ]
+      },
+      {
+        title: 'TAG_MERCHANT_LISTING',
+        href: '/dashboard/user/merchantListing',
+        // icon: 'profile',
+        // label: 'profile',
+        permission: ["user.access", "user.all"],
+        // children: [
+        //   {
+        //     title: 'Add User',
+        //     href: '/dashboard/user/userListing/AddUser',
+        //     // icon: 'profile',
+        //     // label: 'profile',
+        //     permission: ["user.access", "user.all"]
+        //   },
+        // ]
+      },
+      {
+        title: 'TAG_ROLE_LISTING',
+        href: '/dashboard/user/roleListing',
         // icon: 'profile',
         // label: 'profile',
         permission: ["user.access", "user.all"],
@@ -410,14 +836,14 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: "Document",
+    title: "TAG_DOCUMENT",
     href: '/dashboard/document',
     icon: "document",
     label: "Document",
     permission: ["document.access", "document.all"],
     children: [
       {
-        title: "Create Document",
+        title: "TAG_CREATE_DOCUMENT",
         href: "/dashboard/document/createDocument",
         permission: ["document.access", "document.all"]
       }

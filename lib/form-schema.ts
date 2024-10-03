@@ -39,8 +39,6 @@ export const profileSchema = z.object({
 export type ProfileFormValues = z.infer<typeof profileSchema>;
 
 
-
-
 export const registerSchema = z.object({
   email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
   companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
@@ -58,7 +56,6 @@ export const registerSchema = z.object({
   package: z.string().trim().min(1, { message: 'Please select one Package!' }),
   paymentMethod: z.string().optional()
 }).refine((data) => {
-  console.log('Refine Triggered');
   return data.password === data.confirmPw;
 }, {
   path: ["confirmPw"],
@@ -88,7 +85,6 @@ export const resetPasswordSchema = z.object({
   confirmPw: z.string().min(3, { message: "Confirm Password must be enter !" })
 
 }).refine((data) => {
-  console.log('Refine Triggered');
   return data.password === data.confirmPw;
 }, {
   path: ["confirmPw"],
@@ -138,7 +134,6 @@ export const registerUserAdminSchema = z.object({
     })
   ),
 }).refine((data) => {
-  console.log('Refine Triggered');
   return data.password === data.confirmPw;
 }, {
   path: ["confirmPw"],
@@ -168,132 +163,204 @@ export type RegisterUserAdminFormValues = z.infer<typeof registerUserAdminSchema
 
 export const documentFormSchema = z.object({
   invoiceId: z.string().trim().min(1, { message: 'Please Insert the Invioce Id!' }),
-  issuesDateTime: z
-    .string().date("Please select a date."),
-  currencyCode: z.string().trim().min(1, { message: "Please Insert the currency code" }),
+  issuesDateTime: z.string().datetime({ message: 'Please select a DateTime' }),
   invoiceType: z.string().trim().min(1, "Please select one Invoice Type"),
-  versionId: z.string().trim().min(1, "Please insert the Version Id"),
-  startdate: z
-    .string().date("Please select a date."),
-  enddate: z.string().date("Please select a date."),
-  // .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
-  //   message: 'End date should be in the format DD-MM-YYYY'
-  // }),
-  description: z.string().trim().optional(),
-  invoiceDocRef: z.string().trim().min(1, "Please insert the Invoice Document Reference!"),
-  additionalInvoiceDocRef: z.string().trim().min(1, "Please insert the Additional Invoice Document Reference!"),
-  supplierId: z.string().trim().min(1, "Please enter the Supplier ID !"),
-  agencyName: z.string().trim().min(1, { message: "Please enter the Agency Name !" }),
-  supplierIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
-  supplierIndustryName: z.string().trim().min(1, { message: 'Please enter the Industry Name !' }),
-  supplierRegisterName: z.string().trim().min(1, { message: 'Please enter the Register Name' }),
-  supplierPartyInformation: z.array(
-    z.object({
-      supplierIdentificationId: z.string().trim().optional(),
-      supplierSchemeId: z.string().trim().optional()
-      // .min(1, { message: "Please enter the Identification ID !" }).optional(),
-      // .min(1, { message: "Please enter the Scheme ID !" })
-    })
-  ),
-  supplierAddress: z.array(
-    z.object({
-      supplierLine: z.string().trim().min(1, { message: "Please enter the Line !" })
-    })
-  ),
-  supplierZipCode: z.string().trim().min(5, { message: "The minimum length for Zip code is 5 !" }).max(5, { message: 'The maximum length for Zip code is 5 !' }),
-  supplierCity: z.string().trim().min(1, { message: 'Please enter the city !' }),
-  supplierState: z.string().trim().min(1, { message: 'Please enter the State !' }),
-  supplierCountry: z.string().trim().min(1, { message: 'Please enter the country !' }),
-  supplierContact: z.string().trim().optional(),
-  supplierEmail: z.string().email().trim().optional(),
-  // buyerIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
-  // buyerIndustryName: z.string().trim().min(1, { message: 'Please enter the Industry Name !' }),
-  buyerRegisterName: z.string().trim().min(1, { message: 'Please enter the Registration Name !' }),
-  buyerPartyInformation: z.array(
-    z.object({
-      buyerIdentificationId: z.string().trim().optional(),
-      buyerSchemeId: z.string().trim().optional()
-    })
-  ),
-  buyerAddress: z.array(
-    z.object({
-      buyerLine: z.string().trim().min(1, { message: 'Please enter the Line !' })
-    })
-  ),
-  buyerZipCode: z.string().trim().min(5, { message: "The minimum length for Zip code is 5 !" }).max(5, { message: 'The maximum length for Zip code is 5 !' }),
-  buyerCity: z.string().trim().min(1, { message: 'Please enter the city !' }),
-  buyerState: z.string().trim().min(1, { message: 'Please enter the State !' }),
-  buyerCountry: z.string().trim().min(1, { message: 'Please enter the country !' }),
-  buyerContact: z.string().trim().optional(),
-  buyerEmail: z.string().email().trim().optional(),
-  deliveryRegistrationName: z.string().trim().min(1, { message: 'Please enter the Registration Name !' }),
-  deliverypartyInformation: z.array(
-    z.object({
-      deliveryIdentificationId: z.string().trim().optional(),
-      deliverySchemeId: z.string().trim().optional()
-    })
-  ),
-  deliveryAddress: z.array(
-    z.object({
-      deliveryLine: z.string().trim().optional()
-    })
-  ),
-  deliveryZipCode: z.string().trim().min(5, { message: "The minimum length for Zip code is 5 !" }).max(5, { message: 'The maximum length for Zip code is 5 !' }),
-  deliveryCity: z.string().trim().min(1, { message: 'Please enter the city !' }),
-  deliveryState: z.string().trim().min(1, { message: 'Please enter the State!' }),
-  deliveryCountry: z.string().trim().min(1, { message: 'Please enter the country!' }),
-  deliveryShipmentId: z.string().trim().min(1, { message: 'Please enter the shipment Id!' }),
-  deliveryAllowanceChargeReason: z.string().trim().optional(),
-  deliveryCurrency: z.string().trim().optional(),
-  deliveryAmount: z.coerce.number().optional(),
+
+  invoiceDocRef: z.string().trim().min(1, { message: 'Please enter the Invoice Doc Reference!' }).nullish(),
+  additionalInvoiceDocRef: z.string().trim().min(1, { message: 'Please enter the Additional Invoice Doc Reference!' }).nullish(),
+
+  currencyCode: z.string().trim().min(1, { message: "Please Insert the currency code" }),
+  exchangeRate: z.string().trim().min(1, { message: 'Please select the Exchange Rate!' }),
+
+  totalTaxAmount: z.coerce.number().optional(),
+  totalNetAmount: z.coerce.number().optional(),
+
+  invoiceDiscountValue: z.coerce.number().optional(),
+  invoiceDiscountDescriotion: z.string().trim().optional(),
+  invoiceFeeChargeValue: z.coerce.number().optional(),
+  invoiceFeeChargeDescription: z.string().trim().optional(),
+
+  totalExcludingTax: z.coerce.number().optional(),
+  totalIncludingTax: z.coerce.number().optional(),
+  totalRoundingAmount: z.coerce.number().optional(),
+  totalPayableAmount: z.coerce.number().optional(),
+
   items: z.array(
     z.object({
       itemId: z.string().trim().min(1, { message: 'Please enter the Item ID !' }),
+      classificationCode: z.string().trim().min(1, { message: 'Please enter the Classification Code !' }),
+      description: z.string().trim().optional(),
+
       itemPrice: z.coerce.number().gt(0, { message: 'The Item Price must greater  than 0 !' }),
       quantity: z.coerce.number().gt(0, { message: 'The Quantity must greater than 0 !' }),
-      unitCode: z.string().trim().min(1, { message: 'Please enter the Unit Code !' }),
-      classificationCode: z.string().trim().min(1, { message: 'Please enter the Classification Code !' }),
-      classificationType: z.string().trim().min(1, { message: 'Please enter a Classification Type !' }),
-      description: z.string().trim().optional(),
-      madeIn: z.string().trim().optional(),
-      allowanceCharge: z.array(
+
+      discountRate: z.coerce.number().gte(0, { message: 'The Discount Rate must greater than 0 !' }).lte(100, { message: 'The Discount Rate percentage cannot more than 100' }),
+      discountAmount: z.coerce.number().gte(0, { message: 'Must greater than 0' }).optional(),
+      discountDescription: z.string().trim().optional(),
+
+      chargeRate: z.coerce.number().gte(0, { message: 'The Charge Rate must greater than 0 !' }).lte(100, { message: 'The Charge Rate percentage cannot more than 100' }),
+      chargeAmount: z.coerce.number().gte(0, { message: 'Must greater than 0' }).optional(),
+      chargeDescription: z.string().trim().optional(),
+
+      taxableAmount: z.coerce.number().optional(),
+      netTaxableAmount: z.coerce.number().optional(),
+
+      rateType: z.string().trim().optional(),
+
+      rate: z.array(
         z.object({
-          discountCharge: z.string().trim().min(1, { message: 'Please select one either Discount/Charge !' }),
-          allowanceChargeReason: z.string().trim().optional(),
-          chargeDiscountPercent: z.coerce.number().gt(0, { message: 'The Percentage cannot lesser than 0 !' }),
-          amount: z.coerce.number().optional(),
+          rateType: z.string().trim().optional(),
+
+          taxType: z.string().trim().min(1, { message: 'Please select one Tax type !' }).nullish(),
+          taxPercentage: z.coerce.number().gt(0, { message: 'The Percentage cannot lesser than 0!' }).nullish(),
+          noOfUnit: z.coerce.number().gt(0, { message: 'The no of Unit must greater than 0' }).nullish(),
+          rateUnit: z.coerce.number().gt(0, { message: 'The rate Unit must greater than 0' }).nullish(),
+          totalTaxPerType: z.coerce.number().optional()
+
         })
-      ),
-      taxableAmount: z.coerce.number(),
-      taxSubtotal: z.array(
-        z.object({
-          taxType: z.string().trim().min(1, { message: 'Please select one Tax type !' }),
-          taxPercentage: z.coerce.number().gt(0, { message: 'The Percentage cannot lesser than 0!' }),
-          taxAmount: z.coerce.number().optional()
-        })
-      ),
+      ).optional().superRefine((items, ctx) => {
+        const uniqueValues = new Map<string, number>();
+
+        items?.forEach((item, idx) => {
+          if (!item.taxType) return; // skip if taxType is null or undefined
+
+          const firstAppearanceIndex = uniqueValues.get(item.taxType);
+          if (firstAppearanceIndex !== undefined) {
+            // Add error message to both duplicate occurrences
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Tax type must be unique',
+              path: [idx, 'taxType'],  // Path to the current item’s taxType
+            });
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Tax type must be unique',
+              path: [firstAppearanceIndex, 'taxType'], // Path to the first occurrence’s taxType
+            });
+          } else {
+            uniqueValues.set(item.taxType, idx);
+          }
+        });
+      }),
+
+      taxTypeNotApplicable: z.string().trim().optional(),
+      taxNotApplicable: z.coerce.number().optional(),
+      totalTaxPerTypeNotApplicable: z.coerce.number().optional(),
+
+      taxTypeExempted: z.string().trim().optional(),
+      amountExempted: z.coerce.number().gte(0, { message: 'The Amount Exempted cannot lesser than 0 !' }),
+      amountOfTaxExempted: z.coerce.number().optional(),
+      detailOfTaxExemption: z.string().trim().optional(),
+
       subTotal: z.coerce.number().optional(),
       totalDiscount: z.coerce.number().optional(),
       totalCharge: z.coerce.number().optional(),
       totalTaxAmount: z.coerce.number().optional(),
+    })
+  ).nonempty({ message: "At least one item is required" }),
 
-    })
-  ),
-  paymentInformation: z.array(
-    z.object({
-      paymentType: z.string().trim().optional(),
-      paymentFinancialAcc: z.string().trim().optional(),
-      paymentTerms: z.string().trim().optional()
-    })
-  ),
-  paymentInvoiceId: z.string().trim().optional(),
-  paymentAmount: z.string().trim().optional(),
-  paymentIssuedDateTime: z
-    .string()
-    .date().optional(),
+  supplierIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
+  supplierIndustryName: z.string().trim().optional(),
+  supplierTaxIndentificationNumber: z.string().trim().optional(),
+  supplierBusinessRegNumber: z.string().trim().optional(),
+  sstRegNumber: z.string().trim().optional(),
+  tourismTaxRegistrationNum: z.string().trim().optional(),
+
+  supplierLine: z.string().trim().optional(),
+  supplierZipCode: z.string().trim().optional(),
+  supplierCity: z.string().trim().optional(),
+  supplierState: z.string().trim().optional(),
+  supplierCountry: z.string().trim().optional(),
+
+  supplierContact: z.string().trim().optional(),
+  supplierEmail: z.coerce.string().email().trim(),
+
+  buyerRegisterName: z.string().trim().min(1, { message: 'Please enter the Registration Name !' }),
+  buyerSSTRegisterNumber: z.string().trim().min(1, { message: 'Please enter the SST Registration Number !' }),
+
+  buyerIdType: z.string().min(1, { message: "Please select one ID Type!" }),
+
+  buyerRegistration_Identification_PassportNumber: z.string().optional(),
+  // .min(1, { message: 'Please enter the Registration/Identification/Passport Number !' }),
+  buyerTaxIdentificationNumber: z.string().optional(),
+  // .min(1, { message: 'Please enter the Tax Identification Number !' }),
+
+  buyerLine: z.string().trim().optional(),
+  buyerZipCode: z.string().trim().optional(),
+  buyerCity: z.string().trim().optional(),
+  buyerState: z.string().trim().optional(),
+  buyerCountry: z.string().trim().optional(),
+  buyerContact: z.string().trim().min(1, { message: 'Please enter the contact number!' }),
+  buyerEmail: z.string().email().trim().optional(),
+
+  deliveryName: z.string().trim().optional(),
+  deliveryIdType: z.string().trim().optional(),
+  deliveryRegistration_Identification_PassportNumber: z.string().trim().optional(),
+  deliveryShippingRecipientTin: z.string().trim().optional(),
+
+  deliveryLine: z.string().trim().optional(),
+  deliveryZipCode: z.string().trim().optional(),
+  deliveryCity: z.string().trim().optional(),
+  deliveryState: z.string().trim().optional(),
+  deliveryCountry: z.string().trim().optional(),
+
+  deliveryReferenceNumber: z.string().trim().optional(),
+  deliveryRefNumIncoterm: z.string().trim().optional(),
+  deliveryFreeTradeAgreement: z.string().trim().optional(),
+  deliveryAuth_No_for_Cert_Export: z.string().trim().optional(),
+  deliveryAuth_No_Incoterm: z.string().trim().optional(),
+  deliveryDetailofOtherCharges: z.string().trim().optional(),
+  deliveryDetailofOtherChargesDescirption: z.string().trim().optional(),
+
+  invoicePeriodStartDate: z.string().date().optional(),
+  invoicePeriodEndDate: z.string().date().optional(),
+  invoicePeriodFrequencyofBilling: z.string().trim().optional(),
+
+  paymentType: z.string().optional(),
+  supplierbankAccountNumber: z.string().trim().optional(),
+  paymentTerm: z.string().trim().optional(),
+  prepaidAmount: z.coerce.number().optional(),
+  issuedDate: z.string().date().optional(),
+  prepaymentReferenceNumber: z.string().trim().optional(),
+  billreferenceNumber: z.string().trim().optional(),
+
+}).refine((data) => {
+  if (data.invoiceType === 'invoice' || data.invoiceType === 'selfBilledInvoice') {
+    return true;
+  }
+  return !!data.invoiceDocRef?.trim();
+}, {
+  message: 'Please enter the Invoice Doc Reference!',
+  path: ['invoiceDocRef'],
 })
+  .refine((data) => {
+    if (data.invoiceType === 'invoice' || data.invoiceType === 'selfBilledInvoice') {
+      return true;
+    }
+    return !!data.additionalInvoiceDocRef?.trim();
+  }, {
+    message: 'Please enter the Additional Invoice Doc Reference!',
+    path: ['additionalInvoiceDocRef'],
+  });
 
 export type DocumentFormValues = z.infer<typeof documentFormSchema>;
+
+export const updatePasswordFormSchema = z.object({
+  currentPassword: z.string().trim().min(1, { message: "Please enter the current Password !" }),
+  newPassword: z.string().trim().min(1, { message: 'Please enter the New Passwrod !' }),
+  confirmPassword: z.string().trim().min(1, { message: "Please enter the Confirm Password !" }),
+
+}).refine((data) => {
+  return data.newPassword === data.confirmPassword;
+}, {
+  path: ["confirmPassword"],
+  message: "New Password and Confirm Password didn't match!",
+})
+
+export type UpdateFormValues = z.infer<typeof updatePasswordFormSchema>;
+
+
+
 
 
 

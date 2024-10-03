@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
+import React from "react";
 
 export default function RegisterUserStep2({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);

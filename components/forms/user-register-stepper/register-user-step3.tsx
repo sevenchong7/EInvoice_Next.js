@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import tick from '@/public/Done.png'
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
+import React from "react";
 
 export default function RegisterUserStep3({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [selectPackage, setSelectPackage] = useState('');

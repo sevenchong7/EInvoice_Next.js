@@ -36,6 +36,8 @@ import RegisterUserStep2Admin from './register-user-step2-admin';
 import RegisterUserStep3Admin from './register-user-step3-admin';
 import RegisterUserStep4Admin from './register-user-step4-admin';
 import RegisterUserStep5Admin from './register-user-step5-admin';
+import { useTranslations } from 'next-intl';
+import React from 'react';
 
 interface ProfileFormType {
   initialData: any | null;
@@ -48,11 +50,12 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 }) => {
   const params = useParams();
   const router = useRouter();
+  const t = useTranslations();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
-  const headerTitle = "Create New Merchant"
-  const headerDescription = 'To create new Merchant, we first need some basic information about the Merchant.';
+  const headerTitle = t('TAG_CREATE_NEW_MERCHANT')
+  const headerDescription = t('TAG_MERCHANT_DESC');
   const toastMessage = initialData ? 'Product updated.' : 'Product created.';
   const action = initialData ? 'Save changes' : 'Create';
   const [previousStep, setPreviousStep] = useState(0);
@@ -144,23 +147,23 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 
   const steps = [
     {
-      id: 'Step 1',
-      name: 'Personal Information',
+      id: t('TAG_STEP1'),
+      name: t('TAG_PERSONAL_INFROMATION'),
       fields: ['email', 'companyName', 'registerNo', 'businessTinNo', 'password', 'confirmPw']
     },
     {
-      id: 'Step 2',
-      name: 'Company Information',
+      id: t('TAG_STEP2'),
+      name: t('TAG_COMPANY_INFORMATION'),
       fields: ['streetAddress', 'aptSuite', 'zipCode', 'townCity', 'state', 'country', 'contactNo']
     },
     {
-      id: 'Step 3',
-      name: 'Package Selection',
+      id: t('TAG_STEP3'),
+      name: t('TAG_PACKAGE_SELECTION'),
       fields: ['package']
     },
     {
-      id: 'Step 4',
-      name: 'Payment:',
+      id: t('TAG_STEP4'),
+      name: t('TAG_PAYMENT'),
       fields: fields
         ?.map((_, index) => [
           `payment.${index}.paymentMethod`,
@@ -172,8 +175,8 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
         .flat()
     },
     {
-      id: 'Step 5',
-      name: 'Complete'
+      id: t('TAG_STEP5'),
+      name: t('TAG_COMPLETE')
     }
   ];
 
@@ -223,7 +226,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
           </div>
           <Separator />
           <div className='mt-[10px] mb-[20px]'>
-            <ul className="flex gap-4">
+            <ul className="md:flex gap-4">
               {steps.map((step, index) => (
                 <li key={step.id} className="md:flex-1">
                   {currentStep > index ? (

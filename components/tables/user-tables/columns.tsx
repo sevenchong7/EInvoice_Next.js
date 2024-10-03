@@ -2,11 +2,13 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { User } from '@/constants/data';
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
 import StatusAction from './status-action';
+// import { useTranslations } from 'next-intl';
+
+// const t = useTranslations();
 
 export const columns: ColumnDef<User>[] = [
+
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -28,19 +30,24 @@ export const columns: ColumnDef<User>[] = [
   // },
   {
     accessorKey: 'id',
-    header: 'No.'
+    header: 'TAG_NO'
   },
   {
     accessorKey: 'name',
-    header: 'Name'
+    header: 'TAG_NAME'
+  },
+  {
+    accessorKey: 'merchant',
+    header: 'TAG_MERCHANT',
+    // enableHiding: true,
   },
   {
     accessorKey: 'role',
-    header: 'Role'
+    header: 'TAG_ROLE'
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: 'TAG_STATUS',
     cell: ({ row }) => <StatusAction data={row.original} />
     // cell: (status: CellContext<User, any>) => {
 

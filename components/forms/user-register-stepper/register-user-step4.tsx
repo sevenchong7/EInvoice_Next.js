@@ -5,6 +5,7 @@ import rm from '@/public/RM.png'
 import { useEffect, useState } from "react";
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
+import React from "react";
 
 export default function RegisterUserStep4({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [payment, setPayment] = useState('')
