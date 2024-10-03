@@ -19,6 +19,7 @@ import GoogleSignInButton from '../github-auth-button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import { PasswordInput } from '../ui/passwordInput';
+import React from 'react';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),

@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
@@ -56,7 +57,6 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState({});
   const delta = currentStep - previousStep;
-
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -260,6 +260,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="lastname"
@@ -277,6 +278,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="email"
@@ -294,6 +296,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="contactno"
@@ -312,6 +315,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="country"
@@ -345,6 +349,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="city"
@@ -378,6 +383,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                     </FormItem>
                   )}
                 />
+
               </>
             )}
             {currentStep === 1 && (
@@ -435,6 +441,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
                             name={`jobs.${index}.employer`}
@@ -452,6 +459,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
                             name={`jobs.${index}.startdate`}
@@ -469,6 +477,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
                             name={`jobs.${index}.enddate`}
@@ -486,6 +495,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
                             name={`jobs.${index}.jobcountry`}
@@ -521,6 +531,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
                             name={`jobs.${index}.jobcity`}
@@ -553,6 +564,7 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
                               </FormItem>
                             )}
                           />
+
                         </div>
                       </AccordionContent>
                     </AccordionItem>
@@ -589,13 +601,9 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
               </div>
             )}
           </div>
-
-          {/* <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button> */}
         </form>
       </Form>
-      {/* Navigation */}
+
       <div className="mt-8 pt-5">
         <div className="flex justify-between">
           <button

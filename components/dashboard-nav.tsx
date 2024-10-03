@@ -15,17 +15,19 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from './ui/tooltip';
+import { useTranslations } from 'next-intl';
 
 interface DashboardNavProps {
   items: NavItem[];
   setOpen?: Dispatch<SetStateAction<boolean>>;
   isMobileNav?: boolean;
-  handleToggle: () => void
+  handleToggle?: () => void
 }
 
 export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle }: DashboardNavProps) {
   const path = usePathname();
   const { isMinimized } = useSidebar();
+  const t = useTranslations()
 
   if (!items?.length) {
     return null;
@@ -58,7 +60,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
                       {/* <span>{item.title}</span> */}
 
                       {isMobileNav || (!isMinimized && !isMobileNav) ? (
-                        <span className="mr-2 truncate">{item.title}</span>
+                        <span className="mr-2 truncate">{t(item.title)}</span>
                       ) : (
                         ''
                       )}
@@ -83,7 +85,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
                               {/* <Icon className="mr-2 h-4 w-4" /> */}
                               {/* <span className='ml-[25px]'>{childItem.title}</span> */}
                               {isMobileNav || (!isMinimized && !isMobileNav) ? (
-                                <span className="ml-[25px] truncate">{childItem.title}</span>
+                                <span className="ml-[25px] truncate">{t(childItem.title)}</span>
                               ) : (
                                 ''
                               )}
@@ -116,7 +118,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
                   <Icon className="mr-2 h-4 w-4" />
                   {/* <span>{item.title}</span> */}
                   {isMobileNav || (!isMinimized && !isMobileNav) ? (
-                    <span className="mr-2 truncate">{item.title}</span>
+                    <span className="mr-2 truncate">{t(item.title)}</span>
                   ) : (
                     ''
                   )}

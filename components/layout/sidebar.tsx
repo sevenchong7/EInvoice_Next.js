@@ -7,11 +7,13 @@ import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useSidebar } from '@/hooks/useSidebar';
+import { useTranslations } from 'next-intl';
 
 export default function Sidebar() {
   const navItemsFiltered = useNavItems(navItems);
   useEffect(() => { console.log("nav Item : ", navItemsFiltered) }, [])
 
+  const t = useTranslations()
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
 
@@ -43,7 +45,7 @@ export default function Sidebar() {
               <div className="space-y-1">
                 {!isMinimized ?
                   <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight overflow-hidden ">
-                    Overview
+                    {t("TAG_OVERVIEW")}
                   </h2> : ''
                 }
                 <DashboardNav items={navItemsFiltered} handleToggle={handleToggle} />

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
  * @see https://v0.dev/t/yO0W5phoLw6
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import Link from "next/link"
 import { useRouter } from "next/navigation";
 
 export default function PermissionDenied() {

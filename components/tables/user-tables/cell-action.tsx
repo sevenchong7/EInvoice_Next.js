@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { Switch } from '@/components/ui/switch';
+import { useTranslations } from 'next-intl';
 
 interface CellActionProps {
   data: User;
@@ -38,6 +39,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [openSheet, setOpenSheet] = useState(false);
   const [effect, setEffect] = useState(false);
+  const t = useTranslations()
   // const router = useRouter();
   // router.push(`/dashboard/user/userListing/${data.id}`)
   const onConfirm = async () => { };
@@ -49,14 +51,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
-        title='Delete the User?'
-        description={
-          <>
-            Are you sure you want to delete this user? <br />
-            This action is irreversible and will remove all associated data permanently.<br />
-            Please confirm your decision to proceed with the deletion.
-          </>
-        }
+        title={`${t('TAG_DELETE_USER_MODAL_TITLE')}?`}
+        description={t('TAG_DELETE_USER_MODAL_DESC')}
       />
       <div className='flex flex-row space-x-5'>
         <Sheet>
@@ -100,6 +96,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
 
 const EditUser = ({ data }: { data: User }) => {
+  const t = useTranslations()
   const [name, setName] = useState(data.name)
   const [email, setEmail] = useState('');
   const [role, setRole] = useState(data.role);
@@ -119,20 +116,22 @@ const EditUser = ({ data }: { data: User }) => {
   const [deleteUser, setDeleteUser] = useState(false)
   const [textVisible, setTextVisible] = useState(true);
 
-  useEffect(() => {
-    if (dashboardCheck) {
-      setAdd(true)
-      setEdit(true)
-      setView(true)
-    } else {
+  const handleDashboardChange = (checked: boolean) => {
+    setDashboardCheck(checked);
+    if (checked) {
+      setAdd(true);
+      setEdit(true);
+      setView(true);
+    } else if (!checked) {
       setAdd(false)
       setEdit(false)
       setView(false)
     }
-  }, [dashboardCheck])
+  };
 
-  useEffect(() => {
-    if (merchant) {
+  const handleMerchant = (checked: boolean) => {
+    setMerchant(checked);
+    if (checked) {
       setCreatMerchant(true)
       setUploadDocument(true)
       setPaymentMethod(true)
@@ -141,45 +140,96 @@ const EditUser = ({ data }: { data: User }) => {
       setUploadDocument(false)
       setPaymentMethod(false)
     }
-  }, [merchant])
+  }
 
-  useEffect(() => {
-    if (userListing) {
-      setViewUser(true)
-      setUpdateUser(true)
-      setDeleteUser(true)
+  const handleUserListing = (checked: boolean) => {
+    setUserListing(checked);
+    if (checked) {
+      setViewUser(true);
+      setUpdateUser(true);
+      setDeleteUser(true);
     } else {
-      setViewUser(false)
-      setUpdateUser(false)
-      setDeleteUser(false)
+      setViewUser(false);
+      setUpdateUser(false);
+      setDeleteUser(false);
     }
-  }, [userListing])
+  }
+
+  const handleUser = (checked: boolean) => {
+    setUser(checked)
+    if (checked) {
+      handleMerchant(checked)
+      handleUserListing(checked)
+    }
+    else {
+      handleMerchant(checked)
+      handleUserListing(checked)
+    }
+  }
 
   useEffect(() => {
-    if (user) {
-      setMerchant(true)
-      setUserListing(true)
 
+    if (add) {
+      setAdd(true)
+    }
+    if (edit) {
+      setEdit(true)
+    }
+    if (view) {
+      setView(true)
+    }
+
+    if (add && edit && view) {
+      setDashboardCheck(true)
+    } else {
+      setDashboardCheck(false)
+    }
+
+  }, [edit, add, view])
+
+  useEffect(() => {
+
+    if (createMerchant) {
       setCreatMerchant(true)
+    }
+    if (uploadDocument) {
       setUploadDocument(true)
+    }
+    if (paymentMethod) {
       setPaymentMethod(true)
+    }
 
-      setViewUser(true)
-      setUpdateUser(true)
-      setDeleteUser(true)
+    if (createMerchant && uploadDocument && paymentMethod) {
+      setMerchant(true)
     } else {
       setMerchant(false)
-      setUserListing(false)
-
-      setCreatMerchant(false)
-      setUploadDocument(false)
-      setPaymentMethod(false)
-
-      setViewUser(false)
-      setUpdateUser(false)
-      setDeleteUser(false)
     }
-  }, [user])
+
+  }, [createMerchant, uploadDocument, paymentMethod])
+
+  useEffect(() => {
+
+    if (viewUser) {
+      setViewUser(true)
+    }
+    if (updateUser) {
+      setUpdateUser(true)
+    }
+    if (deleteUser) {
+      setDeleteUser(true)
+    }
+
+    if (viewUser && updateUser && deleteUser) {
+      setUserListing(true)
+    } else {
+      setUserListing(false)
+    }
+
+  }, [viewUser, updateUser, deleteUser])
+
+  useEffect(() => {
+    if (merchant && userListing) { setUser(true) } else { setUser(false) }
+  }, [merchant, userListing])
 
   const CustomeCheckBox = ({ id, title, checked, onCheckedChange }: { id: string, title: string, checked: boolean, onCheckedChange: () => void }) => {
     return (
@@ -208,7 +258,7 @@ const EditUser = ({ data }: { data: User }) => {
   return (
     <SheetContent>
       <SheetHeader>
-        <SheetTitle className='text-2xl'>Edit User Information</SheetTitle>
+        <SheetTitle className='text-2xl'>{t('TAG_EDIT_USER_INFORMATION')}</SheetTitle>
         {/* <SheetDescription>
         Make changes to your profile here. Click save when you're done.
       </SheetDescription> */}
@@ -222,44 +272,45 @@ const EditUser = ({ data }: { data: User }) => {
         </div> */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="email" >
-            Email
+            {t('TAG_EMAIL')}
           </Label>
           <Input id="email" value={data.email} disabled={true} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="role">
-            Role
+            {t('TAG_ROLE')}
           </Label>
           <Input id="role" type='text' value={role} placeholder={data.role} onChange={(e) => setRole(e.target.value)} className="col-span-3" />
         </div>
         <div className="grid grid-cols-3 items-center gap-4">
           <Label htmlFor="status" className='col-span-2'>
-            Status
+            {t('TAG_STATUS')}
           </Label>
           {
+            data.status == 'Pending Verification' ? <p className='text-orange-500 text-center text-sm'>{data.status}</p> :
 
-            <Button
-              onClick={HandleStatus}
-              className={cn(
-                "relative flex items-center transition-all duration-300",
-                status === "Active" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
-                "rounded-lg"
-              )}
-            >
-              <div
+              <Button
+                onClick={HandleStatus}
                 className={cn(
-                  "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                  status === "Active" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
-                )}
-              />
-              <p
-                className={cn(
-                  textVisible ? "opacity-100 " : "opacity-0"
+                  "relative flex items-center transition-all duration-300",
+                  status === "Active" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
+                  "rounded-lg"
                 )}
               >
-                {status}
-              </p>
-            </Button>
+                <div
+                  className={cn(
+                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
+                    status === "Active" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
+                  )}
+                />
+                <p
+                  className={cn(
+                    textVisible ? "opacity-100 " : "opacity-0"
+                  )}
+                >
+                  {status}
+                </p>
+              </Button>
 
 
             // <Button onClick={() => setStatus("Active")} className='col-span-2'>  <div className='rounded-full bg-white w-5 h-5 mr-[10px] ' /> {status} </Button>
@@ -269,48 +320,48 @@ const EditUser = ({ data }: { data: User }) => {
 
         <div className="">
           <Label htmlFor="status">
-            Access Control:
+            {t('TAG_ACCESS_CONTROL')}:
           </Label>
           <Separator />
-          <Accordion type='multiple'>
+          <Accordion type='multiple' defaultValue={['item-1', 'user', 'merchant', 'listing']}>
             <AccordionItem value="item-1" className='border-white pt-4'>
               <div className='flex flex-row items-center space-x-2'>
                 <AccordionTrigger className='justify-start '></AccordionTrigger>
-                <CustomeCheckBox id='dashboard' title='Dashboard' checked={dashboardCheck} onCheckedChange={() => setDashboardCheck(!dashboardCheck)} />
+                <CustomeCheckBox id='dashboard' title={t('TAG_DASHBOARD')} checked={dashboardCheck} onCheckedChange={() => handleDashboardChange(!dashboardCheck)} />
               </div>
               <div className='pl-[50px] pt-2'>
                 <AccordionContent>
-                  <CustomeCheckBox id='add' title='Add' checked={add} onCheckedChange={() => setAdd(!add)} />
+                  <CustomeCheckBox id='add' title={t('TAG_ADD')} checked={add} onCheckedChange={() => setAdd(!add)} />
                 </AccordionContent>
                 <AccordionContent>
-                  <CustomeCheckBox id='edit' title='Edit' checked={edit} onCheckedChange={() => setEdit(!edit)} />
+                  <CustomeCheckBox id='edit' title={t('TAG_EDIT')} checked={edit} onCheckedChange={() => setEdit(!edit)} />
                 </AccordionContent>
                 <AccordionContent>
-                  <CustomeCheckBox id='view' title='View' checked={view} onCheckedChange={() => setView(!view)} />
+                  <CustomeCheckBox id='view' title={t('TAG_VIEW')} checked={view} onCheckedChange={() => setView(!view)} />
                 </AccordionContent>
               </div>
             </AccordionItem>
             <AccordionItem value='user'>
               <div className='flex flex-row items-center space-x-2'>
                 <AccordionTrigger className='justify-start'></AccordionTrigger>
-                <CustomeCheckBox id='user' title='User' checked={user} onCheckedChange={() => setUser(!user)} />
+                <CustomeCheckBox id='user' title={t('TAG_USER')} checked={user} onCheckedChange={() => handleUser(!user)} />
               </div>
               <div className='pt-2 pl-[50px]'>
                 <AccordionContent >
                   <AccordionItem value='merchant'>
                     <div className='flex flex-row items-center space-x-2'>
                       <AccordionTrigger className='justify-start'></AccordionTrigger>
-                      <CustomeCheckBox id='merchant' title='Merchant' checked={merchant} onCheckedChange={() => setMerchant(!merchant)} />
+                      <CustomeCheckBox id='merchant' title={t('TAG_MERCHANT')} checked={merchant} onCheckedChange={() => handleMerchant(!merchant)} />
                     </div>
                     <div className='pl-[50px] pt-2'>
                       <AccordionContent >
-                        <CustomeCheckBox id='createMerchant' title='Create Merchant' checked={createMerchant} onCheckedChange={() => setCreatMerchant(!createMerchant)} />
+                        <CustomeCheckBox id='createMerchant' title={t('TAG_CREATE_MERCHANT')} checked={createMerchant} onCheckedChange={() => setCreatMerchant(!createMerchant)} />
                       </AccordionContent>
                       <AccordionContent>
-                        <CustomeCheckBox id='uploadDocument' title='Upload Document' checked={uploadDocument} onCheckedChange={() => setUploadDocument(!uploadDocument)} />
+                        <CustomeCheckBox id='uploadDocument' title={t('TAG_UPLOAD_DOCUMENT')} checked={uploadDocument} onCheckedChange={() => setUploadDocument(!uploadDocument)} />
                       </AccordionContent>
                       <AccordionContent>
-                        <CustomeCheckBox id='paymentMethod' title='Multi Payment Method' checked={paymentMethod} onCheckedChange={() => setPaymentMethod(!paymentMethod)} />
+                        <CustomeCheckBox id='paymentMethod' title={t('TAG_MULTI_PAYMENT_METHOD')} checked={paymentMethod} onCheckedChange={() => setPaymentMethod(!paymentMethod)} />
                       </AccordionContent>
                     </div>
                   </AccordionItem>
@@ -319,17 +370,17 @@ const EditUser = ({ data }: { data: User }) => {
                   <AccordionItem value='listing'>
                     <div className='flex flex-row items-center space-x-2'>
                       <AccordionTrigger className='justify-start'></AccordionTrigger>
-                      <CustomeCheckBox id='userListing' title='User Listing' checked={userListing} onCheckedChange={() => setUserListing(!userListing)} />
+                      <CustomeCheckBox id='userListing' title={t('TAG_USER_LISTING')} checked={userListing} onCheckedChange={() => handleUserListing(!userListing)} />
                     </div>
                     <div className='pl-[50px] pt-2'>
                       <AccordionContent>
-                        <CustomeCheckBox id='viewUser' title='View User' checked={viewUser} onCheckedChange={() => setViewUser(!viewUser)} />
+                        <CustomeCheckBox id='viewUser' title={t('TAG_VIEW_USER')} checked={viewUser} onCheckedChange={() => setViewUser(!viewUser)} />
                       </AccordionContent>
                       <AccordionContent>
-                        <CustomeCheckBox id='updateUser' title='Update User Info' checked={updateUser} onCheckedChange={() => setUpdateUser(!updateUser)} />
+                        <CustomeCheckBox id='updateUser' title={t('TAG_UPDATE_USER_INFO')} checked={updateUser} onCheckedChange={() => setUpdateUser(!updateUser)} />
                       </AccordionContent>
                       <AccordionContent>
-                        <CustomeCheckBox id='deleteUser' title='Delete User' checked={deleteUser} onCheckedChange={() => setDeleteUser(!deleteUser)} />
+                        <CustomeCheckBox id='deleteUser' title={t('TAG_DELETE_USER')} checked={deleteUser} onCheckedChange={() => setDeleteUser(!deleteUser)} />
                       </AccordionContent>
                     </div>
                   </AccordionItem>
@@ -341,7 +392,7 @@ const EditUser = ({ data }: { data: User }) => {
       </div>
       <SheetFooter>
         <SheetClose asChild>
-          <Button type="submit" className='bg-blue-800 hover:bg-blue-700'>Confirm</Button>
+          <Button type="submit" className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
         </SheetClose>
       </SheetFooter>
     </SheetContent>

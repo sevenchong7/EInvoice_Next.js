@@ -8,6 +8,7 @@ import { Employee } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 
 const breadcrumbItems = [{ title: 'Employee', link: '/dashboard/employee' }];
 

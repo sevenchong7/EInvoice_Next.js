@@ -26,6 +26,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import FileUpload from '../file-upload';
 import { useToast } from '../ui/use-toast';
+import React from 'react';
 const ImgSchema = z.object({
   fileName: z.string(),
   name: z.string(),
@@ -132,12 +133,6 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (

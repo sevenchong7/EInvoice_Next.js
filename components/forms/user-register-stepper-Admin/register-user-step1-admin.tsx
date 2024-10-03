@@ -1,11 +1,13 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-schema";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<RegisterUserAdminFormValues> }) {
     const [loading, setLoading] = useState(false);
+    const t = useTranslations()
 
     return (
         <>
@@ -14,7 +16,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="email"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t('TAG_EMAIL')}</FormLabel>
                         <FormControl>
                             <Input
                                 type='email'
@@ -32,7 +34,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="companyName"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Company Name</FormLabel>
+                        <FormLabel>{t('TAG_COMPANY_NAME')}</FormLabel>
                         <FormControl>
                             <Input
                                 disabled={loading}
@@ -48,7 +50,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="registerNo"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Register No.</FormLabel>
+                        <FormLabel>{t('TAG_REGISTER_NO')}</FormLabel>
                         <FormControl>
                             <Input
                                 disabled={loading}
@@ -64,7 +66,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="businessTinNo"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Business Tin No.</FormLabel>
+                        <FormLabel>{t('TAG_BUSINESS_TIN_NO')}</FormLabel>
                         <FormControl>
                             <Input
                                 disabled={loading}
@@ -80,7 +82,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="password"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>{t('TAG_PASSWORD')}</FormLabel>
                         <FormControl>
                             <Input
                                 disabled={loading}
@@ -96,7 +98,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                 name="confirmPw"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Confirmation Password</FormLabel>
+                        <FormLabel>{t('TAG_CONFIRMATION_PASSWORD')}</FormLabel>
                         <FormControl>
                             <Input
                                 disabled={loading}

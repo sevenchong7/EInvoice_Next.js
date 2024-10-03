@@ -32,10 +32,10 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange} >
-      <DialogContent className='min-w-[600px]'>
+      <DialogContent className='md:min-w-[600px]'>
         <DialogHeader className='items-center'>
           <DialogTitle className='text-2xl'>{title}</DialogTitle>
-          <DialogDescription className='text-center w-full'>{description}</DialogDescription>
+          <DialogDescription className='text-center w-full whitespace-pre-wrap' >{description}</DialogDescription>
         </DialogHeader>
         <div>{children}</div>
       </DialogContent>

@@ -3,6 +3,7 @@ import Sidebar from '@/components/layout/sidebar';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Loading from './loading';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Next Shadcn Dashboard Starter',

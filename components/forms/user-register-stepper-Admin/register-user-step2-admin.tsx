@@ -1,11 +1,14 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-schema";
+import { useTranslations } from "next-intl";
+import React from "react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<RegisterUserAdminFormValues> }) {
     const [loading, setLoading] = useState(false);
+    const t = useTranslations()
 
     return (
         <>
@@ -15,7 +18,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                     name="streetAddress"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Street Address</FormLabel>
+                            <FormLabel>{t('TAG_STREET_ADDRESS')}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={loading}
@@ -34,7 +37,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                     name="aptSuite"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Apt, Suite, Building (Optional)</FormLabel>
+                            <FormLabel>{t('TAG_APT_SUITE_BUILDING')}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={loading}
@@ -55,7 +58,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                             name="zipCode"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Zip Code</FormLabel>
+                                    <FormLabel>{t('TAG_ZIPCODE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
@@ -73,7 +76,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                             name="townCity"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Town / City</FormLabel>
+                                    <FormLabel>{t('TAG_TOWN_CITY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
@@ -96,7 +99,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                             name="state"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>State</FormLabel>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
@@ -114,7 +117,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                             name="country"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Country</FormLabel>
+                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
@@ -135,7 +138,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
                     name="contactNo"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Contact No.</FormLabel>
+                            <FormLabel>{t('TAG_CONTACT_NO')}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={loading}

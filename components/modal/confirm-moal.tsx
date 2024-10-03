@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { title } from 'process';
+import { useTranslations } from 'next-intl';
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -11,7 +12,7 @@ interface ConfirmModalProps {
     loading: boolean;
     title?: string;
     description?: any;
-    content: any
+    content?: any
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -24,6 +25,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     content
 }) => {
     const [isMounted, setIsMounted] = useState(false);
+    const t = useTranslations()
 
     useEffect(() => {
         setIsMounted(true);
@@ -41,13 +43,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             isOpen={isOpen}
             onClose={onClose}
         >
-            <div>{content}</div>
+            <div className='text-center w-full whitespace-pre-wrap'>{content}</div>
             <div className="flex w-full items-center justify-between space-x-2 pt-6">
                 <Button disabled={loading} variant="outline" onClick={onClose}>
-                    Cancel
+                    {t('TAG_CANCEL')}
                 </Button>
                 <Button disabled={loading} className='bg-blue-800 hover:bg-blue-700' onClick={onConfirm}>
-                    Continue
+                    {t('TAG_CONFIRM')}
                 </Button>
             </div>
         </Modal>

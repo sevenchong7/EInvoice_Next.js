@@ -29,6 +29,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 // import FileUpload from "@/components/FileUpload";
 import { useToast } from '../ui/use-toast';
 import FileUpload from '../file-upload';
+import React from 'react';
 const ImgSchema = z.object({
   fileName: z.string(),
   name: z.string(),
@@ -136,12 +137,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (

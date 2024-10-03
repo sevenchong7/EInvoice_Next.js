@@ -1,10 +1,12 @@
 import Providers from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/toaster';
 import '@uploadthing/react/styles.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { auth } from '@/auth';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,15 +20,34 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
+  // Providing all messages to the client
+  // side is the easiest way to get started
+  const messages = await getMessages();
+
   const session = await auth();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
+      {/* <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=0.5"
+        />
+      </head> */}
       <body className={`${inter.className} overflow-hidden`}>
-        <Providers session={session}>
-          <Toaster />
-          {children}
-        </Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Providers session={session}>
+            <Toaster />
+            {children}
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
 }
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};

@@ -19,9 +19,9 @@ const useHasAccess = (permission: string) => {
 
   const entity = permission.split(".")[0];
 
-  if (session.user.permissions?.includes(`${entity}.all`)) {
-    return true;
-  }
+  // if (session.user.permissions?.includes(`${entity}.all`)) {
+  //   return true;
+  // }
 
   return false;
 };

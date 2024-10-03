@@ -36,6 +36,8 @@ import { useEffect, useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { number } from "zod";
 import FileUpload from "@/components/file-upload";
+import { useTranslations } from "next-intl";
+import React from "react";
 
 export default function RegisterUserStep4Admin(
     {
@@ -45,6 +47,7 @@ export default function RegisterUserStep4Admin(
     }) {
 
     const [loading, setLoading] = useState(false);
+    const t = useTranslations()
 
     const {
         control,
@@ -87,8 +90,8 @@ export default function RegisterUserStep4Admin(
                                             errors?.payment?.[index] && 'text-red-700'
                                         )}
                                     >
-                                        <h1 className="text-2xl">
-                                            {`Payment Method ${index + 1}`}
+                                        <h1 className="md:text-2xl text-base">
+                                            {`${t('TAG_PAYMENT_METHOD')} ${index + 1}`}
                                         </h1>
 
                                         {
@@ -120,7 +123,7 @@ export default function RegisterUserStep4Admin(
                                                 name={`payment.${index}.paymentMethod`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Payment Method*</FormLabel>
+                                                        <FormLabel>{t('TAG_PAYMENT_METHOD')}*</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 type="text"
@@ -138,7 +141,7 @@ export default function RegisterUserStep4Admin(
                                                 name={`payment.${index}.paymentAmount`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Payment Amount*</FormLabel>
+                                                        <FormLabel>{t('TAG_PAYMENT_AMOUNT')}*</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 type="number"
@@ -156,7 +159,7 @@ export default function RegisterUserStep4Admin(
                                                 name={`payment.${index}.referenceNo`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Reference No.</FormLabel>
+                                                        <FormLabel>{t('TAG_REFERENCE_NO')}.</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 type="text"
@@ -208,7 +211,7 @@ export default function RegisterUserStep4Admin(
                                     })
                                 }
                             >
-                                Add More
+                                {t('TAG_ADD_MORE')}
                             </Button>
                         </div>
                     </div>
@@ -219,12 +222,13 @@ export default function RegisterUserStep4Admin(
 }
 
 const Summary = ({ }) => {
+    const t = useTranslations()
     return (
         <>
             <div className='border rounded-lg w-full shadow-xl'>
                 <div className='p-[20px]'>
                     <div className=' flex flex-col items-center justify-center'>
-                        <h1 className='text-2xl font-semibold'>Summary</h1>
+                        <h1 className='text-2xl font-semibold'>{t('TAG_SUMMARY')}</h1>
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
                     </div>
 

@@ -1,10 +1,4 @@
 'use client';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import {
     Form,
@@ -15,14 +9,6 @@ import {
     FormMessage
 } from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
-import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { documentFormSchema, DocumentFormValues, profileSchema, RegisterFormValues, registerSchema, RegisterUserAdminFormValues, registerUserAdminSchema, type ProfileFormValues } from '@/lib/form-schema';
 import { cn } from '@/lib/utils';
@@ -35,8 +21,9 @@ import DocumentFormStep1 from './document-form-step1';
 import DocumentFormStep2 from './document-form-step2';
 import DocumentFormStep3 from './document-form-step3';
 import DocumentFormStep4 from './document-form-step4';
-import DocumentFormStep5 from './document-form-step5';
 import { useStore } from '@/action/action';
+import { useTranslations } from 'next-intl';
+import React from 'react';
 
 
 interface ProfileFormType {
@@ -50,11 +37,12 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
 }) => {
     const params = useParams();
     const router = useRouter();
+    const t = useTranslations()
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [imgLoading, setImgLoading] = useState(false);
-    const headerTitle = "Create Document"
-    const headerDescription = 'Generate and prepare the necessary document for submission to LHDN with ease.';
+    const headerTitle = t('TAG_CREATE_DOCUMENT')
+    const headerDescription = t('TAG_DOCUMENT_DESC');
     // const toastMessage = initialData ? 'Product updated.' : 'Product created.';
     // const action = initialData ? 'Save changes' : 'Create';
     const [previousStep, setPreviousStep] = useState(0);
@@ -66,125 +54,138 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
 
     const defaultValues = {
         invoiceId: "",
-        issuesDateTime: "",
-        currencyCode: "",
+        issuesDateTime: undefined,
         invoiceType: "",
-        versionId: "",
-        startdate: "",
-        enddate: "",
-        description: "",
+
         invoiceDocRef: "",
         additionalInvoiceDocRef: "",
-        supplierId: '',
-        agencyName: '',
+
+        currencyCode: "",
+        exchangeRate: '',
+
+        totalTaxAmount: 0,
+        totalNetAmount: 0,
+
+        items: [],
+
+        // items: [
+        //     {
+        //         itemId: '',
+        //         classificationCode: '',
+        //         description: '',
+
+        //         itemPrice: 0,
+        //         quantity: 0,
+
+        //         discountRate: 0,
+        //         discountAmount: 0,
+        //         discountDescription: '',
+
+        //         chargeRate: 0,
+        //         chargeAmount: 0,
+        //         chargeDescription: '',
+
+        //         taxableAmount: 0,
+        //         netTaxableAmount: 0,
+
+        //         rate: [{
+        //             rateType: ''
+        //         }],
+
+        //         // taxSubtotal: [
+        //         //     {
+        //         //         taxType: '',
+        //         //         taxPercentage: 0,
+        //         //         noOfUnit: 0,
+        //         //         rateUnit: 0,
+        //         //         totalTaxPerType: 0,
+        //         //     }
+        //         // ],
+
+        //         taxTypeExempted: '',
+        //         amountExempted: 0,
+        //         amountOfTaxExempted: 0,
+        //         detailOfTaxExemption: '',
+
+        //         subTotal: 0,
+        //         totalDiscount: 0,
+        //         totalCharge: 0,
+        //         totalExcludingTaxAmount: 0,
+        //         amountExemptedFromTax: 0,
+        //         totalTaxAmount: 0,
+        //     }
+        // ],
+
         supplierIndustryClassCode: '',
         supplierIndustryName: '',
-        supplierRegisterName: '',
-        supplierPartyInformation: [
-            {
-                supplierIdentificationId: '',
-                supplierSchemeId: '',
-            }
-        ],
-        supplierAddress: [
-            {
-                supplierLine: '',
-            }
-        ],
+        supplierTaxIndentificationNumber: '',
+        supplierBusinessRegNumber: '',
+        sstRegNumber: '',
+        tourismTaxRegistrationNum: '',
+
+        supplierLine: '',
         supplierZipCode: '',
         supplierCity: '',
         supplierState: '',
         supplierCountry: '',
+
         supplierContact: '',
         supplierEmail: '',
-        buyerIndustryClassCode: '',
-        buyerIndustryName: '',
+
         buyerRegisterName: '',
-        buyerPartyInformation: [
-            {
-                buyerIdentificationId: '',
-                buyerSchemeId: ''
-            }
-        ],
-        buyerAddress: [
-            {
-                buyerLine: '',
-            }
-        ],
+        buyerSSTRegisterNumber: '',
+
+        buyerIdType: '',
+
+        buyerRegistration_Identification_PassportNumber: '',
+        buyerTaxIdentificationNumber: '',
+
+        buyerLine: '',
+
         buyerZipCode: '',
         buyerCity: '',
         buyerState: '',
         buyerCountry: '',
         buyerContact: '',
         buyerEmail: '',
-        deliveryRegistrationName: '',
-        deliverypartyInformation: [
-            {
-                deliveryIdentificationId: '',
-                deliverySchemeId: '',
-            }
-        ],
-        deliveryAddress: [
-            {
-                deliveryLine: '',
-            }
-        ],
+
+        deliveryName: '',
+        deliveryIdType: '',
+        deliceryRegistration_Identification_PassportNumber: '',
+        deliveryShippingRecipientTin: '',
+
+        deliveryLine: '',
         deliveryZipCode: '',
         deliveryCity: '',
         deliveryState: '',
         deliveryCountry: '',
-        deliveryShipmentId: '',
-        deliveryAllowanceChargeReason: '',
-        deliveryCurrency: '',
-        deliveryAmount: 0,
-        items: [
-            {
-                itemId: '',
-                itemPrice: 0,
-                quantity: 0,
-                unitCode: '',
-                classificationCode: '',
-                classificationType: '',
-                description: '',
-                madeIn: '',
-                allowanceCharge: [
-                    {
-                        discountCharge: '',
-                        allowanceChargeReason: '',
-                        chargeDiscountPercent: 0,
-                        ammount: 0,
-                    }
-                ],
-                taxableAmount: 0,
-                taxSubtotal: [
-                    {
-                        taxType: '',
-                        taxPercentage: 0,
-                        taxAmmount: 0,
-                    }
-                ],
-                subTotal: 0,
-                totalDiscount: 0,
-                totalCharge: 0,
-                totalTaxAmount: 0,
-            }
-        ],
-        paymentInformation: [
-            {
-                paymentType: '',
-                paymentFinancialAcc: '',
-                paymentTerms: ''
-            }
-        ],
-        paymentInvoiceId: '',
-        paymentAmount: '',
-        paymentIssuedDateTime: '',
+
+        deliveryReferenceNumber: '',
+        deliveryRefNumIncoterm: '',
+        deliveryFreeTradeAgreement: '',
+        deliveryAuth_No_for_Cert_Export: '',
+        deliveryAuth_No_Incoterm: '',
+        deliveryDetailofOtherCharges: '',
+        deliveryDetailofOtherChargesDescirption: '',
+
+        invoicePeriodStartDate: undefined,
+        invoicePeriodEndDate: undefined,
+        invoicePeriodFrequencyofBilling: '',
+
+        paymentType: '',
+        supplierbankAccountNumber: '',
+        paymentTerm: '',
+        prepaidAmount: 0,
+        issuedDateTime: undefined,
+        prepaymentReferenceNumber: '',
+        billreferenceNumber: '',
+        totalPayableAmount: 0,
     }
 
     const form = useForm<DocumentFormValues>({
         resolver: zodResolver(documentFormSchema),
         defaultValues,
-        mode: 'onChange'
+        mode: 'onBlur'
     });
 
     const {
@@ -192,47 +193,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         formState: { errors }
     } = form;
 
-    const {
-        fields: fieldsSupplierPartyInformation,
-    } = useFieldArray({
-        control,
-        name: 'supplierPartyInformation',
-    });
-
-    const {
-        fields: fieldsSupplierAddress,
-    } = useFieldArray({
-        control,
-        name: 'supplierAddress',
-    });
-
-    const {
-        fields: fieldsBuyerPartyInformation
-    } = useFieldArray({
-        control,
-        name: 'buyerPartyInformation'
-    })
-
-    const {
-        fields: fieldsBuyerAddress
-    } = useFieldArray({
-        control,
-        name: 'buyerAddress'
-    })
-
-    const {
-        fields: fieldsDeliverypartyInformation,
-    } = useFieldArray({
-        control,
-        name: 'deliverypartyInformation'
-    })
-
-    const {
-        fields: fieldsDeliveryAddress,
-    } = useFieldArray({
-        control,
-        name: 'deliveryAddress'
-    })
 
     const {
         fields: fieldsItems,
@@ -241,134 +201,155 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         name: 'items'
     })
 
-    const {
-        fields: fieldsPaymentInformation,
-    } = useFieldArray({
-        control,
-        name: 'paymentInformation'
-    })
 
     const steps = [
         {
-            id: 'Step 1',
-            name: 'Basic Information',
-            fields: ["invoiceId", "issuesDateTime", "currencyCode", "invoiceType", "versionId", "startdate", "enddate", "invoiceDocRef", "additionalInvoiceDocRef", "description"]
+            id: t('TAG_STEP1'),
+            name: t('TAG_INVOICE_INFORMATION'),
+            fields: [
+                "invoiceId",
+                "issuesDateTime",
+                "invoiceType",
+
+                "invoiceDocRef",
+                "additionalInvoiceDocRef",
+
+                "currencyCode",
+                "exchangeRate",
+
+                "totalTaxAmount",
+                "totalNetAmount",
+
+                ...fieldsItems?.map((_, index) => {
+                    const { fields: fieldsRate } = useFieldArray({
+                        control,
+                        name: `items.${index}.rate`
+                    })
+
+                    return [
+                        `items.${index}.itemId`,
+                        `items.${index}.classificationCode`,
+                        `items.${index}.description`,
+
+                        `items.${index}.itemPrice`,
+                        `items.${index}.quantity`,
+
+                        `items.${index}.discountRate`,
+                        `items.${index}.discountAmount`,
+                        `items.${index}.discountDescription`,
+
+                        `items.${index}.chargeRate`,
+                        `items.${index}.chargeAmount`,
+                        `items.${index}.chargeDescription`,
+
+                        `items.${index}.taxableAmount`,
+                        `items.${index}.taxableAmountAfterExemptionTax`,
+
+                        ...fieldsRate?.map((_, rateIndex) => {
+                            return [
+                                `items.${index}.rate.${rateIndex}.rateType`,
+                                `items.${index}.rate.${rateIndex}.taxType`,
+                                `items.${index}.rate.${rateIndex}.taxPercentage`,
+                                `items.${index}.rate.${rateIndex}.noOfUnit`,
+                                `items.${index}.rate.${rateIndex}.rateUnit`,
+                                `items.${index}.rate.${rateIndex}.totalTaxPerType`,
+                            ]
+
+                        }).flat(),
+
+
+                        `items.${index}.taxTypeExempted`,
+                        `items.${index}.amountExempted`,
+                        `items.${index}.amountOfTaxExempted`,
+                        `items.${index}.detailOfTaxExemption`,
+
+                        `items.${index}.subTotal`,
+                        `items.${index}.totalDiscount`,
+                        `items.${index}.totalCharge`,
+                        `items.${index}.totalExcludingTaxAmount`,
+                        `items.${index}.amountExemptedFromTax`,
+                        `items.${index}.totalTaxAmount`,
+                    ]
+                }).flat()
+
+            ]
         },
         {
-            id: 'Step 2',
-            name: 'Supplier & Buyer',
+            id: t('TAG_STEP2'),
+            name: t('TAG_SUPPLIER_BUYER'),
             fields: [
-                'supplierId',
-                'agencyName',
                 'supplierIndustryClassCode',
                 'supplierIndustryName',
-                'supplierRegisterName',
-                ...fieldsSupplierPartyInformation?.map((_, index) => [
-                    `supplierPartyInformation.${index}.supplierIdentificationId`,
-                    `supplierPartyInformation.${index}.supplierSchemeId`,
-                ]).flat(),
-                ...fieldsSupplierAddress?.map((_, index) => [
-                    `supplierAddress.${index}.supplierLine`,
-                ]).flat(),
+                'supplierTaxIndentificationNumber',
+                'supplierBusinessRegNumber',
+                'sstRegNumber',
+                'tourismTaxRegistrationNum',
+
+                'supplierLine',
                 'supplierZipCode',
                 'supplierCity',
                 'supplierState',
                 'supplierCountry',
+
                 'supplierContact',
                 'supplierEmail',
-                'buyerIndustryClassCode',
-                'buyerIndustryName',
+
                 'buyerRegisterName',
-                ...fieldsBuyerPartyInformation?.map((_, index) => [
-                    `buyerPartyInformation.${index}.buyerIdentificationId`,
-                    `buyerPartyInformation.${index}.buyerSchemeId`,
-                ]).flat(),
-                ...fieldsBuyerAddress?.map((_, index) => [
-                    `buyerAddress.${index}.buyerLine`,
-                ]).flat(),
+                'buyerSSTRegisterNumber',
+
+                'buyerIdType',
+
+                'buyerRegistration_Identification_PassportNumber',
+                'buyerTaxIdentificationNumber',
+
+                'buyerLine',
                 'buyerZipCode',
                 'buyerCity',
                 'buyerState',
                 'buyerCountry',
                 'buyerContact',
                 'buyerEmail',
-                'deliveryRegistrationName',
-                ...fieldsDeliverypartyInformation?.map((_, index) => [
-                    `deliverypartyInformation.${index}.deliveryIdentificationId`,
-                    `deliverypartyInformation.${index}.deliverySchemeId`,
-                ]).flat(),
-                ...fieldsDeliveryAddress?.map((_, index) => [
-                    `deliveryAddress.${index}.deliveryLine`,
-                ]).flat(),
+
+                'deliveryName',
+                'deliveryIdType',
+                'deliceryRegistration_Identification_PassportNumber',
+                'deliverdeliveryShippingRecipientTinyName',
+
+                'deliveryLine',
                 'deliveryZipCode',
                 'deliveryCity',
                 'deliveryState',
                 'deliveryCountry',
-                'deliveryShipmentId',
-                'deliveryAllowanceChargeReason',
-                'deliveryCurrency',
-                'deliveryAmount'
+
+                'deliveryReferenceNumber',
+                'deliveryRefNumIncoterm',
+                'deliveryFreeTradeAgreement',
+                'deliveryAuth_No_for_Cert_Export',
+                'deliveryAuth_No_Incoterm',
+                'deliveryDetailofOtherCharges',
+                'deliveryDetailofOtherChargesDescirption',
             ]
         },
         {
-            id: 'Step 3',
-            name: 'Line Items',
+            id: t('TAG_STEP3'),
+            name: t('TAG_ADDITIONAL_INFORMATION'),
             fields: [
-                ...fieldsItems?.map((_, index) => {
+                'invoicePeriodStartDate',
+                'invoicePeriodEndDate',
+                'invoicePeriodFrequencyofBilling',
 
-                    const { fields: fieldsItemsAllowanceCharge } = useFieldArray({
-                        control,
-                        name: `items.${index}.allowanceCharge`
-                    })
-
-                    const { fields: fieldsTaxSubtotal } = useFieldArray({
-                        control,
-                        name: `items.${index}.taxSubtotal`
-                    })
-
-                    return [
-                        `items.${index}.itemId`,
-                        `items.${index}.itemPrice`,
-                        `items.${index}.quantity`,
-                        `items.${index}.unitCode`,
-                        `items.${index}.classificationCode`,
-                        `items.${index}.classificationType`,
-                        `items.${index}.description`,
-                        `items.${index}.madeIn`,
-                        ...fieldsItemsAllowanceCharge.map((_, allowanceIndex) => [
-                            `items.${index}.allowanceCharge.${allowanceIndex}.discountCharge`,
-                            `items.${index}.allowanceCharge.${allowanceIndex}.allowanceChargeReason`,
-                            `items.${index}.allowanceCharge.${allowanceIndex}.chargeDiscountPercent`,
-                            `items.${index}.allowanceCharge.${allowanceIndex}.amount`
-                        ]).flat(),
-                        `items.${index}.taxableAmount`,
-                        ...fieldsTaxSubtotal.map((_, taxIndex) => [
-                            `items.${index}.taxSubtotal.${taxIndex}.taxType`,
-                            `items.${index}.taxSubtotal.${taxIndex}.taxPercentage`,
-                            `items.${index}.taxSubtotal.${taxIndex}.taxAmount`,
-                        ]).flat(),
-                    ]
-                }
-                ).flat()
-            ]
-        },
-        {
-            id: 'Step 4',
-            name: 'Additional Information',
-            fields: [
-                ...fieldsPaymentInformation.map((_, index) => [
-                    `paymentInformation${index}.paymentType`,
-                    `paymentInformation${index}.paymentFinancialAcc`,
-                    `paymentInformation${index}.paymentTerms`,
-                ]).flat(),
-                "paymentInvoiceId",
-                "paymentAmount",
+                "paymentType",
+                "supplierbankAccountNumber",
+                "paymentTerm",
+                "prepaidAmount",
                 "issuedDateTime",
+                "prepaymentReferenceNumber",
+                "billreferenceNumber",
             ]
         },
         {
-            id: 'Step 5',
-            name: 'Summary & Submit'
+            id: t('TAG_STEP4'),
+            name: t('TAG_SUMMARY_SUBMIT')
         }
     ];
 
@@ -402,8 +383,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         }
     };
 
-
-
     const processForm: SubmitHandler<DocumentFormValues> = (data) => {
         console.log('data ==>', data);
         setData(data);
@@ -425,6 +404,11 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         });
 
         if (!output) { console.log('error'); return; }
+
+        if (fieldsItems.length == 0) {
+            form.setError('items', { message: 'At least one item is required' })
+            return
+        }
 
         if (currentStep < steps.length - 1) {
 
@@ -463,7 +447,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
                     </div>
                     <Separator />
                     <div className='mt-[10px] mb-[20px]'>
-                        <ul className="flex gap-4">
+                        <ul className="md:flex gap-4">
                             {steps.map((step, index) => (
                                 <li key={step.name} className="md:flex-1">
                                     {currentStep > index ? (
@@ -524,11 +508,10 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
                                         <DocumentFormStep4 form={form} />
                                     )
                                 }
-                                {
+                                {/* {
                                     currentStep === 4 && (
-                                        <DocumentFormStep5 form={form} />
                                     )
-                                }
+                                } */}
                             </div>
                         </form>
                     </Form>
@@ -559,10 +542,10 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
                             <button
                                 type="button"
                                 onClick={next}
-                                className={`rounded ${currentStep === 4 ? " bg-blue-500 text-white hover:bg-blue-300" : "bg-white  text-sky-900 hover:bg-sky-50"}  px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-sky-300  disabled:cursor-not-allowed disabled:opacity-50`}
+                                className={`rounded ${currentStep === 3 ? " bg-blue-800 text-white hover:bg-blue-900" : "bg-white  text-sky-900 hover:bg-sky-50 ring-1 ring-inset ring-sky-300"}  px-2 py-1 text-sm font-semibold shadow-sm   disabled:cursor-not-allowed disabled:opacity-50`}
                             >
-                                {currentStep === 4 ?
-                                    <div>Submit</div>
+                                {currentStep === 3 ?
+                                    <div>{t('TAG_SUBMIT')}</div>
                                     :
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
