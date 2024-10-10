@@ -1,12 +1,52 @@
+'use client';
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getCountry } from "@/lib/services/generalService";
+
+interface CountryPromp {
+    countryName: string;
+    countryCode: string;
+    contactPrefix: string;
+    stateList: []
+}
+
+interface StatePromp {
+    stateName: string;
+    stateCode: string;
+
+}
 
 export default function RegisterUserStep2({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);
+    const [countries, setCountries] = useState<CountryPromp[]>()
+    const [states, setStates] = useState<StatePromp[]>();
+
+    const GetCountryInfo = async () => {
+        return await getCountry();
+    }
+
+    useEffect(() => {
+        console.log('step 2 useeffecet')
+        GetCountryInfo().then((value) => {
+            console.log('country = ', value)
+            setCountries(value)
+        })
+    }, [])
+
+    useEffect(() => {
+        countries?.map((value) => {
+            if (form.getValues('country') == value.countryCode) {
+                setStates(value.stateList)
+                form.setValue('contactPrefix', value.contactPrefix);
+            }
+        })
+    }, [form.watch('country')])
+
     return (
         <>
             <div>
@@ -89,24 +129,6 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
             </div>
 
             <div className='flex flex-row pt-[20px] justify-between'>
-                <div className='w-full mr-[20px]'>
-                    <FormField
-                        name='state'
-                        control={form.control}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Input
-                                        disabled={loading}
-                                        {...field}
-                                        placeholder='State *'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
 
                 <div className='w-full'>
                     <FormField
@@ -114,12 +136,73 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormControl>
+                                {/* <FormControl>
                                     <Input
                                         disabled={loading}
                                         {...field}
                                         placeholder='Country *'
                                     />
+                                </FormControl> */}
+                                <Select
+                                    disabled={loading}
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                // defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue
+                                                // defaultValue={field.value}
+                                                placeholder="Select a Country"
+                                            />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                        {/* @ts-ignore  */}
+                                        {countries?.map((country, index) => (
+                                            <SelectItem key={index} value={country.countryCode}>
+                                                {country.countryName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className='w-full ml-[20px]'>
+                    <FormField
+                        name='state'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Select
+                                        disabled={loading}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    // defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue
+                                                    // defaultValue={field.value}
+                                                    placeholder="Select a State"
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                            {/* @ts-ignore  */}
+                                            {states?.map((state, index) => (
+                                                <SelectItem key={index} value={state.stateCode}>
+                                                    {state.stateName}
+                                                </SelectItem>
+
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -128,23 +211,46 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                 </div>
             </div>
 
-            <div className='pt-[20px]'>
-                <FormField
-                    name='contactNo'
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <Input
-                                    disabled={loading}
-                                    {...field}
-                                    placeholder='Contact No.'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+            <div className='pt-[20px] flex'>
+                <div className="max-w-[100px] mr-5 flex-auto">
+                    <FormField
+                        name='contactPrefix'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        disabled={true}
+                                        {...field}
+                                        value={field.value || ''}
+                                    // placeholder='Contact No.'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className="w-full flex-1">
+                    <FormField
+                        name='contactNo'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        disabled={loading}
+                                        {...field}
+                                        placeholder='Contact No.'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
             </div>
         </>
     )

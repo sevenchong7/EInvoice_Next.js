@@ -1,0 +1,247 @@
+{
+    "status": true,
+    "data": {
+        "mupId": 0,
+        "currentPackageId": 0,
+        "roleQuantity": 0,
+        "merchantUserList": {
+            "content": [
+                {
+                    "muId": 2,
+                    "username": "merchant1",
+                    "role": "Admin",
+                    "status": "Y"
+                },
+                {
+                    "muId": 3,
+                    "username": "user1",
+                    "role": "Admin",
+                    "status": "Y"
+                }
+            ],
+            "page": 0,
+            "size": 10,
+            "totalElements": 2,
+            "totalPages": 1
+        },
+        "permissionList": [
+            {
+                "selected": false,
+                "Route": "User",
+                "Function": [
+                    {
+                        "selected": false,
+                        "functionNameTag": "FUNC_B_T",
+                        "FunctionName": "FUNC_B_T",
+                        "value": "addedB",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "READ_FUNC_B_T",
+                                "FunctionName": "READ_FUNC_B_T",
+                                "value": "addedB.viewInfo"
+                            }
+                        ]
+                    },
+                    {
+                        "selected": false,
+                        "functionNameTag": "Role List",
+                        "FunctionName": "Role List",
+                        "value": "roleList",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Create Role",
+                                "FunctionName": "Create Role",
+                                "value": "roleList.create"
+                            },
+                            {
+                                "selected": false,
+                                "functionNameTag": "Read Role",
+                                "FunctionName": "Read Role",
+                                "value": "roleList.read"
+                            },
+                            {
+                                "selected": false,
+                                "functionNameTag": "Update Role Info",
+                                "FunctionName": "Update Role Info",
+                                "value": "roleList.update"
+                            }
+                        ]
+                    },
+                    {
+                        "selected": false,
+                        "functionNameTag": "User List",
+                        "FunctionName": "User List",
+                        "value": "userList",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Create New User",
+                                "FunctionName": "Create New User",
+                                "value": "userList.create"
+                            },
+                            {
+                                "selected": true,
+                                "functionNameTag": "DELETE_USER_INFO_T",
+                                "FunctionName": "DELETE_USER_INFO_T",
+                                "value": "userList.delete"
+                            },
+                            {
+                                "selected": true,
+                                "functionNameTag": "READ_FUNC_B_T",
+                                "FunctionName": "READ_FUNC_B_T",
+                                "value": "userList.read2"
+                            },
+                            {
+                                "selected": true,
+                                "functionNameTag": "Read User",
+                                "FunctionName": "Read User",
+                                "value": "userList.read"
+                            },
+                            {
+                                "selected": true,
+                                "functionNameTag": "Update User Info",
+                                "FunctionName": "Update User Info",
+                                "value": "userList.update"
+                            },
+                            {
+                                "selected": false,
+                                "functionNameTag": "Update User Status",
+                                "FunctionName": "Update User Status",
+                                "value": "userList.updateStatus"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "selected": false,
+                "Route": "Dashboard",
+                "Function": [
+                    {
+                        "selected": false,
+                        "functionNameTag": "Dashboard",
+                        "FunctionName": "Dashboard",
+                        "value": "dashboard",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Read Dashboard",
+                                "FunctionName": "Read Dashboard",
+                                "value": "dashboard.read"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "selected": true,
+                "Route": "NEW_ROUTE_Z_T",
+                "Function": [
+                    {
+                        "selected": true,
+                        "functionNameTag": "FUNC_Z_T",
+                        "FunctionName": "FUNC_Z_T",
+                        "value": "functionZ",
+                        "subFunctions": [
+                            {
+                                "selected": true,
+                                "functionNameTag": "CREATE_FUNC_Z_T",
+                                "FunctionName": "CREATE_FUNC_Z_T",
+                                "value": "functionZ.create"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "selected": false,
+                "Route": "Document",
+                "Function": [
+                    {
+                        "selected": true,
+                        "functionNameTag": "Create Document",
+                        "FunctionName": "Create Document",
+                        "value": "docCreate",
+                        "subFunctions": [
+                            {
+                                "selected": true,
+                                "functionNameTag": "Create Document",
+                                "FunctionName": "Create Document",
+                                "value": "docCreate.create"
+                            },
+                            {
+                                "selected": true,
+                                "functionNameTag": "Create My Favorite",
+                                "FunctionName": "Create My Favorite",
+                                "value": "docCreate.createMyFav"
+                            }
+                        ]
+                    },
+                    {
+                        "selected": false,
+                        "functionNameTag": "Document Listing",
+                        "FunctionName": "Document Listing",
+                        "value": "docList",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Read Document",
+                                "FunctionName": "Read Document",
+                                "value": "docList.read"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "selected": false,
+                "Route": "Profile",
+                "Function": [
+                    {
+                        "selected": false,
+                        "functionNameTag": "Profile",
+                        "FunctionName": "Profile",
+                        "value": "profile",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Read QR Code",
+                                "FunctionName": "Read QR Code",
+                                "value": "profile.read"
+                            },
+                            {
+                                "selected": false,
+                                "functionNameTag": "Update Profile Info",
+                                "FunctionName": "Update Profile Info",
+                                "value": "profile.update"
+                            }
+                        ]
+                    },
+                    {
+                        "selected": false,
+                        "functionNameTag": "Subscriptions",
+                        "FunctionName": "Subscriptions",
+                        "value": "subscription",
+                        "subFunctions": [
+                            {
+                                "selected": false,
+                                "functionNameTag": "Read Subscriptions",
+                                "FunctionName": "Read Subscriptions",
+                                "value": "subscription.read"
+                            },
+                            {
+                                "selected": false,
+                                "functionNameTag": "Update Subscriptions",
+                                "FunctionName": "Update Subscriptions",
+                                "value": "subscription.update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "error": {}
+}

@@ -18,6 +18,38 @@ export type Merchant = {
 
 };
 
+export type MerchantInfo = {
+  address: string;
+  businessTinNo: string;
+  city: string;
+  companyName: string;
+  contact: string;
+  contactPrefix: string;
+  country: string;
+  email: string;
+  joinDate: string;
+  merchantId: number;
+  postcode: string;
+  registrationNo: string;
+  stateId: string;
+
+}
+
+export type SubscriptionInfo = {
+  mupId: number,
+  currentPackageId: number;
+  packageList: packageList[];
+  roleQuantity: number;
+}
+
+export type packageList = {
+  PackageName: string;
+  PackageIdentifier: number;
+  Descriptions: [];
+  MainMenu: [];
+}
+
+
 export const merchants: Merchant[] = [
   {
     id: 1,
@@ -482,252 +514,269 @@ export const companys: Company =
   subscription: 'Standard'
 }
 
+export type Users = {
+  content: contents[]
+  page: number,
+  size: number,
+  totalElements: number,
+  totalPages: number
+}
+
+export type contents = {
+  muId: number,
+  username: string,
+  role: string,
+  status: string,
+  merchantName: string
+}
+
 export type Role = {
-  id: number;
+  mupId: number;
   role: string;
-  merchant: string;
-  amount: number;
-  lastUpdate: string;
-  user: User[],
-  accessControl: AccessControl
+  currentPackageId: number;
+  merchantName: string;
+  roleQuantity: number;
+  lastModify: string;
+  // user: User[],
+  // accessControl: AccessControl
 };
 
-export const roles: Role[] = [
-  {
-    id: 1,
-    role: 'Admin',
-    merchant: 'MerchantA',
-    amount: 3,
-    lastUpdate: '27/08/2024',
-    user: [
-      {
-        id: 1,
-        name: 'Candice Schiner',
-        merchant: 'MerchantA',
-        company: 'Dell',
-        role: 'Frontend Developer',
-        verified: false,
-        status: 'Active',
-        email: 'CS@gmail.com'
-      },
-      {
-        id: 2,
-        name: 'John Doe',
-        merchant: 'MerchantA',
-        company: 'TechCorp',
-        role: 'Backend Developer',
-        verified: true,
-        status: 'Active',
-        email: 'JD@gmail.com'
-      },
-      {
-        id: 3,
-        name: 'Alice Johnson',
-        merchant: 'MerchantB',
-        company: 'WebTech',
-        role: 'UI Designer',
-        verified: true,
-        status: 'Pending Verification',
-        email: 'AJ@gmail.com'
+// export const roles: Role[] = [
+//   {
+//     id: 1,
+//     role: 'Admin',
+//     merchant: 'MerchantA',
+//     amount: 3,
+//     lastUpdate: '27/08/2024',
+//     user: [
+//       {
+//         id: 1,
+//         name: 'Candice Schiner',
+//         merchant: 'MerchantA',
+//         company: 'Dell',
+//         role: 'Frontend Developer',
+//         verified: false,
+//         status: 'Active',
+//         email: 'CS@gmail.com'
+//       },
+//       {
+//         id: 2,
+//         name: 'John Doe',
+//         merchant: 'MerchantA',
+//         company: 'TechCorp',
+//         role: 'Backend Developer',
+//         verified: true,
+//         status: 'Active',
+//         email: 'JD@gmail.com'
+//       },
+//       {
+//         id: 3,
+//         name: 'Alice Johnson',
+//         merchant: 'MerchantB',
+//         company: 'WebTech',
+//         role: 'UI Designer',
+//         verified: true,
+//         status: 'Pending Verification',
+//         email: 'AJ@gmail.com'
 
-      },
-    ],
-    accessControl: {
-      dashboard: {
-        add: true,
-        edit: true,
-        view: true,
+//       },
+//     ],
+//     accessControl: {
+//       dashboard: {
+//         add: true,
+//         edit: true,
+//         view: true,
 
-      },
-      user: {
-        createMerchant: {
-          create: true,
-          upload: true,
-          multi: true,
-        },
-        userListing: {
-          view: true,
-          update: true,
-          delete: true,
-        }
-      }
-    }
-  },
-  {
-    id: 2,
-    role: 'Accountant',
-    merchant: 'MerchantB',
-    amount: 2,
-    lastUpdate: '26/08/2024',
-    user: [
-      {
-        id: 1,
-        name: 'Candice Schiner',
-        merchant: 'MerchantA',
-        company: 'Dell',
-        role: 'Frontend Developer',
-        verified: false,
-        status: 'Active',
-        email: 'CS@gmail.com'
-      },
-      {
-        id: 2,
-        name: 'John Doe',
-        merchant: 'MerchantA',
-        company: 'TechCorp',
-        role: 'Backend Developer',
-        verified: true,
-        status: 'Active',
-        email: 'JD@gmail.com'
-      },
-    ],
-    accessControl: {
-      dashboard: {
-        add: true,
-        edit: true,
-        view: false,
+//       },
+//       user: {
+//         createMerchant: {
+//           create: true,
+//           upload: true,
+//           multi: true,
+//         },
+//         userListing: {
+//           view: true,
+//           update: true,
+//           delete: true,
+//         }
+//       }
+//     }
+//   },
+//   {
+//     id: 2,
+//     role: 'Accountant',
+//     merchant: 'MerchantB',
+//     amount: 2,
+//     lastUpdate: '26/08/2024',
+//     user: [
+//       {
+//         id: 1,
+//         name: 'Candice Schiner',
+//         merchant: 'MerchantA',
+//         company: 'Dell',
+//         role: 'Frontend Developer',
+//         verified: false,
+//         status: 'Active',
+//         email: 'CS@gmail.com'
+//       },
+//       {
+//         id: 2,
+//         name: 'John Doe',
+//         merchant: 'MerchantA',
+//         company: 'TechCorp',
+//         role: 'Backend Developer',
+//         verified: true,
+//         status: 'Active',
+//         email: 'JD@gmail.com'
+//       },
+//     ],
+//     accessControl: {
+//       dashboard: {
+//         add: true,
+//         edit: true,
+//         view: false,
 
-      },
-      user: {
-        createMerchant: {
-          create: true,
-          upload: true,
-          multi: true,
-        },
-        userListing: {
-          view: true,
-          update: true,
-          delete: true,
-        }
-      }
-    }
-  },
-  {
-    id: 3,
-    role: 'Financial',
-    merchant: 'MerchantA',
-    amount: 1,
-    lastUpdate: '27/08/2024',
-    user: [
-      {
-        id: 1,
-        name: 'Alice Johnson',
-        merchant: 'MerchantB',
-        company: 'WebTech',
-        role: 'UI Designer',
-        verified: true,
-        status: 'Pending Verification',
-        email: 'AJ@gmail.com'
+//       },
+//       user: {
+//         createMerchant: {
+//           create: true,
+//           upload: true,
+//           multi: true,
+//         },
+//         userListing: {
+//           view: true,
+//           update: true,
+//           delete: true,
+//         }
+//       }
+//     }
+//   },
+//   {
+//     id: 3,
+//     role: 'Financial',
+//     merchant: 'MerchantA',
+//     amount: 1,
+//     lastUpdate: '27/08/2024',
+//     user: [
+//       {
+//         id: 1,
+//         name: 'Alice Johnson',
+//         merchant: 'MerchantB',
+//         company: 'WebTech',
+//         role: 'UI Designer',
+//         verified: true,
+//         status: 'Pending Verification',
+//         email: 'AJ@gmail.com'
 
-      },
-    ],
-    accessControl: {
-      dashboard: {
-        add: true,
-        edit: true,
-        view: false,
+//       },
+//     ],
+//     accessControl: {
+//       dashboard: {
+//         add: true,
+//         edit: true,
+//         view: false,
 
-      },
-      user: {
-        createMerchant: {
-          create: true,
-          upload: true,
-          multi: true,
-        },
-        userListing: {
-          view: true,
-          update: true,
-          delete: true,
-        }
-      }
-    }
-  },
-  {
-    id: 4,
-    role: 'Developer',
-    merchant: 'MerchantC',
-    amount: 3,
-    lastUpdate: '27/08/2024',
-    user: [
-      {
-        id: 1,
-        name: 'Candice Schiner',
-        merchant: 'MerchantA',
-        company: 'Dell',
-        role: 'Frontend Developer',
-        verified: false,
-        status: 'Active',
-        email: 'CS@gmail.com'
-      },
-      {
-        id: 2,
-        name: 'John Doe',
-        merchant: 'MerchantA',
-        company: 'TechCorp',
-        role: 'Backend Developer',
-        verified: true,
-        status: 'Active',
-        email: 'JD@gmail.com'
-      },
-      {
-        id: 3,
-        name: 'Alice Johnson',
-        merchant: 'MerchantB',
-        company: 'WebTech',
-        role: 'UI Designer',
-        verified: true,
-        status: 'Pending Verification',
-        email: 'AJ@gmail.com'
+//       },
+//       user: {
+//         createMerchant: {
+//           create: true,
+//           upload: true,
+//           multi: true,
+//         },
+//         userListing: {
+//           view: true,
+//           update: true,
+//           delete: true,
+//         }
+//       }
+//     }
+//   },
+//   {
+//     id: 4,
+//     role: 'Developer',
+//     merchant: 'MerchantC',
+//     amount: 3,
+//     lastUpdate: '27/08/2024',
+//     user: [
+//       {
+//         id: 1,
+//         name: 'Candice Schiner',
+//         merchant: 'MerchantA',
+//         company: 'Dell',
+//         role: 'Frontend Developer',
+//         verified: false,
+//         status: 'Active',
+//         email: 'CS@gmail.com'
+//       },
+//       {
+//         id: 2,
+//         name: 'John Doe',
+//         merchant: 'MerchantA',
+//         company: 'TechCorp',
+//         role: 'Backend Developer',
+//         verified: true,
+//         status: 'Active',
+//         email: 'JD@gmail.com'
+//       },
+//       {
+//         id: 3,
+//         name: 'Alice Johnson',
+//         merchant: 'MerchantB',
+//         company: 'WebTech',
+//         role: 'UI Designer',
+//         verified: true,
+//         status: 'Pending Verification',
+//         email: 'AJ@gmail.com'
 
-      },
-    ],
-    accessControl: {
-      dashboard: {
-        add: true,
-        edit: true,
-        view: false,
+//       },
+//     ],
+//     accessControl: {
+//       dashboard: {
+//         add: true,
+//         edit: true,
+//         view: false,
 
-      },
-      user: {
-        createMerchant: {
-          create: true,
-          upload: true,
-          multi: true,
-        },
-        userListing: {
-          view: true,
-          update: true,
-          delete: true,
-        }
-      }
-    }
-  }
-]
+//       },
+//       user: {
+//         createMerchant: {
+//           create: true,
+//           upload: true,
+//           multi: true,
+//         },
+//         userListing: {
+//           view: true,
+//           update: true,
+//           delete: true,
+//         }
+//       }
+//     }
+//   }
+// ]
 
-export type AccessControl = {
-  dashboard:
-  {
-    add: boolean,
-    edit: boolean,
-    view: boolean
-  },
-  user:
-  {
-    createMerchant:
-    {
-      create: boolean,
-      upload: boolean,
-      multi: boolean
-    }
-    userListing:
-    {
-      view: boolean,
-      update: boolean,
-      delete: boolean
-    }
-  }
+// export type AccessControl = {
+//   dashboard:
+//   {
+//     add: boolean,
+//     edit: boolean,
+//     view: boolean
+//   },
+//   user:
+//   {
+//     createMerchant:
+//     {
+//       create: boolean,
+//       upload: boolean,
+//       multi: boolean
+//     }
+//     userListing:
+//     {
+//       view: boolean,
+//       update: boolean,
+//       delete: boolean
+//     }
+//   }
 
-};
+// };
 
 
 export type Employee = {
@@ -755,7 +804,7 @@ export const navItems: NavItem[] = [
     href: '/dashboard',
     icon: 'dashboard',
     label: 'Dashboard',
-    permission: ["dashboard.access", "dashboard.all"]
+    permission: ['dashboard.read']
   },
   // {
   //   title: 'User',
@@ -776,21 +825,21 @@ export const navItems: NavItem[] = [
     href: '/dashboard/user',
     icon: 'profile',
     label: 'User',
-    permission: ["profile.access", "profile.all"],
+    permission: ['userList.read', 'roleList.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create'],
     children: [
       {
         title: 'TAG_CREATE_MERCHANT',
         href: '/dashboard/user/createMerchant',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["user.access", "createMerchant.all"]
+        permission: ['merchantCreate.su.create']
       },
       {
         title: 'TAG_USER_LISTING',
         href: '/dashboard/user/userListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["user.access", "user.all"],
+        permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read'],
         // children: [
         //   {
         //     title: 'Add User',
@@ -806,7 +855,7 @@ export const navItems: NavItem[] = [
         href: '/dashboard/user/merchantListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["user.access", "user.all"],
+        permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update'],
         // children: [
         //   {
         //     title: 'Add User',
@@ -822,7 +871,7 @@ export const navItems: NavItem[] = [
         href: '/dashboard/user/roleListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ["user.access", "user.all"],
+        permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read'],
         // children: [
         //   {
         //     title: 'Add User',
@@ -840,20 +889,20 @@ export const navItems: NavItem[] = [
     href: '/dashboard/document',
     icon: "document",
     label: "Document",
-    permission: ["document.access", "document.all"],
+    permission: ['docCreate.create', 'docCreate.createMyFav'],
     children: [
       {
         title: "TAG_CREATE_DOCUMENT",
         href: "/dashboard/document/createDocument",
-        permission: ["document.access", "document.all"]
+        permission: ['docCreate.create', 'docCreate.createMyFav']
       }
     ]
   },
-  {
-    title: 'Kanban',
-    href: '/dashboard/kanban',
-    icon: 'kanban',
-    label: 'kanban',
-    permission: ["kanban.access", "kanban.all"]
-  }
+  // {
+  //   title: 'Kanban',
+  //   href: '/dashboard/kanban',
+  //   icon: 'kanban',
+  //   label: 'kanban',
+  //   permission: ["kanban.access", "kanban.all"]
+  // }
 ];

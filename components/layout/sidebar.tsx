@@ -8,10 +8,19 @@ import { useEffect, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useTranslations } from 'next-intl';
+import React from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const navItemsFiltered = useNavItems(navItems);
-  useEffect(() => { console.log("nav Item : ", navItemsFiltered) }, [])
+  // const router = useRouter()
+  // const { data: session } = useSession()
+
+  useEffect(() => {
+    console.log("nav Item : ", navItemsFiltered)
+    // router.refresh()
+  }, [])
 
   const t = useTranslations()
   const { isMinimized, toggle } = useSidebar();

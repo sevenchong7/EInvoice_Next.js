@@ -10,12 +10,32 @@ import { DataTable } from './merchant-data-table';
 import { useTranslations } from 'next-intl';
 
 interface ProductsClientProps {
-  data: Merchant[];
+  data: content[];
+}
+
+interface content {
+  merchantId: number,
+  companyName: string,
+  registrationNo: string,
+  businessTinNo: string,
+  sstRegNo: string,
+  tourRegNo: string,
+  address: string,
+  city: string,
+  postcode: string,
+  stateId: string,
+  country: string,
+  joinDate: string,
+  contactPrefix: string,
+  contact: string,
+  email: string
 }
 
 export const MerchantClient: React.FC<ProductsClientProps> = ({ data }) => {
   const router = useRouter();
   const t = useTranslations()
+
+
   return (
     <>
       <div className='overflow-y-scroll space-y-2'>

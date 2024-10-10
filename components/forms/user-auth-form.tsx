@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -24,21 +24,22 @@ import { login } from '@/action/auth';
 import React from 'react';
 
 const formSchema = z.object({
-  email: z.string(),
-  password: z.string().min(1, { message: "Please enter the password" }),
+  username: z.string().min(1, { message: 'Please enter the Username' }),
+  password: z.string().min(1, { message: "Please enter the Password" }),
   rmbMe: z.boolean().default(false).optional()
-
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
+  const { data: session } = useSession()
+  const router = useRouter()
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const defaultValues = {
-    email: '',
+    username: '',
     password: ''
   };
   const form = useForm<UserFormValue>({
@@ -54,15 +55,25 @@ export default function UserAuthForm() {
     //   callbackUrl: callbackUrl ?? '/dashboard',
     //   redirect: false
     // })
-    const signInStatus = await login(data.email, data.password);
 
-    console.log("signInStatus ", signInStatus);
-    if (signInStatus?.error)
+    const signInStatus = await login(data.username, data.password);
+
+    // console.log("signInStatus ", signInStatus);
+
+    if (signInStatus?.error) {
       toast({
         title: 'Invalid Credentials',
         variant: 'destructive',
         description: `Your username or password is incorrect.`
       });
+    } else {
+      // window.history.pushState(null, '', window.location.href);
+      // window.history.replaceState(null, '', '/dashboard');
+
+      router.replace('/dashboard');
+
+    }
+
 
     // toast({
     //   variant: 'destructive',
@@ -82,12 +93,12 @@ export default function UserAuthForm() {
           <div className='pt-[20px]'>
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="Email Address"
+                      placeholder="Username"
                       disabled={loading}
                       {...field}
                     />

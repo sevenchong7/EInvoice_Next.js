@@ -17,6 +17,7 @@ import { forgetPasswordSchema, ForgetPasswordValues } from '@/lib/form-schema';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { forgetPassword } from '@/lib/services/userService';
 
 export default function UserForgetPassword() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -24,7 +25,16 @@ export default function UserForgetPassword() {
     const router = useRouter();
 
     const defaultValues = { email: '' }
+    const form = useForm<ForgetPasswordValues>({
+        resolver: zodResolver(forgetPasswordSchema),
+        defaultValues,
+        mode: 'onChange'
+    });
 
+    const {
+        control,
+        formState: { errors }
+    } = form;
 
     const steps = [
         {
@@ -37,21 +47,10 @@ export default function UserForgetPassword() {
         {
             id: 'Step 2',
             name: 'Check Your Email',
-            content: (<>Please check <span className='text-blue-900'>example@gmail.com</span> for instructions to reset your password </>),
+            content: (<>Please check <span className='text-blue-900'>{form.getValues('email')}</span> for instructions to reset your password </>),
             button: 'Resent Email',
         },
     ]
-
-    const form = useForm<ForgetPasswordValues>({
-        resolver: zodResolver(forgetPasswordSchema),
-        defaultValues,
-        mode: 'onChange'
-    });
-
-    const {
-        control,
-        formState: { errors }
-    } = form;
 
     type FieldName = keyof ForgetPasswordValues;
 
@@ -64,9 +63,14 @@ export default function UserForgetPassword() {
         if (!output) return;
 
         if (currentStep == 0) {
+
+            const forgetPasswordParam = { 'loginId': form.getValues('email') }
             setCurrentStep(currentStep + 1)
+            const data = forgetPassword(forgetPasswordParam)
+            console.log('forget data = ', data)
         } else if (currentStep == 1) {
-            router.push("/resetPassword")
+            // router.push("/resetPassword")
+            setCurrentStep(0)
         }
     }
 
@@ -86,7 +90,7 @@ export default function UserForgetPassword() {
 
             <div className="flex h-full items-center p-4 lg:p-8">
                 <div className="mx-auto flex w-full flex-col justify-center  sm:w-[405px]">
-                    <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-col text-center items-center justify-center">
                         <Image
                             src={resetPwImage}
                             alt='bg-img'
@@ -95,12 +99,12 @@ export default function UserForgetPassword() {
                             objectPosition="center" />
 
                         {steps.map((step, index) => (
-                            <>
+                            <div key={step.id}>
                                 <h1 className="text-2xl font-semibold tracking-wide">
                                     {currentStep == index && step.name}
                                 </h1>
 
-                                <p className="text-sm text-center w-4/5 pt-[5px]">
+                                <p className="text-sm text-center tracking-wide pt-[5px]">
                                     {currentStep == index && step.content}
                                 </p >
 
@@ -139,10 +143,10 @@ export default function UserForgetPassword() {
                                     </div>
                                 }
 
-                            </>
+                            </div>
                         ))}
 
-                        <Link href={"/"} className='hover:underline text-blue-900 pt-[10px]'>Back to Login</Link>
+                        <Link href={"/"} replace className='hover:underline text-blue-900 pt-[10px]'>Back to Login</Link>
 
                     </div>
                 </div>

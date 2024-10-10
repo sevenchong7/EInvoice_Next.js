@@ -1,12 +1,13 @@
 import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
-import { User } from "@/constants/data";
+import { contents, User } from "@/constants/data";
+import { merchantUserUpdateStatus } from "@/lib/services/userService";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface StatusActionProps {
-    data: User;
+    data: contents;
 }
 
 export default function StatusAction({ data }: StatusActionProps) {
@@ -15,6 +16,7 @@ export default function StatusAction({ data }: StatusActionProps) {
     const t = useTranslations()
 
     const HandleStatus = () => {
+        let status = data.status
         setOpenModal(false)
         setTextVisible(false);
 
@@ -22,6 +24,13 @@ export default function StatusAction({ data }: StatusActionProps) {
             setTextVisible(true);
         }, 300);
 
+        if (data.status === 'Y') {
+            status = 'N'
+        } else {
+            status = 'Y'
+        }
+
+        merchantUserUpdateStatus(data.muId, status)
     }
 
     return (
@@ -56,23 +65,23 @@ export default function StatusAction({ data }: StatusActionProps) {
                             onClick={() => setOpenModal(true)}
                             className={cn(
                                 "relative flex items-center transition-all duration-300 m-auto min-w-[100px]",
-                                data.status === "Active" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
+                                data.status === "Y" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
                                 "rounded-lg"
                             )}
                         >
                             <div
                                 className={cn(
                                     "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                                    data.status === "Active" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
+                                    data.status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
                                 )}
                             />
-                            <p
+                            <div
                                 className={cn(
                                     textVisible ? "opacity-100 " : "opacity-0"
                                 )}
                             >
-                                {data.status}
-                            </p>
+                                {data.status == 'Y' ? <p>Active</p> : <p>Inactive</p>}
+                            </div>
                         </Button>
                     </div>
 

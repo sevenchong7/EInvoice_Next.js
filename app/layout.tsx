@@ -7,6 +7,7 @@ import './globals.css';
 import { auth } from '@/auth';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
+import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,18 +31,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      {/* <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=0.5"
-        />
-      </head> */}
       <body className={`${inter.className} overflow-hidden`}>
         <NextIntlClientProvider messages={messages}>
-          <Providers session={session}>
+          {/* <SessionProvider session={session}> */}
+          <Providers session={session} >
             <Toaster />
             {children}
           </Providers>
+          {/* </SessionProvider> */}
         </NextIntlClientProvider>
       </body>
     </html>

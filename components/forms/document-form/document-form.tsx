@@ -24,12 +24,15 @@ import DocumentFormStep4 from './document-form-step4';
 import { useStore } from '@/action/action';
 import { useTranslations } from 'next-intl';
 import React from 'react';
+import { getCountry } from '@/lib/services/generalService';
 
 
 interface ProfileFormType {
     initialData: any | null;
     categories: any;
 }
+
+
 
 export const DocumentForm: React.FC<ProfileFormType> = ({
     initialData,
@@ -46,9 +49,24 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
     // const toastMessage = initialData ? 'Product updated.' : 'Product created.';
     // const action = initialData ? 'Save changes' : 'Create';
     const [previousStep, setPreviousStep] = useState(0);
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(1);
     const [data, setData] = useState({});
     const delta = currentStep - previousStep;
+
+
+    // const GetCountryInfo = async () => {
+    //     return await getCountry();
+    // }
+
+    // useEffect(() => {
+    //     console.log('step 2 useeffecet')
+    //     GetCountryInfo().then((value) => {
+    //         console.log('country = ', value)
+    //         // setCountries(value)
+    //     })
+    // }, [])
+
+
 
     const { setDocData } = useStore()
 
@@ -66,7 +84,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         totalTaxAmount: 0,
         totalNetAmount: 0,
 
-        items: [],
+        // items: [],
 
         // items: [
         //     {
@@ -130,7 +148,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         supplierCountry: '',
 
         supplierContact: '',
-        supplierEmail: '',
+        supplierEmail: 'a@gmail.com',
 
         buyerRegisterName: '',
         buyerSSTRegisterNumber: '',
@@ -219,6 +237,8 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
 
                 "totalTaxAmount",
                 "totalNetAmount",
+
+                'items',
 
                 ...fieldsItems?.map((_, index) => {
                     const { fields: fieldsRate } = useFieldArray({
@@ -403,12 +423,12 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
             shouldFocus: true
         });
 
+        // const itemOutput = await form.trigger('items')
+        // if (!itemOutput) return
+
         if (!output) { console.log('error'); return; }
 
-        if (fieldsItems.length == 0) {
-            form.setError('items', { message: 'At least one item is required' })
-            return
-        }
+
 
         if (currentStep < steps.length - 1) {
 

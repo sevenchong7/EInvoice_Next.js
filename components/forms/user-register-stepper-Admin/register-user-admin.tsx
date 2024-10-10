@@ -66,7 +66,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   const defaultValues = {
     email: '',
     companyName: '',
-    registerNo: "",
+    businessRegisterNo: "",
     businessTinNo: "",
     password: "",
     confirmPw: "",
@@ -149,7 +149,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
     {
       id: t('TAG_STEP1'),
       name: t('TAG_PERSONAL_INFROMATION'),
-      fields: ['email', 'companyName', 'registerNo', 'businessTinNo', 'password', 'confirmPw']
+      fields: ['email', 'companyName', 'businessRegisterNo', 'businessTinNo', 'password', 'confirmPw']
     },
     {
       id: t('TAG_STEP2'),

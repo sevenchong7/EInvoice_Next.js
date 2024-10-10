@@ -139,7 +139,7 @@ const DocumentInfo = () => {
                     </div>
 
                     <div className="flex justify-between">
-                        <p className="flex">Registration No.: {data.supplierIndustryClassCode}</p>
+                        <p className="flex">Business Reg No.: {data.supplierIndustryClassCode}</p>
                         <p className="flex text-right">Document Code: {data.invoiceId}</p>
                     </div>
 

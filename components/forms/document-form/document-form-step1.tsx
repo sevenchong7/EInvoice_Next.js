@@ -114,15 +114,14 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
         setOpenIndex(-1); // Close the sheet
     };
 
-
     const calculateTotals = () => {
         const items = form.getValues('items');
         let totalTaxAmount = 0;
         let totalNetAmount = 0;
 
         items?.forEach((item) => {
-            const taxAmount = Number(item.totalTaxAmount) || 0;
-            const taxableAmount = Number(item.taxableAmount) || 0;
+            const taxAmount = Number(item?.totalTaxAmount) || 0;
+            const taxableAmount = Number(item?.taxableAmount) || 0;
 
             totalTaxAmount += taxAmount;
             totalNetAmount += taxableAmount;
@@ -144,7 +143,7 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
         form.setValue('totalExcludingTax', exclude);
 
 
-    }, [discount, charge, form.getFieldState('totalNetAmount')])
+    }, [discount, charge, form.watch('totalNetAmount')])
 
     useEffect(() => {
         const exclude = Number(form.getValues('totalExcludingTax')) ?? 0
@@ -153,7 +152,7 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
 
         form.setValue('totalIncludingTax', include);
 
-    }, [form.getFieldState('totalExcludingTax'), form.getFieldState('totalTaxAmount')])
+    }, [form.watch('totalExcludingTax'), form.watch('totalTaxAmount')])
 
     useEffect(() => {
 
@@ -165,11 +164,27 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
         form.setValue('totalPayableAmount', totalPayableAmount)
 
 
-    }, [form.getFieldState('totalIncludingTax'), rouding])
+    }, [form.watch('totalIncludingTax'), rouding])
+
+    useEffect(() => {
+        setInvoiceType(form.getValues('invoiceType'))
+        if (form.getValues('invoiceType') == 'invoice' || form.getValues('invoiceType') == 'selfBilledInvoice') {
+            form.setValue('invoiceDocRef', null)
+            form.setValue('additionalInvoiceDocRef', null)
+        }
+    }, [form.watch('invoiceType')])
+
 
     useEffect(() => {
         setInvoiceType(form.getValues('invoiceType'))
     }, [])
+
+    // useEffect(() => {
+    //     console.log('field item length = ', fieldsItems.length)
+    //     if (fieldsItems.length == 0) {
+    //         form.setError('items', { message: 'At least one item is required' })
+    //     }
+    // }, [form.watch('items')])
 
     return (
         <>
@@ -376,7 +391,7 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
                 <div className="pt-[50px]">
                     <div className="flex  gap-4 bg-gray-400 px-2 py-2 lg:text-nowrap justify-between">
                         <p className="flex-1 hidden lg:block">{t('TAG_CLASSIFICATION_CODE')}</p>
-                        <p className="flex-1 lg:hidden md:block">{t('TAG_CLASS_CODE')}</p>
+                        <p className="flex-1 lg:hidden md:block">{t('TAG_CLASSIFICATION_CODE')}</p>
                         <p className="flex-1">{t('TAG_DISC_PROD_SERVICE')}</p>
                         <p className="md:min-w-[100px]">{t('TAG_QTY')}</p>
                         <p className="flex-1">{t('TAG_UNIT_PRICE')} (RM)</p>

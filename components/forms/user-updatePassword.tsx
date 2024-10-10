@@ -12,6 +12,7 @@ import approve from '@/public/Approval.png';
 import Image from 'next/image';
 import Required from "../ui/required";
 import { useTranslations } from "next-intl";
+import { updatePassword } from "@/lib/services/userService";
 
 export default function UpdatePassword() {
     const [data, setData] = useState({});
@@ -48,10 +49,19 @@ export default function UpdatePassword() {
                 shouldFocus: true
             });
             if (!output) return;
-            setPwUpdated(true);
 
+            const updatePasswordParam = {
+                'oldPassword': form.getValues('currentPassword'),
+                'password': form.getValues('newPassword'),
+                'confirmationPassword': form.getValues('confirmPassword')
+            }
+
+            updatePassword(updatePasswordParam).then(
+                () => {
+                    setPwUpdated(true)
+                }
+            )
         } catch (error: any) {
-        } finally {
         }
     }
 
@@ -135,7 +145,7 @@ export default function UpdatePassword() {
                         </div> :
                         <div className="flex flex-col h-screen  items-center justify-center space-y-10">
                             <Image src={approve} alt='approve' />
-                            <h1 className="text-2xl font-semibold">{t('TAG_PASSWORD_UPDATEX')}</h1>
+                            <h1 className="text-2xl font-semibold">{t('TAG_PASSWORD_UPDATE')}</h1>
                             <p className="text-gray-400 font-light">{t('TAG_PASSWORD_UPDATE_DESC')}.</p>
                         </div>
                 }

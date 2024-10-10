@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import Required from "@/components/ui/required";
 import { useTranslations } from "next-intl";
+import React from "react";
 
 export default function LineItem(
     {
@@ -235,6 +236,7 @@ export default function LineItem(
             setOpen(false);
         } else {
             // removeItems(Itemindex)
+            await trigger(`items.${Itemindex}`, { shouldFocus: true })
         }
     }
 

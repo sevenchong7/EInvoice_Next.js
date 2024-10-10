@@ -23,6 +23,7 @@ import RegisterUserStep4 from './register-user-step4';
 import RegisterUserStep5 from './register-user-step5';
 import approve from '@/public/Approval.png'
 import React from 'react';
+import { register } from '@/lib/services/userService';
 
 export default function RegisterUserForm() {
     const [previousStep, setPreviousStep] = useState(0);
@@ -31,17 +32,19 @@ export default function RegisterUserForm() {
     const router = useRouter();
 
     const defaultValues = {
+        username: '',
         email: '',
         companyName: '',
-        registerNo: "",
+        businessRegisterNo: '',
         businessTinNo: "",
         password: "",
         confirmPw: "",
         streetAddress: "",
+        aptSuite: '',
         zipCode: "",
         townCity: "",
-        state: "",
-        country: "",
+        // state: "",
+        // country: "",
         contactNo: "",
         package: '',
         paymentMethod: '',
@@ -51,7 +54,7 @@ export default function RegisterUserForm() {
         {
             id: 'Step 1',
             name: 'Personal Information:',
-            fields: ['email', 'companyName', 'registerNo', 'businessTinNo', 'password', 'confirmPw']
+            fields: ['username', 'email', 'companyName', 'businessRegisterNo', 'businessTinNo', 'password', 'confirmPw']
         },
         {
             id: 'Step 2',
@@ -86,6 +89,7 @@ export default function RegisterUserForm() {
     } = form;
 
     const processForm: SubmitHandler<RegisterFormValues> = (data) => {
+        let skip = true;
         if (data.password !== data.confirmPw) {
             form.setError("confirmPw", {
                 type: "manual",
@@ -97,7 +101,32 @@ export default function RegisterUserForm() {
         console.log('data ==>', data);
         setData(data);
         // api call and reset
-        // form.reset();
+        // if (form.getValues('streetAddress') != null || undefined) {
+        //     skip = false
+        // }
+
+        const registerParam = {
+            "loginId": form.getValues('username'),
+            "password": form.getValues('password'),
+            "companyName": form.getValues('confirmPw'),
+            "registrationNo": form.getValues('businessRegisterNo'),
+            "busTinNo": form.getValues('businessTinNo'),
+            "skipCompanyInfo": skip,
+            "streetAddress": form.getValues('streetAddress'),
+            // "addressOpt": form.getValues('aptSuite'),
+            "postCode": form.getValues('zipCode'),
+            "city": form.getValues('townCity'),
+            "state": form.getValues('state'),
+            "country": form.getValues('country'),
+            "contactPrefix": form.getValues('contactPrefix'),
+            "contact": form.getValues('contactNo'),
+            "email": form.getValues('email'),
+            "systemPackageId": form.getValues('package')
+        }
+
+        const registerData = register(registerParam)
+        // console.log(registerData)
+        form.reset();
     };
 
     type FieldName = keyof RegisterFormValues;
@@ -117,7 +146,8 @@ export default function RegisterUserForm() {
         }
 
         if (currentStep === steps.length - 1) {
-            await form.handleSubmit(processForm)();
+            console.log('submit')
+
         }
     };
 
@@ -138,7 +168,8 @@ export default function RegisterUserForm() {
         }
     };
 
-    const HandleLogin = () => {
+    const HandleLogin = async () => {
+        await form.handleSubmit(processForm)();
         router.push('/');
     }
 
@@ -150,7 +181,7 @@ export default function RegisterUserForm() {
                 <div className={`mx-auto flex w-full flex-col justify-center items-center  ${currentStep != 2 && "sm:w-[620px] "}`}>
                     <div className="flex-col relative z-20 flex items-center text-lg font-medium space-y-2 w-full">
                         {steps.map((step, index) => (
-                            <>
+                            <div key={step.id}>
                                 {currentStep === 1 ?
                                     <div className='flex flex-row w-full'>
                                         <div className='flex flex-col flex-1'>
@@ -177,7 +208,7 @@ export default function RegisterUserForm() {
                                             {currentStep == index && step.name}
                                         </h1>
                                 }
-                            </>
+                            </div>
                         ))}
                     </div>
                     <div className='pt-[30px] w-full'>

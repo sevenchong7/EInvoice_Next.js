@@ -3,7 +3,45 @@ import { ColumnDef } from '@tanstack/react-table';
 // import StatusAction from './status-action';
 import { Merchant, Role, User } from '@/constants/data';
 
-export const columns: ColumnDef<User>[] = [
+interface merchatUserList {
+
+}
+
+interface roleInfo {
+  mupId: string,
+  currentPackageId: number,
+  roleQuantity: number,
+  merchantUserList: [],
+  permissionList: permissionList[]
+}
+
+interface permissionList {
+  Function: Function[],
+  Route: string,
+  selected: boolean
+}
+
+interface Function {
+  FunctionName: string,
+  selected: boolean
+  subFunctions: subFunction[]
+  value: string
+}
+
+interface subFunction {
+  FunctionName: string,
+  selected: boolean,
+  value: string
+}
+
+interface content {
+  muId: number,
+  username: string,
+  role: string,
+  status: string
+}
+
+export const columns: ColumnDef<content>[] = [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -24,11 +62,11 @@ export const columns: ColumnDef<User>[] = [
   //   enableHiding: false
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'muId',
     header: 'TAG_NO',
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'username',
     header: 'TAG_USERNAME',
   },
   // {

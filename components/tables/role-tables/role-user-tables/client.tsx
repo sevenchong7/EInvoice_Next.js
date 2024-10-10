@@ -9,7 +9,7 @@ import { columns } from './columns';
 import { DataTable } from './role-data-table';
 
 interface ProductsClientProps {
-  data: User[];
+  data: any[];
 }
 
 export const RoleUserClient: React.FC<ProductsClientProps> = ({ data }) => {

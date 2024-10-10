@@ -31,6 +31,7 @@ import { Switch } from '@/components/ui/switch';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Required from '@/components/ui/required';
 import { useTranslations } from 'next-intl';
+import React from 'react';
 
 interface CellActionProps {
   data: Merchant;

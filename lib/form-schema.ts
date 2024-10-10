@@ -3,7 +3,7 @@ import * as z from 'zod';
 export const profileSchema = z.object({
   firstname: z
     .string()
-    .min(3, { message: 'Product Name must be at least 3 characters' }),
+    .min(3, { message: 'TAG_NAME_ERROR' }),
   lastname: z
     .string()
     .min(3, { message: 'Product Name must be at least 3 characters' }),
@@ -40,10 +40,12 @@ export type ProfileFormValues = z.infer<typeof profileSchema>;
 
 
 export const registerSchema = z.object({
+  username: z.string().trim().min(1, { message: 'Please enter the Username !' }),
   email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
   companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
-  registerNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
-  businessTinNo: z.string().trim().min(3, { message: "Business Tin No must be at least 3 characters !" }),
+  businessRegisterNo: z.string().trim().regex(/^\d{12}$/, { message: 'At least 12 digit number' }),
+  businessTinNo: z.string().trim().regex(/^(C|CS|D|E|F|FA|PT|TA|TC|TN|TR|TP|J|LE)\d{11}$/, { message: 'The value must start with one of the prefixes (C, CS, D, E, F, FA, PT, TA, TC, TN, TR, TP, J, LE) followed by 11 digits' }),
+  // .min(3, { message: "Business Tin No must be at least 3 characters !" }),
   password: z.string().trim().min(3, { message: "Password must be enter !" }),
   confirmPw: z.string().trim().min(3, { message: "Confirm Password must be enter !" }),
   streetAddress: z.string().trim().optional(),
@@ -52,6 +54,7 @@ export const registerSchema = z.object({
   townCity: z.string().trim().optional(),
   state: z.string().trim().optional(),
   country: z.string().trim().optional(),
+  contactPrefix: z.string().trim().optional(),
   contactNo: z.string().trim().optional(),
   package: z.string().trim().min(1, { message: 'Please select one Package!' }),
   paymentMethod: z.string().optional()
@@ -110,7 +113,7 @@ export const registerUserAdminSchema = z.object({
 
   email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
   companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
-  registerNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
+  businessRegisterNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
   businessTinNo: z.string().trim().min(3, { message: "Business Tin No must be at least 3 characters !" }),
   password: z.string().trim().min(3, { message: "Password must be enter !" }),
   confirmPw: z.string().trim().min(3, { message: "Confirm Password must be enter !" }),
@@ -257,7 +260,7 @@ export const documentFormSchema = z.object({
       totalCharge: z.coerce.number().optional(),
       totalTaxAmount: z.coerce.number().optional(),
     })
-  ).nonempty({ message: "At least one item is required" }),
+  ).min(1, { message: "The array must contain at least one item" }),
 
   supplierIndustryClassCode: z.string().trim().min(1, { message: 'Please enter the Industry Classification Code !' }),
   supplierIndustryName: z.string().trim().optional(),
@@ -272,6 +275,7 @@ export const documentFormSchema = z.object({
   supplierState: z.string().trim().optional(),
   supplierCountry: z.string().trim().optional(),
 
+  supplierContactPrefix: z.string().trim().optional(),
   supplierContact: z.string().trim().optional(),
   supplierEmail: z.coerce.string().email().trim(),
 
@@ -290,6 +294,8 @@ export const documentFormSchema = z.object({
   buyerCity: z.string().trim().optional(),
   buyerState: z.string().trim().optional(),
   buyerCountry: z.string().trim().optional(),
+
+  buyerContactPrefix: z.string().trim().optional(),
   buyerContact: z.string().trim().min(1, { message: 'Please enter the contact number!' }),
   buyerEmail: z.string().email().trim().optional(),
 
@@ -332,16 +338,15 @@ export const documentFormSchema = z.object({
 }, {
   message: 'Please enter the Invoice Doc Reference!',
   path: ['invoiceDocRef'],
-})
-  .refine((data) => {
-    if (data.invoiceType === 'invoice' || data.invoiceType === 'selfBilledInvoice') {
-      return true;
-    }
-    return !!data.additionalInvoiceDocRef?.trim();
-  }, {
-    message: 'Please enter the Additional Invoice Doc Reference!',
-    path: ['additionalInvoiceDocRef'],
-  });
+}).refine((data) => {
+  if (data.invoiceType === 'invoice' || data.invoiceType === 'selfBilledInvoice') {
+    return true;
+  }
+  return !!data.additionalInvoiceDocRef?.trim();
+}, {
+  message: 'Please enter the Additional Invoice Doc Reference!',
+  path: ['additionalInvoiceDocRef'],
+});
 
 export type DocumentFormValues = z.infer<typeof documentFormSchema>;
 

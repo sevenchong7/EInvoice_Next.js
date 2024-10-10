@@ -62,7 +62,7 @@ export default function UserResetPassword() {
         if (currentStep == 0) {
             setCurrentStep(currentStep + 1)
         } else if (currentStep == 1) {
-            router.push("/")
+            router.replace("/")
         }
     }
 

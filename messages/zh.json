@@ -288,5 +288,6 @@
     "TAG_USERNAME": "用户名称",
     "TAG_TIN_NO": "识别号",
     "TAG_REG_NO": "登记号",
-    "TAG_LAST_UPDATE": "最后更改"
+    "TAG_LAST_UPDATE": "最后更改",
+    "TAG_SELECT_ROLE": "请选择职位"
 }

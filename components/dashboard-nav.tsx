@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Icons } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { NavItem } from '@/types';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { useSidebar } from '@/hooks/useSidebar';
 import {
@@ -16,6 +16,8 @@ import {
   TooltipTrigger
 } from './ui/tooltip';
 import { useTranslations } from 'next-intl';
+import PermissionCheck from './permission-check';
+import { useSession } from 'next-auth/react';
 
 interface DashboardNavProps {
   items: NavItem[];
@@ -28,6 +30,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
   const path = usePathname();
   const { isMinimized } = useSidebar();
   const t = useTranslations()
+  const { data: session } = useSession()
 
   if (!items?.length) {
     return null;
@@ -69,8 +72,10 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
                   <AccordionContent>
                     {
                       item.children.map((childItem, childindex) => {
-                        return childItem.href && (
-                          <Link
+                        return childItem.href &&
+                          childItem.permission?.some((perm) => session!.user.permissions.includes(perm))
+                          &&
+                          (<Link
                             key={childindex}
                             href={childItem.disabled ? '/' : childItem.href}
                             onClick={() => { if (setOpen) setOpen(false); }}
@@ -91,7 +96,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false, handleToggle
                               )}
                             </span>
                           </Link>
-                        )
+                          )
                       })
                     }
                   </AccordionContent>

@@ -29,6 +29,39 @@ import { Separator } from "@/components/ui/separator";
 import Required from "@/components/ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { getMerchantInfo } from "@/lib/services/userService";
+import { merchants } from "@/constants/data";
+import { getCountry } from "@/lib/services/generalService";
+
+interface MerchantParam {
+    address: string;
+    businessTinNo: string;
+    city: string;
+    companyName: string;
+    contact: string;
+    contactPrefix: string;
+    country: string;
+    email: string;
+    joinDate: string;
+    merchantId: number;
+    postcode: string;
+    registrationNo: string;
+    stateId: string;
+
+}
+
+interface CountryPromp {
+    countryName: string;
+    countryCode: string;
+    contactPrefix: string;
+    stateList: []
+}
+
+interface StatePromp {
+    stateName: string;
+    stateCode: string;
+
+}
 
 export default function DocumentFormStep2(
     {
@@ -44,6 +77,81 @@ export default function DocumentFormStep2(
     const [FavDeli, setFavDeli] = useState(false);
     const [supplierError, setSupplierError] = useState(false);
     const [buyerError, setBuyerError] = useState(false);
+
+    const [merchantInfo, setMerchantInfo] = useState<MerchantParam>()
+    const [supplierCountries, setSupplierCountries] = useState<CountryPromp[]>()
+    const [supplierStates, setSupplierStates] = useState<StatePromp[]>();
+    const [buyerCountries, setBuyerCountries] = useState<CountryPromp[]>()
+    const [buyerStates, setBuyerStates] = useState<StatePromp[]>();
+    const [deliveryCountries, setDeliveryCountries] = useState<CountryPromp[]>()
+    const [deliveryStates, setDeliveryStates] = useState<StatePromp[]>();
+
+    async function getMerchant() {
+        return await getMerchantInfo();
+    };
+
+    const GetCountryInfo = async () => {
+        return await getCountry();
+    }
+
+    useEffect(() => {
+        GetCountryInfo().then((value) => {
+            console.log('country = ', value)
+            setSupplierCountries(value)
+            setBuyerCountries(value)
+            setDeliveryCountries(value)
+        })
+
+        getMerchant().then((res) => {
+            console.log('res = ', res)
+            setMerchantInfo(res)
+        });
+    }, [])
+
+    useEffect(() => {
+        form.setValue('supplierIndustryName', merchantInfo?.companyName)
+        form.setValue('supplierTaxIndentificationNumber', merchantInfo?.businessTinNo)
+        form.setValue('supplierBusinessRegNumber', merchantInfo?.registrationNo)
+        // form.setValue('sstRegNumber', merchantInfo?.)
+        // form.setValue('supplierIndustryName', merchantInfo?.companyName)
+        form.setValue('supplierLine', merchantInfo?.address)
+        form.setValue('supplierZipCode', merchantInfo?.postcode)
+        form.setValue('supplierCity', merchantInfo?.city)
+        form.setValue('supplierCountry', merchantInfo?.country)
+        form.setValue('supplierState', merchantInfo?.stateId)
+        form.setValue('supplierContactPrefix', merchantInfo?.contactPrefix)
+        form.setValue('supplierContact', merchantInfo?.contact)
+        form.setValue('supplierEmail', merchantInfo?.email || '')
+    }, [merchantInfo])
+
+    useEffect(() => {
+        console.log('1st time test')
+        supplierCountries?.map((value) => {
+            if (form.getValues('supplierCountry') == value.countryCode) {
+                setSupplierStates(value.stateList)
+                form.setValue('supplierContactPrefix', value.contactPrefix);
+            }
+        })
+
+    }, [form.watch('supplierCountry')])
+
+    useEffect(() => {
+        buyerCountries?.map((value) => {
+            if (form.getValues('buyerCountry') == value.countryCode) {
+                setBuyerStates(value.stateList)
+                form.setValue('buyerContactPrefix', value.contactPrefix);
+            }
+        })
+    }, [form.watch('buyerCountry')])
+
+    useEffect(() => {
+        deliveryCountries?.map((value) => {
+            if (form.getValues('deliveryCountry') == value.countryCode) {
+                setDeliveryStates(value.stateList)
+            }
+        })
+    }, [form.watch('deliveryCountry')])
+
 
     const {
         control,
@@ -274,38 +382,85 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name={'supplierState'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={editable}
-                                            {...field}
-                                        // defaultValue={''}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                    </div>
-                    <div className="grid grid-cols-3 gap-8 pl-[20px]">
-                        <FormField
-                            control={form.control}
                             name={'supplierCountry'}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
-                                        <Input
+                                        {/* <Input
                                             type="text"
                                             disabled={editable}
                                             {...field}
                                         // defaultValue={''}
-                                        />
+                                        /> */}
+
+                                        <Select
+                                            disabled={editable}
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a Country"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {supplierCountries?.map((country, index) => (
+                                                    <SelectItem key={index} value={country.countryCode}>
+                                                        {country.countryName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="grid grid-cols-3 gap-8 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'supplierState'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
+                                    <FormControl>
+                                        {/* <Input
+                                            type="text"
+                                            disabled={editable}
+                                            {...field}
+                                        // defaultValue={''}
+                                        /> */}
+                                        <Select
+                                            disabled={editable}
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        // defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a State"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {supplierStates?.map((state, index) => (
+                                                    <SelectItem key={index} value={state.stateCode}>
+                                                        {state.stateName}
+                                                    </SelectItem>
+
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -327,12 +482,26 @@ export default function DocumentFormStep2(
                                 <FormItem>
                                     <FormLabel>{t('TAG_CONTACT_NO')}</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={editable}
-                                            {...field}
-                                        // defaultValue={''}
-                                        />
+                                        <div className="flex w-full">
+                                            <div className="max-w-[80px] mr-5">
+                                                <Input
+                                                    type="text"
+                                                    disabled={true}
+                                                    value={form.getValues('supplierContactPrefix')}
+                                                // value={form.getValues()}
+                                                // {...field}
+                                                // defaultValue={''}
+                                                />
+                                            </div>
+                                            <div className="flex flex-auto grow w-full">
+                                                <Input
+                                                    type="text"
+                                                    disabled={editable}
+                                                    {...field}
+                                                // defaultValue={''}
+                                                />
+                                            </div>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -397,7 +566,7 @@ export default function DocumentFormStep2(
                                 </div>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="min-w-fit">
+                        <DialogContent className="min-w-fit" aria-describedby={undefined}>
                             <DialogHeader className="items-center">
                                 <DialogTitle className="text-2xl">{t('TAG_FAVORITE_MODAL_TITLE')}</DialogTitle>
                             </DialogHeader>
@@ -495,7 +664,7 @@ export default function DocumentFormStep2(
                             )}
                         />
                     </div>
-                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px] items-end">
                         <FormField
                             control={form.control}
                             name={'buyerRegistration_Identification_PassportNumber'}
@@ -531,7 +700,7 @@ export default function DocumentFormStep2(
                                 </FormItem>
                             )}
                         />
-                        <div className="flex flex-col items-start justify-end">
+                        <div className="flex flex-col items-start">
                             <Button className="bg-blue-800 hover:bg-blue-900 ">{t('TAG_VALIDATE')}</Button>
                         </div>
                     </div>
@@ -602,16 +771,34 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name={'buyerState'}
+                            name={'buyerCountry'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
+                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            type="text"
+                                        <Select
                                             disabled={loading}
-                                            {...field}
-                                        />
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a Country"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {buyerCountries?.map((country, index) => (
+                                                    <SelectItem key={index} value={country.countryCode}>
+                                                        {country.countryName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -622,16 +809,35 @@ export default function DocumentFormStep2(
                     <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
                         <FormField
                             control={form.control}
-                            name={'buyerCountry'}
+                            name={'buyerState'}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            type="text"
+                                        <Select
                                             disabled={loading}
-                                            {...field}
-                                        />
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        // defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a State"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {buyerStates?.map((state, index) => (
+                                                    <SelectItem key={index} value={state.stateCode}>
+                                                        {state.stateName}
+                                                    </SelectItem>
+
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -646,6 +852,7 @@ export default function DocumentFormStep2(
                         <Separator />
                     </div>
                     <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+
                         <FormField
                             control={form.control}
                             name={'buyerContact'}
@@ -653,16 +860,32 @@ export default function DocumentFormStep2(
                                 <FormItem>
                                     <FormLabel>{t('TAG_CONTACT_NO')} <Required /></FormLabel>
                                     <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
-                                        />
+                                        <div className="flex w-full">
+                                            <div className="max-w-[80px] mr-5">
+                                                <Input
+                                                    type="text"
+                                                    disabled={true}
+                                                    value={form.getValues('buyerContactPrefix')}
+                                                // value={form.getValues()}
+                                                // {...field}
+                                                // defaultValue={''}
+                                                />
+                                            </div>
+                                            <div className="flex flex-auto grow w-full">
+                                                <Input
+                                                    type="text"
+                                                    disabled={loading}
+                                                    {...field}
+                                                // defaultValue={''}
+                                                />
+                                            </div>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+
 
                         <FormField
                             control={form.control}
@@ -720,7 +943,7 @@ export default function DocumentFormStep2(
                                 </div>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="min-w-fit">
+                        <DialogContent className="min-w-fit" aria-describedby={undefined}>
                             <DialogHeader className="items-center">
                                 <DialogTitle className="text-2xl">{t('TAG_FAVORITE_MODAL_TITLE')}</DialogTitle>
                             </DialogHeader>
@@ -799,7 +1022,7 @@ export default function DocumentFormStep2(
                             )}
                         />
                     </div>
-                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px] items-end">
                         <FormField
                             control={form.control}
                             name={'deliveryRegistration_Identification_PassportNumber'}
@@ -908,36 +1131,73 @@ export default function DocumentFormStep2(
 
                         <FormField
                             control={form.control}
-                            name={'deliveryState'}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            disabled={loading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                    </div>
-                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
-                        <FormField
-                            control={form.control}
                             name={'deliveryCountry'}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('TAG_COUNTRY')}</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            type="text"
+                                        <Select
                                             disabled={loading}
-                                            {...field}
-                                        />
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a Country"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {deliveryCountries?.map((country, index) => (
+                                                    <SelectItem key={index} value={country.countryCode}>
+                                                        {country.countryName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                        <FormField
+                            control={form.control}
+                            name={'deliveryState'}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('TAG_STATE')}</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            disabled={loading}
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        // defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue
+                                                        // defaultValue={field.value}
+                                                        placeholder="Select a State"
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                {/* @ts-ignore  */}
+                                                {deliveryStates?.map((state, index) => (
+                                                    <SelectItem key={index} value={state.stateCode}>
+                                                        {state.stateName}
+                                                    </SelectItem>
+
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -951,7 +1211,7 @@ export default function DocumentFormStep2(
                         <h1 className="text-2xl font-semibold">{t('TAG_IMPORT_EXPORT_INFORMATION')}</h1>
                         <Separator />
                     </div>
-                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px]">
+                    <div className="gap-8 md:grid md:grid-cols-3 pl-[20px] items-end">
                         <FormField
                             control={form.control}
                             name={'deliveryReferenceNumber'}

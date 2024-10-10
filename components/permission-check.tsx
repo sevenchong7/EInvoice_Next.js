@@ -1,5 +1,6 @@
 "use client"
 import useHasAccess from "@/hooks/useHasAccess";
+import React from "react";
 import { useEffect } from "react";
 
 const PermissionCheck = ({

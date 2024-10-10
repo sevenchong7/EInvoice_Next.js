@@ -1,13 +1,11 @@
 'use client';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { CellAction } from './cell-action';
-import { User } from '@/constants/data';
+import { contents, User } from '@/constants/data';
 import StatusAction from './status-action';
-// import { useTranslations } from 'next-intl';
+import { CellAction } from './cell-action';
 
-// const t = useTranslations();
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<contents>[] = [
 
   // {
   //   id: 'select',
@@ -29,15 +27,15 @@ export const columns: ColumnDef<User>[] = [
   //   enableHiding: false
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'muId',
     header: 'TAG_NO'
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'username',
     header: 'TAG_NAME'
   },
   {
-    accessorKey: 'merchant',
+    accessorKey: 'merchantName',
     header: 'TAG_MERCHANT',
     // enableHiding: true,
   },

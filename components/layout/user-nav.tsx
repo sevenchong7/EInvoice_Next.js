@@ -14,10 +14,21 @@ import {
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 export function UserNav() {
   const { data: session } = useSession();
   const router = useRouter();
   const t = useTranslations();
+
+  useEffect(() => {
+    console.log('userNav = ', session)
+  }, [])
+
+  // const HandleLogout = () => {
+  //   signOut()
+  //   router.refresh()
+  // }
+
   if (session) {
     return (
       <DropdownMenu>

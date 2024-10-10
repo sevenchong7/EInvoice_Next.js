@@ -25,7 +25,7 @@ export const columns: ColumnDef<Role>[] = [
   //   enableHiding: false
   // },
   {
-    accessorKey: 'id',
+    accessorKey: 'mupId',
     header: 'TAG_NO',
   },
   {
@@ -34,17 +34,17 @@ export const columns: ColumnDef<Role>[] = [
     enableColumnFilter: false,
   },
   {
-    accessorKey: 'merchant',
+    accessorKey: 'merchantName',
     header: 'TAG_MERCHANT',
     // enableHiding: true,
   },
   {
-    accessorKey: 'amount',
+    accessorKey: 'roleQuantity',
     header: 'TAG_AMOUNT',
     enableColumnFilter: false,
   },
   {
-    accessorKey: 'lastUpdate',
+    accessorKey: 'lastModify',
     header: 'TAG_LAST_UPDATE',
     enableColumnFilter: true,
   },

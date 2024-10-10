@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Select,
     SelectContent,
@@ -20,100 +20,238 @@ import {
 } from "@/components/ui/select"
 import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
+import React from 'react';
+import { mechantUserInviteNewUser, roleSelectionList, roleSelectionPermission } from '@/lib/services/userService';
+import { cn } from '@/lib/utils';
+
+interface AccessControl {
+    createDashboard: boolean,
+    removeDashboard: boolean,
+    updateDashboard: boolean,
+    deleteDashboaed: boolean,
+    createUser: boolean,
+    removeUser: boolean,
+    updateUser: boolean,
+    deleteUser: boolean,
+    createProfile: boolean,
+    removeProfile: boolean,
+    updateProfile: boolean,
+    deleteProfile: boolean
+};
+
+interface rolePermission {
+
+    currentPackageId: number,
+    mupId: number,
+    permissionList: permissionList[],
+    roleQuantity: number
+
+}
+
+interface permissionList {
+    Function: Function[],
+    Route: string,
+    selected: boolean
+}
+
+interface Function {
+    FunctionName: string,
+    selected: boolean,
+    subFunctions: subFunction[],
+    value: string
+}
+
+interface subFunction {
+    FunctionName: string,
+    selected: boolean,
+    value: string
+}
 
 export default function AddUser() {
+    let mechantUserInviteNewUserParam: { loginId: string; role: string | undefined; hasNewRole: boolean; permission: string[]; } | undefined = undefined
     const router = useRouter();
     const t = useTranslations()
-    const [createDashboard, setCreateDashboard] = useState(false);
-    const [removeDashboard, setRemoveDashboard] = useState(false);
-    const [updateDashboard, setUpdateDashboard] = useState(false);
-    const [deleteDashboard, setDeleteDashboard] = useState(false);
-    const [createUser, setCreateUser] = useState(false);
-    const [removeUser, setRemoveUser] = useState(false);
-    const [updateUser, setUpdateUser] = useState(false);
-    const [deleteUser, setDeleteUser] = useState(false);
-    const [createProfile, setCreateProfile] = useState(false);
-    const [removeProfile, setRemoveProfile] = useState(false);
-    const [updateProfile, setUpdateProfile] = useState(false);
-    const [deleteProfile, setDeleteProfile] = useState(false);
     const [checkAll, setCheckAll] = useState(false);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const [role, setRole] = useState('')
+    const [roleModal, setRole] = useState('')
     const [email, setEmail] = useState('')
     const [edit, setEdit] = useState(true);
+    const [roleSelection, setRoleSelection] = useState([]);
+    const [rolePermission, setRolePermission] = useState<rolePermission>();
+    const [selectedRole, setSelectedRole] = useState<string>();
+    const [permissionList, setPermissionList] = useState<string[]>([])
+    const permissionListRef = useRef<string[]>([]);
+    const [checkboxStates, setCheckboxStates] = useState<boolean[][][]>(
+        rolePermission?.permissionList
+            ? rolePermission.permissionList.map((data) =>
+                data.Function.map((value) => value.subFunctions.map(() => false))
+            )
+            : []
+    );
+
+    const GetRoleSelectionList = async () => {
+        return await roleSelectionList();
+    }
+
+    const GetRoleSelectionPermission = async (body: any) => {
+        return await roleSelectionPermission(body)
+    }
+
+    useEffect(() => {
+        GetRoleSelectionList().then((res) => {
+            setRoleSelection(res)
+        })
+    }, [])
+
+    useEffect(() => {
+        console.log('selectedRole = ', roleSelection)
+        if (selectedRole !== '' && selectedRole !== undefined) {
+            console.log('role selection = ', selectedRole)
+            GetRoleSelectionPermission(selectedRole).then((res) => {
+                setRolePermission(res.data)
+            })
+        }
+    }, [selectedRole])
+
+    useEffect(() => {
+        if (rolePermission != undefined) {
+            console.log('rolePermission = ', rolePermission)
+        }
+    }, [rolePermission])
+
+
+
+    useEffect(() => {
+        if (rolePermission?.permissionList) {
+            setCheckboxStates(
+                rolePermission.permissionList.map((data) =>
+                    data.Function.map((value) => value.subFunctions.map((res) => res.selected))
+                )
+            );
+        }
+        setPermissionList([]);
+    }, [rolePermission]);
+
+    const handleCheckedChange = (routeIndex: number, funcIndex: number, subFuncIndex: number) => {
+        setCheckboxStates((prevState) =>
+            prevState.map((route, rIndex) =>
+                rIndex === routeIndex
+                    ? route.map((checked, fIndex) => fIndex === funcIndex ?
+                        checked.map((res, subIndex) => subIndex === subFuncIndex ? !res : res)
+                        : checked
+                    )
+                    : route
+            )
+        );
+    };
 
     const handleCheckAll = (check: boolean) => {
         setCheckAll(check);
         if (check) {
-            setCreateDashboard(true)
-            setRemoveDashboard(true)
-            setUpdateDashboard(true)
-            setDeleteDashboard(true)
-            setCreateUser(true)
-            setRemoveUser(true)
-            setUpdateUser(true)
-            setDeleteUser(true)
-            setCreateProfile(true)
-            setRemoveProfile(true)
-            setUpdateProfile(true)
-            setDeleteProfile(true)
+            if (rolePermission?.permissionList) {
+                setCheckboxStates(
+                    rolePermission.permissionList.map((data) =>
+                        data.Function.map((value) => value.subFunctions.map(() => true))
+                    )
+                );
+            }
         } else {
-            setCreateDashboard(false)
-            setRemoveDashboard(false)
-            setUpdateDashboard(false)
-            setDeleteDashboard(false)
-            setCreateUser(false)
-            setRemoveUser(false)
-            setUpdateUser(false)
-            setDeleteUser(false)
-            setCreateProfile(false)
-            setRemoveProfile(false)
-            setUpdateProfile(false)
-            setDeleteProfile(false)
+            if (rolePermission?.permissionList) {
+                setCheckboxStates(
+                    rolePermission.permissionList.map((data) =>
+                        data.Function.map((value) => value.subFunctions.map(() => false))
+                    )
+                );
+            }
         }
     }
 
     useEffect(() => {
-        if (
-            createDashboard &&
-            removeDashboard &&
-            updateDashboard &&
-            deleteDashboard &&
-            createUser &&
-            removeUser &&
-            updateUser &&
-            deleteUser &&
-            createProfile &&
-            removeProfile &&
-            updateProfile &&
-            deleteProfile
-        ) {
-            setCheckAll(true)
-        } else {
-            setCheckAll(false)
+        if (rolePermission?.permissionList) {
+            const hasAnyUnchecked = checkboxStates.some(row =>
+                row.some(state => state.some(res => res === false))
+            );
+            setCheckAll(!hasAnyUnchecked); // If no unchecked boxes, set to true
         }
-    }, [
-        createDashboard,
-        removeDashboard,
-        updateDashboard,
-        deleteDashboard,
-        createUser,
-        removeUser,
-        updateUser,
-        deleteUser,
-        createProfile,
-        removeProfile,
-        updateProfile,
-        deleteProfile
-    ])
+    }, [checkboxStates])
+
+    const setUserPermissionList = (res: any) => {
+        setPermissionList((prevList) => {
+            if (!prevList.includes(res.value)) {
+                return [...prevList, res.value];
+            }
+            return prevList;
+        })
+    }
+
+    const checkDuplicateName = () => {
+        return false
+    }
+
+    const checkDuplicateRole = () => {
+        return false
+    }
 
     const onConfirm = () => {
+        if (!checkDuplicateRole) return
 
     }
 
-    const HandleConfirm = () => {
-        setOpen(!open)
+    // useEffect(() => {
+
+    //     // return mechantUserInviteNewUserParam
+    // }, [permissionList, email, selectedRole])
+    const checkChange = () => {
+        let check = true;
+        let tempPermissionList: any[] = [];
+
+        if (rolePermission?.permissionList) {
+            for (let i = 0; i < rolePermission.permissionList.length; i++) {
+                const data = rolePermission.permissionList[i];
+                for (let j = 0; j < data.Function.length; j++) {
+                    const func = data.Function[j];
+                    for (let k = 0; k < func.subFunctions.length; k++) {
+                        const res = func.subFunctions[k];
+                        if (res.selected !== checkboxStates[i][j][k]) {
+                            if (checkboxStates[i][j][k] === true) {
+                                tempPermissionList.push(res.value);
+                            }
+                            check = false;
+                        } else {
+                            tempPermissionList.push(res.value);
+                        }
+                    }
+                }
+            }
+        }
+
+        return { check, tempPermissionList };
+    };
+
+    const HandleSubmit = (permissionListToSubmit: any[]) => {
+        const mechantUserInviteNewUserParam = {
+            "loginId": email,
+            "role": selectedRole,
+            "hasNewRole": false,
+            "permission": permissionListToSubmit,
+        };
+        // console.log(mechantUserInviteNewUserParam);
+
+        // mechantUserInviteNewUser(mechantUserInviteNewUserParam)
+    };
+
+    function HandleConfirm() {
+        if (selectedRole == undefined) return;
+
+        const { check, tempPermissionList } = checkChange();
+
+        if (!check) {
+            setOpen(!open);
+            return;
+        }
+
+        HandleSubmit(tempPermissionList);
     }
 
     return (
@@ -130,23 +268,29 @@ export default function AddUser() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>
                     <h1 className='text-3xl font-semibold'>{t('TAG_ADD_USER_DESC')}</h1>
                     <div className='flex justify-center items-center w-1/2 space-x-5'>
-                        <div className=' flex flex-1'>
-                            <Input value={email} placeholder="test@gmail.com" onChange={(e) => setEmail(e.target.value)} />
+                        <div>
+                            <div className=' flex flex-1'>
+                                <Input value={email.trim()} placeholder="test@gmail.com" onChange={(e) => setEmail(e.target.value.trim())} />
+                            </div>
+                            {
+                                email == '' && <p className='text-red-500'>Please enter the email</p>
+                            }
                         </div>
                         <div >
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a fruit" />
+                            <Select
+                                disabled={loading}
+                                value={selectedRole} // Make sure this reflects the selected value
+                                onValueChange={(v) => setSelectedRole(v)} // Update the state when a new value is selected
+                            >
+                                <SelectTrigger className="min-w-[150px]">
+                                    <SelectValue placeholder={"Select a Role"} /> {/* Display selected value or placeholder */}
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Fruits</SelectLabel>
-                                        <SelectItem value="apple">Apple</SelectItem>
-                                        <SelectItem value="banana">Banana</SelectItem>
-                                        <SelectItem value="blueberry">Blueberry</SelectItem>
-                                        <SelectItem value="grapes">Grapes</SelectItem>
-                                        <SelectItem value="pineapple">Pineapple</SelectItem>
-                                    </SelectGroup>
+                                <SelectContent className="max-h-[300px] overflow-y-scroll">
+                                    {roleSelection?.map((role: any) => (
+                                        <SelectItem key={role.mupId} value={role.mupId}>
+                                            {role.role}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -164,79 +308,73 @@ export default function AddUser() {
                     </div>
                 </div>
                 <div className='gird grid-rows-4 pt-[30px]'>
-                    <div className='grid grid-cols-4 bg-gray-200 w-full rounded-lg p-2'>
-                        <div className='flex items-center justify-center'>
-                            {t('TAG_MODULE')}
+                    <div className='grid grid-cols-4 bg-gray-200 w-full rounded-t-lg  border-x border-t '>
+                        <div className='flex items-center justify-center border-r '>
+                            <p className=' my-2'>
+                                {t('TAG_MODULE')}
+                            </p>
                         </div>
-                        <div className='col-span-2'>
-                            {t('TAG_FUNCTION')}
+                        <div className='col-span-2 ml-4'>
+                            <p className=' my-2'>
+                                {t('TAG_FUNCTION')}
+                            </p>
                         </div>
                         <div>
                         </div>
                     </div>
-                    <div className='grid grid-cols-4 border-b w-full py-3'>
-                        <div className='flex items-center justify-center'>
-                            {t('TAG_DASHBOARD')}
-                        </div>
-                        <div className='col-span-2'>
-                            <div className='flex grid grid-rows-4 items-end space-y-3'>
-                                <div>{t('TAG_CREATE')} {t('TAG_DASHBOARD')}</div>
-                                <div>{t('TAG_REMOVE')} {t('TAG_DASHBOARD')}</div>
-                                <div>{t('TAG_UPDATE')} {t('TAG_DASHBOARD')}</div>
-                                <div>{t('TAG_DELETE')} {t('TAG_DASHBOARD')}</div>
+                    {rolePermission?.permissionList ?
+                        rolePermission.permissionList.map((data, index) => {
+                            return <div key={index}>
+                                <div className={cn(index % 2 !== 0 && 'bg-blue-100/30', index % 2 == 0 && 'border-y', 'grid grid-cols-4 border-x  w-full ')}>
+                                    <div className='flex items-center justify-center border-r'>
+                                        {data.Route}
+                                    </div>
+
+                                    <div className='col-span-3 '>
+                                        {data.Function.map((value, valueIndex) => {
+                                            return <div key={valueIndex} className={cn(valueIndex != data.Function.length - 1 && 'border-b pb-1', valueIndex != data.Function.length && valueIndex != 0 && 'pt-1', 'flex flex-cols grid grid-rows-none items-center auto-rows-min grid grid-cols-3 gap-4 ')}>
+                                                <div className='flex items-center ml-4'>
+                                                    {value.FunctionName}
+                                                </div>
+                                                <div className='col-span-2'>
+                                                    {
+                                                        value?.subFunctions.map((sub, subIndex) => {
+                                                            return <div key={subIndex} className='flex items-center w-full py-2 grid grid-cols-2 gap-4'>
+                                                                <div>
+                                                                    {sub.FunctionName}
+                                                                </div>
+                                                                <div className='flex items-center'>
+                                                                    <Checkbox disabled={edit} checked={checkboxStates[index]?.[valueIndex]?.[subIndex]} onCheckedChange={() => handleCheckedChange(index, valueIndex, subIndex)} />
+                                                                </div>
+                                                            </div>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+
+                        }) :
+                        <div>
+                            <div className='grid grid-cols-4  w-full rounded-b-lg  border'>
+                                <div className='flex col-span-4 ml-4 items-center justify-center'>
+                                    <p className='my-2'>
+                                        {t('TAG_SELECT_ROLE')}
+                                    </p>
+                                </div>
+                                <div>
+                                </div>
                             </div>
                         </div>
-                        <div className='flex grid grid-rows-4 items-end space-y-3'>
-                            <Checkbox disabled={edit} checked={createDashboard} onCheckedChange={() => setCreateDashboard(!createDashboard)} />
-                            <Checkbox disabled={edit} checked={removeDashboard} onCheckedChange={() => setRemoveDashboard(!removeDashboard)} />
-                            <Checkbox disabled={edit} checked={updateDashboard} onCheckedChange={() => setUpdateDashboard(!updateDashboard)} />
-                            <Checkbox disabled={edit} checked={deleteDashboard} onCheckedChange={() => setDeleteDashboard(!deleteDashboard)} />
-                        </div>
-                    </div>
-                    <div className='grid grid-cols-4 border-b  w-full py-3'>
-                        <div className='flex items-center justify-center'>
-                            {t('TAG_USER')}
-                        </div>
-                        <div className='col-span-2'>
-                            <div className='flex grid grid-rows-4 items-end space-y-3'>
-                                <div>{t('TAG_CREATE')} {t('TAG_USER')}</div>
-                                <div>{t('TAG_REMOVE')} {t('TAG_USER')}</div>
-                                <div>{t('TAG_UPDATE')} {t('TAG_USER')}</div>
-                                <div>{t('TAG_DELETE')} {t('TAG_USER')}</div>
-                            </div>
-                        </div>
-                        <div className='flex grid grid-rows-4 items-end space-y-3'>
-                            <Checkbox disabled={edit} checked={createUser} onCheckedChange={() => setCreateUser(!createUser)} />
-                            <Checkbox disabled={edit} checked={removeUser} onCheckedChange={() => setRemoveUser(!removeUser)} />
-                            <Checkbox disabled={edit} checked={updateUser} onCheckedChange={() => setUpdateUser(!updateUser)} />
-                            <Checkbox disabled={edit} checked={deleteUser} onCheckedChange={() => setDeleteUser(!deleteUser)} />
-                        </div>
-                    </div>
-                    <div className='grid grid-cols-4 border-b w-full py-3'>
-                        <div className='flex items-center justify-center'>
-                            {t('TAG_PROFILE')}
-                        </div>
-                        <div className='col-span-2'>
-                            <div className='flex grid grid-rows-4 items-end space-y-3'>
-                                <div>{t('TAG_CREATE')} {t('TAG_PROFILE')}</div>
-                                <div>{t('TAG_REMOVE')} {t('TAG_PROFILE')}</div>
-                                <div>{t('TAG_UPDATE')} {t('TAG_PROFILE')}</div>
-                                <div>{t('TAG_DELETE')} {t('TAG_PROFILE')}</div>
-                            </div>
-                        </div>
-                        <div className='flex grid grid-rows-4 items-end space-y-3'>
-                            <Checkbox disabled={edit} checked={createProfile} onCheckedChange={() => setCreateProfile(!createProfile)} />
-                            <Checkbox disabled={edit} checked={removeProfile} onCheckedChange={() => setRemoveProfile(!removeProfile)} />
-                            <Checkbox disabled={edit} checked={updateProfile} onCheckedChange={() => setUpdateProfile(!updateProfile)} />
-                            <Checkbox disabled={edit} checked={deleteProfile} onCheckedChange={() => setDeleteProfile(!deleteProfile)} />
-                        </div>
-                    </div>
+                    }
                 </div>
                 <div className='flex justify-between pt-[100px]'>
                     <Button className='bg-gray-300 hover:bg-gray-200' onClick={() => router.back()}>{t('TAG_BACK')}</Button>
                     <Button className='bg-blue-800 hover:bg-blue-700' onClick={() => HandleConfirm()}>{t('TAG_CONFIRM')}</Button>
                 </div>
-            </div>
+            </div >
             <ConfirmModal
                 isOpen={open}
                 onClose={() => setOpen(false)}
@@ -247,7 +385,7 @@ export default function AddUser() {
                     <div>
                         <div className='text-black text-center text-sm'>{t('TAG_ADD_USER_CONFIM_MODAL_DESC')}</div> <br />
                         <div className='flex m-auto w-72'>
-                            <Input value={role} placeholder="Example" onChange={(e) => setRole(e.target.value)} />
+                            <Input value={roleModal} placeholder="Example" onChange={(e) => setRole(e.target.value)} />
                         </div>
                         <br />
                         <p className='text-center text-sm text-gray-400'>{t('TAG_ADD_USER_CONFIM_MODAL_REMIDER')}.</p>

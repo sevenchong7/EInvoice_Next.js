@@ -310,23 +310,30 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody className=''>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, rowIndex) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className={cn('flex flex-row py-[5px]', rowIndex == data.length - 1 && "items-center justify-center")}
+                className={cn('flex flex-row py-[5px]')}
 
               >
                 {row.getVisibleCells().map((cell, index) => {
+                  const data = flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  )
                   return (
-                    <TableCell key={cell.id} className={cn("flex items-center border-b ", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", cell.column.id == 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-10 lg:shadow dark:bg-black dark:shadow-gray-400", cell.column.id == 'actions' && "flex-auto items-center justify-center  w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black")}>
+                    <TableCell key={cell.id} className={cn("flex items-center border-b ", cell.column.id == 'merchantId' ? " min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", cell.column.id == 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-10 lg:shadow dark:bg-black dark:shadow-gray-400", cell.column.id == 'actions' && "flex-auto items-center justify-center  w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black")}>
                       {
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
+                        // flexRender(
+                        //   cell.column.columnDef.cell,
+                        //   cell.getContext()
+                        // )
+
+                        data != null && data != undefined && data != '' ? data : "NA"
                       }
                     </TableCell>
                   )

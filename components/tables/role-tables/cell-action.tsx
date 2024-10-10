@@ -32,6 +32,9 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { RoleUserClient } from './role-user-tables/client';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { useTranslations } from 'next-intl';
+import React from 'react';
+import { editRole, getRoleInfo } from '@/lib/services/userService';
+import roleMerchantData from '@/constants/role_merchant.json';
 
 interface CellActionProps {
   data: Role;
@@ -40,208 +43,273 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations()
+  const [open, setOpen] = useState(false)
   const onConfirm = async () => { };
-
-  // const [open, setOpen] = useState(false);
-  // const [openSheet, setOpenSheet] = useState(false);
-  // const [effect, setEffect] = useState(false);
-  // const router = useRouter();
-  // router.push(`/dashboard/user/userListing/${data.id}`)
 
   return (
     <>
-
       <div className='flex flex-row space-x-5'>
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button className='border-2 border-blue-800 text-blue-800 rounded-lg p-1 hover:bg-gray-200'>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
-          <EditUser data={data} />
+          <EditUser data={data} open={open} />
         </Sheet>
-
-        {/* <button onClick={() => setOpen(true)} className='border-2 border-black rounded-lg p-1 hover:bg-gray-200'>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
-        </button> */}
       </div>
-
-
-      {/* <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/user/${data.id}`)}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
     </>
   );
 };
 
+interface roleInfo {
+  mupId: string,
+  currentPackageId: number,
+  roleQuantity: number,
+  merchantUserList: [],
+  permissionList: permissionList[]
+}
 
-const EditUser = ({ data }: { data: Role }) => {
+interface permissionList {
+  Function: Function[],
+  Route: string,
+  selected: boolean
+}
+
+interface Function {
+  FunctionName: string,
+  selected: boolean
+  subFunctions: subFunction[]
+  value: string
+}
+
+interface subFunction {
+  FunctionName: string,
+  selected: boolean,
+  value: string
+}
+
+const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations()
-  const onConfirm = async () => { };
-  const [open, setOpen] = useState(false);
-  const [role, setRole] = useState(data.role);
-  const [dashboardCheck, setDashboardCheck] = useState(false);
-  const [add, setAdd] = useState(data.accessControl.dashboard.add);
-  const [edit, setEdit] = useState(data.accessControl.dashboard.edit);
-  const [view, setView] = useState(data.accessControl.dashboard.view);
-  const [user, setUser] = useState(false);
-  const [merchant, setMerchant] = useState(false);
-  const [createMerchant, setCreatMerchant] = useState(data.accessControl.user.createMerchant.create);
-  const [uploadDocument, setUploadDocument] = useState(data.accessControl.user.createMerchant.upload);
-  const [paymentMethod, setPaymentMethod] = useState(data.accessControl.user.createMerchant.multi);
-  const [userListing, setUserListing] = useState(false)
-  const [viewUser, setViewUser] = useState(data.accessControl.user.userListing.view)
-  const [updateUser, setUpdateUser] = useState(data.accessControl.user.userListing.update)
-  const [deleteUser, setDeleteUser] = useState(data.accessControl.user.userListing.delete)
+  const [openModal, setOpenModal] = useState(false);
+  const [roleInfo, setRoleInfo] = useState<roleInfo>()
+  const [permissionListCheckboxState, setPermissionListCheckboxState] = useState<boolean[]>()
+  const [functionCheckboxState, setFunctionCheckboxState] = useState<boolean[][]>()
+  const [subFunctionCheckboxStates, setSubFuntionCheckboxStates] = useState<boolean[][][]>();
 
-  const handleDashboardChange = (checked: boolean) => {
-    setDashboardCheck(checked);
-    if (checked) {
-      setAdd(true);
-      setEdit(true);
-      setView(true);
-    } else if (!checked) {
-      setAdd(false)
-      setEdit(false)
-      setView(false)
+  const GetRoleInfo = async () => {
+    return await getRoleInfo(data.mupId)
+  }
+
+  useEffect(() => {
+    if (open) {
+      console.log('data = ', data);
+      console.log('mupId = ', data.mupId);
+
+      if (data.mupId != undefined) {
+        GetRoleInfo().then((res) => setRoleInfo(res))
+      }
     }
+  }, [open, data]);
+
+  useEffect(() => {
+    if (roleInfo != undefined)
+      console.log('role Info = ', roleInfo)
+  }, [roleInfo])
+
+  useEffect(() => {
+    if (roleInfo?.permissionList) {
+      setPermissionListCheckboxState(roleInfo.permissionList.map((data) => data.selected));
+      setFunctionCheckboxState(roleInfo.permissionList.map((data) => data.Function.map((value) => value.selected)));
+      setSubFuntionCheckboxStates(roleInfo.permissionList.map((data) => data.Function.map((value) => value.subFunctions.map((res) => res.selected))));
+    }
+
+  }, [roleInfo]);
+
+  const handlePermissionListCheckboxState = (routeIndex: number, check: boolean) => {
+    setPermissionListCheckboxState((prevState) => {
+      return prevState?.map((route, rIndex) => {
+        if (rIndex === routeIndex) {
+          setFunctionCheckboxState((prevFuncState) => {
+            return prevFuncState?.map((funcList, funcRIndex) => {
+              if (funcRIndex === routeIndex) {
+                return funcList.map(() => check);
+              } else {
+                return funcList;
+              }
+            });
+          });
+
+          setSubFuntionCheckboxStates((prevSubFuncState) => {
+            return prevSubFuncState?.map((subFuncList, subFuncRIndex) => {
+              if (subFuncRIndex === routeIndex) {
+                return subFuncList.map((subFunc) => subFunc.map(() => check));
+              } else {
+                return subFuncList;
+              }
+            });
+          });
+
+          return check;
+        } else {
+          return route;
+        }
+      });
+    });
   };
 
-  const handleMerchant = (checked: boolean) => {
-    setMerchant(checked);
-    if (checked) {
-      setCreatMerchant(true)
-      setUploadDocument(true)
-      setPaymentMethod(true)
-    } else {
-      setCreatMerchant(false)
-      setUploadDocument(false)
-      setPaymentMethod(false)
+  const handleFunctionCheckboxState = (routeIndex: number, funcIndex: number, check: boolean) => {
+    setFunctionCheckboxState((prevState) => {
+      const updatedFuncState = prevState?.map((route, rIndex) => {
+        if (routeIndex === rIndex) {
+          return route.map((func, fIndex) => fIndex === funcIndex ? check : func);
+        } else {
+          return route;
+        }
+      });
+
+      const allFunctionsChecked = updatedFuncState?.[routeIndex]?.every((func) => func === true);
+
+      setPermissionListCheckboxState((prevPermState) => {
+        return prevPermState?.map((route, rIndex) => {
+          if (rIndex === routeIndex) {
+            return allFunctionsChecked ?? false;
+          } else {
+            return route;
+          }
+        });
+      });
+
+      return updatedFuncState;
+    });
+
+    setSubFuntionCheckboxStates((prevSubFuncState) => {
+      return prevSubFuncState?.map((subFuncList, rIndex) => {
+        if (rIndex === routeIndex) {
+          return subFuncList.map((subFunc, fIndex) => {
+            return fIndex === funcIndex ? subFunc.map(() => check) : subFunc;
+          });
+        } else {
+          return subFuncList;
+        }
+      });
+    });
+  };
+
+  const handleSubFunctionCheckboxStates = (routeIndex: number, funcIndex: number, subFuncIndex: number, check: boolean) => {
+    setSubFuntionCheckboxStates((prevSubFuncState) => {
+      const updatedSubFuncState = prevSubFuncState?.map((subFuncList, rIndex) => {
+        if (rIndex === routeIndex) {
+          return subFuncList.map((subFunc, fIndex) => {
+            return fIndex === funcIndex
+              ? subFunc.map((subFuncState, sIndex) => (sIndex === subFuncIndex ? check : subFuncState))
+              : subFunc;
+          });
+        } else {
+          return subFuncList;
+        }
+      });
+
+      const allSubFunctionsChecked = updatedSubFuncState?.[routeIndex]?.[funcIndex]?.every(
+        (subFunc) => subFunc === true
+      );
+
+      setFunctionCheckboxState((prevFuncState) => {
+        return prevFuncState?.map((route, rIndex) => {
+          if (rIndex === routeIndex) {
+            return route.map((func, fIndex) => {
+              return fIndex === funcIndex ? allSubFunctionsChecked ?? false : func;
+            });
+          } else {
+            return route;
+          }
+        });
+      });
+
+      const updatedFunctionState = updatedSubFuncState?.[routeIndex];
+      const allFunctionsChecked = updatedFunctionState?.every((func) => func.every((res) => res === true));
+
+      setPermissionListCheckboxState((prevPermState) => {
+        return prevPermState?.map((route, rIndex) => {
+          if (rIndex === routeIndex) {
+            return allFunctionsChecked ?? false;
+          } else {
+            return route;
+          }
+        });
+      });
+
+      return updatedSubFuncState;
+    });
+  };
+
+  const checkChange = () => {
+    let check = true;
+    let tempPermissionList: any[] = [];
+
+    if (roleInfo?.permissionList) {
+      for (let i = 0; i < roleInfo.permissionList.length; i++) {
+        const data = roleInfo.permissionList[i];
+        for (let j = 0; j < data.Function.length; j++) {
+          const func = data.Function[j];
+          for (let k = 0; k < func.subFunctions.length; k++) {
+            const res = func.subFunctions[k];
+            if (res.selected !== subFunctionCheckboxStates?.[i][j][k]) {
+              if (subFunctionCheckboxStates?.[i][j][k] === true) {
+                tempPermissionList.push(res.value);
+              }
+              check = false;
+            } else {
+              if (res.selected === true) {
+                tempPermissionList.push(res.value);
+              }
+            }
+          }
+        }
+      }
     }
+
+    return { check, tempPermissionList };
+  };
+
+  const HandleSubmit = (permissionList: any[]) => {
+    const editRoleParam = {
+      mupId: data.mupId,
+      permission: permissionList
+    }
+
+    console.log('editRoleParam = ', editRoleParam)
+
+    // editRole(editRoleParam)
   }
 
-  const handleUserListing = (checked: boolean) => {
-    setUserListing(checked);
-    if (checked) {
-      setViewUser(true);
-      setUpdateUser(true);
-      setDeleteUser(true);
-    } else {
-      setViewUser(false);
-      setUpdateUser(false);
-      setDeleteUser(false);
+  const HandleConfirm = () => {
+    if (roleInfo == undefined) return;
+
+    const { check, tempPermissionList } = checkChange();
+
+    console.log('tempPermissionList = ', tempPermissionList)
+
+    if (!check) {
+      setOpenModal(!openModal);
+      return;
     }
+
+    HandleSubmit(tempPermissionList)
   }
 
-  const handleUser = (checked: boolean) => {
-    setUser(checked)
-    if (checked) {
-      handleMerchant(checked)
-      handleUserListing(checked)
-    }
-    else {
-      handleMerchant(checked)
-      handleUserListing(checked)
-    }
-  }
-
-  useEffect(() => {
-
-    if (add) {
-      setAdd(true)
-    }
-    if (edit) {
-      setEdit(true)
-    }
-    if (view) {
-      setView(true)
-    }
-
-    if (add && edit && view) {
-      setDashboardCheck(true)
-    } else {
-      setDashboardCheck(false)
-    }
-
-  }, [edit, add, view])
-
-  useEffect(() => {
-
-    if (createMerchant) {
-      setCreatMerchant(true)
-    }
-    if (uploadDocument) {
-      setUploadDocument(true)
-    }
-    if (paymentMethod) {
-      setPaymentMethod(true)
-    }
-
-    if (createMerchant && uploadDocument && paymentMethod) {
-      setMerchant(true)
-    } else {
-      setMerchant(false)
-    }
-
-  }, [createMerchant, uploadDocument, paymentMethod])
-
-  useEffect(() => {
-
-    if (viewUser) {
-      setViewUser(true)
-    }
-    if (updateUser) {
-      setUpdateUser(true)
-    }
-    if (deleteUser) {
-      setDeleteUser(true)
-    }
-
-    if (viewUser && updateUser && deleteUser) {
-      setUserListing(true)
-    } else {
-      setUserListing(false)
-    }
-
-  }, [viewUser, updateUser, deleteUser])
-
-  useEffect(() => {
-    if (merchant && userListing) { setUser(true) } else { setUser(false) }
-  }, [merchant, userListing])
-
-  const CustomeCheckBox = ({ id, title, checked, onCheckedChange }: { id: string, title: string, checked: boolean, onCheckedChange: () => void }) => {
-    return (
-      <div className='flex flex-row space-x-2 items-center'>
-        <Checkbox id={id} checked={checked} onCheckedChange={onCheckedChange} />
-        <label htmlFor={id} id={id} className='text-sm'>{title}</label>
-      </div>
-    )
-  }
-
+  const onConfirm = async () => {
+    const { tempPermissionList } = checkChange();
+    console.log('tempPermissionList = ', tempPermissionList)
+    HandleSubmit(tempPermissionList)
+  };
 
   return (
     <>
       <ConfirmModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
         onConfirm={onConfirm}
         loading={loading}
         title={t('TAG_CONFIRMATION')}
@@ -256,7 +324,7 @@ const EditUser = ({ data }: { data: Role }) => {
             </SheetHeader>
             <div className="">
               <div className="w-full px-1">
-                <RoleUserClient data={data.user} />
+                <RoleUserClient data={roleMerchantData.data.merchantUserList.content} />
               </div>
 
               <div className="">
@@ -264,76 +332,51 @@ const EditUser = ({ data }: { data: Role }) => {
                   {t('TAG_ACCESS_CONTROL')}:
                 </Label>
                 <Separator />
-                <Accordion type='multiple' defaultValue={['item-1', 'user', 'merchant', 'listing']}>
-                  <AccordionItem value="item-1" className='border-white pt-4' >
-                    <div className='flex flex-row items-center space-x-2'>
-                      <AccordionTrigger className='justify-start '></AccordionTrigger>
-                      <CustomeCheckBox id='dashboard' title={t('TAG_DASHBOARD')} checked={dashboardCheck} onCheckedChange={() => handleDashboardChange(!dashboardCheck)} />
-                    </div>
-                    <div className='pl-[50px] pt-2'>
-                      <AccordionContent>
-                        <CustomeCheckBox id='add' title={t('TAG_ADD')} checked={add} onCheckedChange={() => setAdd(!add)} />
-                      </AccordionContent>
-                      <AccordionContent>
-                        <CustomeCheckBox id='edit' title={t('TAG_EDIT')} checked={edit} onCheckedChange={() => setEdit(!edit)} />
-                      </AccordionContent>
-                      <AccordionContent>
-                        <CustomeCheckBox id='view' title={t('TAG_VIEW')} checked={view} onCheckedChange={() => setView(!view)} />
-                      </AccordionContent>
-                    </div>
-                  </AccordionItem>
-                  <AccordionItem value='user'>
-                    <div className='flex flex-row items-center space-x-2'>
-                      <AccordionTrigger className='justify-start'></AccordionTrigger>
-                      <CustomeCheckBox id='user' title={t('TAG_USER')} checked={user} onCheckedChange={() => handleUser(!user)} />
-                    </div>
-                    <div className='pt-2 pl-[50px]'>
-                      <AccordionContent >
-                        <AccordionItem value='merchant'>
-                          <div className='flex flex-row items-center space-x-2'>
-                            <AccordionTrigger className='justify-start'></AccordionTrigger>
-                            <CustomeCheckBox id='merchant' title={t('TAG_MERCHANT')} checked={merchant} onCheckedChange={() => handleMerchant(!merchant)} />
-                          </div>
-                          <div className='pl-[50px] pt-2'>
-                            <AccordionContent >
-                              <CustomeCheckBox id='createMerchant' title={t('TAG_CREATE_MERCHANT')} checked={createMerchant} onCheckedChange={() => setCreatMerchant(!createMerchant)} />
-                            </AccordionContent>
-                            <AccordionContent>
-                              <CustomeCheckBox id='uploadDocument' title={t('TAG_UPLOAD_DOCUMENT')} checked={uploadDocument} onCheckedChange={() => setUploadDocument(!uploadDocument)} />
-                            </AccordionContent>
-                            <AccordionContent>
-                              <CustomeCheckBox id='paymentMethod' title={t('TAG_MULTI_PAYMENT_METHOD')} checked={paymentMethod} onCheckedChange={() => setPaymentMethod(!paymentMethod)} />
-                            </AccordionContent>
-                          </div>
-                        </AccordionItem>
-                      </AccordionContent>
-                      <AccordionContent>
-                        <AccordionItem value='listing'>
-                          <div className='flex flex-row items-center space-x-2'>
-                            <AccordionTrigger className='justify-start'></AccordionTrigger>
-                            <CustomeCheckBox id='userListing' title={t('TAG_USER_LISTING')} checked={userListing} onCheckedChange={() => handleUserListing(!userListing)} />
-                          </div>
-                          <div className='pl-[50px] pt-2'>
-                            <AccordionContent>
-                              <CustomeCheckBox id='viewUser' title={t('TAG_VIEW_USER')} checked={viewUser} onCheckedChange={() => setViewUser(!viewUser)} />
-                            </AccordionContent>
-                            <AccordionContent>
-                              <CustomeCheckBox id='updateUser' title={t('TAG_UPDATE_USER_INFO')} checked={updateUser} onCheckedChange={() => setUpdateUser(!updateUser)} />
-                            </AccordionContent>
-                            <AccordionContent>
-                              <CustomeCheckBox id='deleteUser' title={t('TAG_DELETE_USER')} checked={deleteUser} onCheckedChange={() => setDeleteUser(!deleteUser)} />
-                            </AccordionContent>
-                          </div>
-                        </AccordionItem>
-                      </AccordionContent>
-                    </div>
-                  </AccordionItem>
+                <Accordion type='multiple' defaultValue={[]}>
+                  {
+                    roleInfo?.permissionList.map((roleInfoRes, roleInfoIndex) => {
+                      return <AccordionItem value={roleInfoRes.Route} key={roleInfoIndex}>
+                        <div className='flex flex-row items-center space-x-2'>
+                          <AccordionTrigger className='justify-start '></AccordionTrigger>
+                          <Checkbox id={roleInfoRes.Route} checked={permissionListCheckboxState?.[roleInfoIndex]} onCheckedChange={(check: boolean) => handlePermissionListCheckboxState(roleInfoIndex, check)} />
+                          <label htmlFor={roleInfoRes.Route}>{roleInfoRes.Route}</label>
+                        </div>
+                        <div className='pl-[50px] pt-2'>
+                          {
+                            roleInfoRes.Function.map((funcRes, funcIndex) => {
+                              return <AccordionContent key={funcIndex}>
+                                <AccordionItem value={funcRes.FunctionName} >
+                                  <div className='flex flex-row items-center space-x-2'>
+                                    <AccordionTrigger className='justify-start '></AccordionTrigger>
+                                    <Checkbox id={funcRes.FunctionName} checked={functionCheckboxState?.[roleInfoIndex]?.[funcIndex]} onCheckedChange={(check: boolean) => handleFunctionCheckboxState(roleInfoIndex, funcIndex, check)} />
+                                    <label htmlFor={funcRes.FunctionName}>{funcRes.FunctionName}</label>
+                                  </div>
+                                  <div className='pl-[50px] pt-2'>
+                                    {
+                                      funcRes.subFunctions.map((subFuncRes, subFuncIndex) => {
+                                        return <AccordionContent key={subFuncIndex}>
+                                          <div className='flex flex-row space-x-2 items-center'>
+                                            <Checkbox id={subFuncRes.FunctionName} checked={subFunctionCheckboxStates?.[roleInfoIndex]?.[funcIndex]?.[subFuncIndex]} onCheckedChange={(check: boolean) => handleSubFunctionCheckboxStates(roleInfoIndex, funcIndex, subFuncIndex, check)} />
+                                            <label htmlFor={subFuncRes.FunctionName}>{subFuncRes.FunctionName}</label>
+                                          </div>
+                                        </AccordionContent>
+                                      })
+                                    }
+                                  </div>
+                                </AccordionItem>
+                              </AccordionContent>
+                            })
+                          }
+                        </div>
+                      </AccordionItem>
+                    })
+                  }
                 </Accordion>
               </div>
             </div>
             <SheetFooter>
               {/* <SheetClose asChild> */}
-              <Button type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { setOpen(true) }}>{t('TAG_CONFIRM')}</Button>
+              <Button type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { HandleConfirm() }}>{t('TAG_CONFIRM')}</Button>
               {/* </SheetClose> */}
             </SheetFooter>
           </div>
@@ -341,7 +384,5 @@ const EditUser = ({ data }: { data: Role }) => {
         </ScrollArea>
       </SheetContent>
     </>
-
   )
 }
-

@@ -18,10 +18,13 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useLocale, useTranslations } from 'next-intl';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     defaultValue: string;
-    items: Array<{ value: string; label: string }>;
+    items: Array<{ languageName: string; languageFlag: string }> | undefined;
     label: string;
 };
 
@@ -31,29 +34,53 @@ export default function LocaleSwitcherSelect({
     label
 }: Props) {
     const t = useTranslations()
+    const router = useRouter();
     const initialLocale = useLocale();
     const [isPending, startTransition] = useTransition();
+    const [localeData, setLoacalData] = useState('en')
     const [selectedLanguage, setSelectedLanguage] = useState('')
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         if (initialLocale == 'en') {
             setSelectedLanguage('ENGLISH')
+        } else if (initialLocale == 'bm') {
+            setSelectedLanguage('Melayu')
         } else {
             setSelectedLanguage('中文')
         }
     }, [])
 
-    function onChange(value: string) {
-        if (value == 'en') {
-            setSelectedLanguage('ENGLISH')
+    async function onChange(value: string) {
+        console.log('value = ', value)
+        if (value == 'English') {
+            setSelectedLanguage('English')
+            setLoacalData('en')
+            await update({ xAcceptLanguage: "en" })
+            // router.refresh()
+        } else if (value == 'Melayu') {
+            setSelectedLanguage('Melayu')
+            setLoacalData('bm')
+            await update({ xAcceptLanguage: "bm" })
         } else {
             setSelectedLanguage('中文')
+            setLoacalData('zh')
+            await update({ xAcceptLanguage: "zh" })
+            // router.refresh()
         }
-        const locale = value as Locale;
-        startTransition(() => {
-            setUserLocale(locale);
-        });
+        // const locale = value as Locale;
+
+
+        // if (session) router.refresh()
     }
+
+    useEffect(() => {
+        startTransition(() => {
+            setUserLocale(localeData as Locale);
+        });
+    }, [localeData])
+
+    useEffect(() => { if (session) console.log('session = ', session) }, [session])
 
     return (
 
@@ -68,15 +95,19 @@ export default function LocaleSwitcherSelect({
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
+
                         {t("TAG_SELECT_LANGUAGE")}
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup >
                     {
-                        items.map((item) => (
-                            <DropdownMenuItem key={item.value} onClick={() => onChange(item.value)}>
-                                {item.label}
+                        items?.map((item) => (
+                            <DropdownMenuItem key={item.languageName} onClick={() => onChange(item.languageName)}>
+                                <div className='flex  items-center gap-4'>
+                                    <Image src={item.languageFlag} alt={item.languageName} height={24} width={24} />
+                                    {item.languageName}
+                                </div>
                             </DropdownMenuItem>
                         ))
                     }

@@ -1,3 +1,4 @@
+'use server';
 import { get, post } from '@/lib/api';
 
 
@@ -6,3 +7,4 @@ export const login = async (body: any) => {
 
     return response;
 }
+

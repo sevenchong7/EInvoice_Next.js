@@ -2,6 +2,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-schema";
 import { useTranslations } from "next-intl";
+import React from "react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -47,7 +48,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
             />
             <FormField
                 control={form.control}
-                name="registerNo"
+                name="businessRegisterNo"
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>{t('TAG_REGISTER_NO')}</FormLabel>

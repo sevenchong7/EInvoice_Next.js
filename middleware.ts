@@ -23,6 +23,7 @@ export default auth(async (req) => {
   const user = req.auth?.user;
 
   if (user) {
+    console.log("user ", user)
     const pathname = req.nextUrl.pathname;
 
     // Find a matching path with dynamic path handling
@@ -42,7 +43,7 @@ export default auth(async (req) => {
     const userPermissions = user.permissions || [];
 
     const hasPermission = path.permission.some((p) =>
-      userPermissions.includes(p) || true // auth bypass
+      userPermissions.includes(p)
     );
 
     if (!hasPermission) {
@@ -63,74 +64,74 @@ export const config = {
 const paths = [
   {
     path: "/dashboard",
-    permission: ["dashboard.access"],
+    permission: ['dashboard.read'],
   },
   {
     path: "/dashboard/user",
-    permission: ["user.access"],
+    permission: ['userList.read', 'roleList.read', 'userList.su.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create'],
   },
-  {
-    path: "/dashboard/employee",
-    permission: ["employee.access"],
-  },
+  // {
+  //   path: "/dashboard/employee",
+  //   permission: ["employee.access"],
+  // },
   {
     path: "/dashboard/document",
-    permission: ["document.access"],
+    permission: ['docCreate.create'],
   },
   {
     path: "/dashboard/document/createDocument",
-    permission: ["document.all"],
+    permission: ['docCreate.create', 'docCreate.createMyFav'],
   },
   {
     path: "/dashboard/document/createDocument/documentDownload",
-    permission: ["document.all"],
+    permission: ['docCreate.create', 'docCreate.createMyFav'],
   },
-  {
-    path: "/dashboard/employee/[id]",
-    permission: ["employee.all"],
-  },
+  // {
+  //   path: "/dashboard/employee/[id]",
+  //   permission: ["employee.all"],
+  // },
   {
     path: "/dashboard/profile",
-    permission: ["profile.access"],
+    permission: ['profile.read'],
   },
   {
     path: "/dashboard/user/createMerchant",
-    permission: ["createMerchant.all"],
+    permission: ['merchantCreate.su.create'],
   },
   {
     path: "/dashboard/user/userListing",
-    permission: ["user.all"],
+    permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read'],
   },
   {
     path: "/dashboard/user/merchantListing",
-    permission: ["user.all"],
+    permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update'],
   },
   {
     path: "/dashboard/user/roleListing",
-    permission: ["user.all"],
+    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read'],
   },
   {
     path: "/dashboard/user/userListing/[id]",
-    permission: ["user.all"],
+    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'userList.su.read'],
   },
   {
     path: "/dashboard/profile/subscription",
-    permission: ["subscription.all"],
+    permission: ['subscription.read'],
   },
   {
     path: "/dashboard/profile/subscription/information",
-    permission: ["subscription.all"],
+    permission: ['subscription.update'],
   },
   {
     path: "/dashboard/profile/subscription/payment",
-    permission: ["subscription.all"],
+    permission: ['subscription.update'],
   },
   {
     path: "/dashboard/profile/subscription/payment/information",
-    permission: ["subscription.all"],
+    permission: ['subscription.update'],
   },
   {
     path: "/dashboard/updatePassword",
-    permission: ["updatePassword.all"],
+    permission: ["updatePassword.update"],
   }
 ];

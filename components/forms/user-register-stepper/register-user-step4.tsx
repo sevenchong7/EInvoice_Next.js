@@ -41,13 +41,13 @@ export default function RegisterUserStep4({ form }: { form: UseFormReturn<Regist
                             <div>
                                 <Summary />
                                 {
-                                    form.getValues('package') !== '1' &&
+                                    form.getValues('package') !== '0' &&
                                     <PaymentMethod />
                                 }
                             </div>
                         </FormControl>
                         {
-                            form.getValues('package') !== '1' &&
+                            form.getValues('package') !== '0' &&
                             <div className='flex item-center justify-center'>
                                 <FormMessage />
                             </div>

@@ -30,13 +30,13 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                                 <p className="mt-[5px]">per package/month</p>
                             </div>
                             <div className="grid grid-cols-3">
-                                {content.map((_data: any) => (
-                                    <div className="flex items-center col-span-3 pt-[20px]">
+                                {content.map((data: any, index: number) => (
+                                    <div key={index} className="flex items-center col-span-3 pt-[20px]">
                                         <div className="mr-[5px] min-w-[30px]">
                                             <Image src={tick} alt="tick" height={30} width={30} />
                                         </div>
                                         <div className="text-base text-balance">
-                                            {_data}
+                                            {data}
                                         </div>
                                     </div>
                                 ))}
@@ -54,7 +54,6 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
 
     return (
         <>
-
             <FormField
                 name='package'
                 control={form.control}
@@ -63,13 +62,13 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                         <FormControl>
                             <div className="flex flex-row justify-between w-full grid-col-3 ">
                                 <div className='col-span-1 mr-[10px]'>
-                                    <PackageSelection id='1' title='test' price='test' content={['test', 'test', 'test', 'test', 'test']} onClick={() => HandlePackageSelect("1")} />
+                                    <PackageSelection id='0' title='test' price='test' content={['test', 'test', 'test', 'test', 'test']} onClick={() => HandlePackageSelect("1")} />
                                 </div>
                                 <div className='col-span-1 mr-[10px]'>
-                                    <PackageSelection id='2' title='test' price='test' content={['test test test test test test test test test test test test']} onClick={() => HandlePackageSelect("2")} />
+                                    <PackageSelection id='1' title='test' price='test' content={['test test test test test test test test test test test test']} onClick={() => HandlePackageSelect("2")} />
                                 </div>
                                 <div className='col-span-1 mr-[10px]'>
-                                    <PackageSelection id='3' title='test' price='test' content={['test']} onClick={() => HandlePackageSelect("3")} />
+                                    <PackageSelection id='2' title='test' price='test' content={['test']} onClick={() => HandlePackageSelect("3")} />
                                 </div>
                             </div>
                         </FormControl>

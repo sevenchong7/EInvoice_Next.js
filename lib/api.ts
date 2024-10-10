@@ -87,8 +87,10 @@ export async function get(url: string, headers?: {}) {
 }
 
 // Helper for POST requests (with body)
-export async function post(url: string, body: {}, access_token = "") {
-    console.log("access_token ", access_token)
+export async function post(url: string, body: {}, headers?: {}) {
+    // console.log("access_token ", access_token)
+    console.log("headers ", headers)
+
 
     console.log(`[API POST] ${API_BASE_URL + url} ${JSON.stringify(body)}`)
 
@@ -98,7 +100,7 @@ export async function post(url: string, body: {}, access_token = "") {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // ...headers,
+            ...headers,
         },
         body: encryptedBody,
     });
@@ -116,3 +118,39 @@ export async function post(url: string, body: {}, access_token = "") {
 
     return JSON.parse(rawResponse);
 }
+
+
+
+// Helper for POST requests (with body)
+export async function put(url: string, body: {}, headers?: {}) {
+    // console.log("access_token ", access_token)
+    console.log("headers ", headers)
+
+
+    console.log(`[API PUT] ${API_BASE_URL + url} ${JSON.stringify(body)}`)
+
+    const encryptedBody = encryptAES(JSON.stringify(body), secretkey)
+
+    const response = await fetch(API_BASE_URL + url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+        },
+        body: encryptedBody,
+    });
+
+
+    const encryptredResponse = await response.json();
+
+    const rawResponse = decryptAES(encryptredResponse, secretkey);
+    console.log("[API response] " + url, JSON.parse(rawResponse));
+
+    if (!response.ok) {
+        // throw new Error(`Error: ${response.status}`);
+        return JSON.parse(rawResponse);
+    }
+
+    return JSON.parse(rawResponse);
+}
+

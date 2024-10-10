@@ -8,6 +8,7 @@ import { NavItem } from '@/types';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
 // import { Playlist } from "../data/playlists";

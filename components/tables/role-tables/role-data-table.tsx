@@ -43,7 +43,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Checkbox } from '@radix-ui/react-checkbox';
+// import { Checkbox } from '@radix-ui/react-checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -156,7 +156,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <PermissionCheck permission="role.view_merchant" onPermissionGranted={() => setColumnVisibility({ merchant: true })}>
+      <PermissionCheck permission="roleList.su.read" onPermissionGranted={() => setColumnVisibility({ merchant: true })}>
         <></>
       </PermissionCheck>
       <div className='grid lg:grid-cols-5 gap-4'>

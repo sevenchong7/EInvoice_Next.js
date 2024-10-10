@@ -7,7 +7,7 @@ export default function RegisterUserStepper(
         <>
             <div className="relative bg-black hidden h-full flex-col text-white lg:flex dark:border-r  col-span-2 items-center justify-center">
                 {steps.map((step: any, index: any) => (
-                    <div>
+                    <div key={index}>
                         {currentStep > index ?
                             <div className='flex flex-row'>
                                 <div className='flex flex-col pr-[21px] min-w-[170px]'>

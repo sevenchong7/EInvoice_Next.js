@@ -1,3 +1,4 @@
+// 'use server'
 import { AuthError, NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
@@ -36,51 +37,34 @@ const authConfig = {
         };
 
         const loginUser = await login(bodyData);
+
         console.log("loginUser ", loginUser)
         if (!loginUser.status) {
           console.error("Invalid Cred");
           throw new AuthErrorWithMsg(JSON.stringify({ errors: loginUser.error.errors[0], status: false }))
+        } else {
+          // console.log('login User = ', loginUser)
+          return loginUser.data
+
         }
-
-        return loginUser.data
-        // const data = await response.json();
-        // console.log("response ", data)
-
-        // const a ={
-        //   loginId: 'merchant3@gmail.com',
-        //   accessToken: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXJjaGFudDNAZ21haWwuY29tIiwiaWF0IjoxNzE3NjU2NjU5LCJleHAiOjE3MTc2NTY3MTl9.T8fjdVydmO8Deph70JPwL4nRkjh3GGuDRr4VJ-uSHuo',
-        //   accessTokenExpiry: '60000',
-        //   refreshToken: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXJjaGFudDNAZ21haWwuY29tIiwiaWF0IjoxNzE3NjU2NjU5LCJleHAiOjE3MTc2NTY3NDZ9.a-8kgb6ix6MvJhqw4YbxfaVgGvVcqskqnuYmBCDdfak',
-        //   refreshTokenExpiry: '86400',
-        //   merchantResponse: {
-        //     belongToMerchant: 3,
-        //     packageName: 'packageC',
-        //     permissionSet: [
-        //       'dashboard.access',
-        //       'dashboard.all',
-        //       'dashboard.download',
-        //       'employee.access',
-        //       'employee.all',
-        //       'profile.access',
-        //       'profile.all',
-        //       'user.access',
-        //       'user.all'
-        //     ],
-        //     permissionSet2: '["dashboard.all", "dashboard.access", "dashboard.download", "employee.all", "employee.access", "user.all", "user.access", "profile.all", "profile.access"]',
-        //     role: 'ADMIN'
-        //   }
       }
+
     })
   ],
   pages: {
     signIn: '/' //sigin page
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
+      if (trigger === 'update') {
+        token.xAcceptLanguage = session.xAcceptLanguage
+      }
+
       if (user) {
         token = { ...token, ...user }
         console.log("First token ", token)
       }
+
       return token;
     },
     session({ session, token }) {
@@ -91,7 +75,8 @@ const authConfig = {
         accessTokenExpiry: token.accessTokenExpiry,
         refreshToken: token.refreshToken,
         refreshTokenExpiry: token.refreshTokenExpiry,
-        merchantId: token.merchantResponse.merchantId
+        merchantId: token.merchantResponse.merchantId,
+        xAcceptLanguage: token.xAcceptLanguage,
       }
 
       // console.log("Session ", session)

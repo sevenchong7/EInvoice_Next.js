@@ -11,16 +11,15 @@ export default function RegisterUserStep1({ form }: { form: UseFormReturn<Regist
     return (
         <>
             <FormField
-                name='email'
+                name='username'
                 control={form.control}
                 render={({ field }) => (
                     <FormItem>
                         <FormControl>
                             <Input
-                                type="email"
                                 disabled={loading}
                                 {...field}
-                                placeholder='Email Address*'
+                                placeholder='Username *'
                             />
                         </FormControl>
                         <FormMessage />
@@ -28,30 +27,10 @@ export default function RegisterUserStep1({ form }: { form: UseFormReturn<Regist
                 )}
             />
 
-            <div className='pt-[20px]'>
-                <FormField
-                    name='companyName'
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <Input
-                                    disabled={loading}
-                                    {...field}
-                                    placeholder='Company Name*'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
-
-
             <div className='flex flex-row pt-[20px] justify-between'>
                 <div className='w-full mr-[20px]'>
                     <FormField
-                        name='registerNo'
+                        name='companyName'
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
@@ -59,6 +38,49 @@ export default function RegisterUserStep1({ form }: { form: UseFormReturn<Regist
                                     <Input
                                         disabled={loading}
                                         {...field}
+                                        placeholder='Company Name*'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className='w-full'>
+                    <FormField
+                        name='email'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        disabled={loading}
+                                        {...field}
+                                        type="email"
+                                        placeholder='Email*'
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+            </div>
+
+
+            <div className='flex flex-row pt-[20px] justify-between'>
+                <div className='w-full mr-[20px]'>
+                    <FormField
+                        name='businessRegisterNo'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input
+                                        disabled={loading}
+                                        {...field}
+                                        type="string"
                                         placeholder='Register No.*'
                                     />
                                 </FormControl>

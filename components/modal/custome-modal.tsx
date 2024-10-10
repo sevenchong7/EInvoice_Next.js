@@ -88,7 +88,7 @@ export const Modal: React.FC<ModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onChange} >
-            <DialogContent className='md:min-w-[600px]'>
+            <DialogContent className='md:min-w-[600px]' aria-describedby={undefined}>
                 <DialogHeader className={titleClassName}>
                     <DialogTitle className={titleClassName}>{title}</DialogTitle>
                     <DialogDescription className='text-center w-full'>{description}</DialogDescription>
