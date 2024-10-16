@@ -63,6 +63,7 @@
     "TAG_DELETE_USER_MODAL_TITLE": "删除用户",
     "TAG_DELETE_USER_MODAL_DESC": "您确定要删除此用户吗？\n 此操作不可逆转，并将永久删除所有相关数据。\n请确认您是否决定继续删除",
     "TAG_EDIT_USER_INFORMATION": "编辑用户信息",
+    "TAG_EDIT_MERCHANT_INFORMATION": "编辑商户信息",
     "TAG_ROLE": "职位",
     "TAG_ROLES": "职位",
     "TAG_STATUS": "状态",
@@ -289,5 +290,8 @@
     "TAG_TIN_NO": "识别号",
     "TAG_REG_NO": "登记号",
     "TAG_LAST_UPDATE": "最后更改",
-    "TAG_SELECT_ROLE": "请选择职位"
+    "TAG_SELECT_ROLE": "请选择职位",
+    "TAG_TOUR_REG_NO": "旅游登记号",
+    "TAG_SST_REG_NO": "SST 登记号",
+    "TAG_JOIN_DATE": "加入日期"
 }

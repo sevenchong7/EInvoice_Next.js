@@ -23,9 +23,9 @@ import RegisterUserStep4 from './register-user-step4';
 import RegisterUserStep5 from './register-user-step5';
 import approve from '@/public/Approval.png'
 import React from 'react';
-import { register } from '@/lib/services/userService';
+import { getLoginIdValidation, register } from '@/lib/services/userService';
 
-export default function RegisterUserForm() {
+export default function RegisterUserForm({ packageData }: { packageData: any }) {
     const [previousStep, setPreviousStep] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
     const [data, setData] = useState({});
@@ -43,8 +43,6 @@ export default function RegisterUserForm() {
         aptSuite: '',
         zipCode: "",
         townCity: "",
-        // state: "",
-        // country: "",
         contactNo: "",
         package: '',
         paymentMethod: '',
@@ -108,7 +106,7 @@ export default function RegisterUserForm() {
         const registerParam = {
             "loginId": form.getValues('username'),
             "password": form.getValues('password'),
-            "companyName": form.getValues('confirmPw'),
+            "companyName": form.getValues('companyName'),
             "registrationNo": form.getValues('businessRegisterNo'),
             "busTinNo": form.getValues('businessTinNo'),
             "skipCompanyInfo": skip,
@@ -138,6 +136,15 @@ export default function RegisterUserForm() {
         });
 
         if (!output) return;
+
+        const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
+
+        if (checkLoginIdDuplicate.status === false) {
+            console.log(checkLoginIdDuplicate)
+            // form.trigger('username', { shouldFocus: true })
+            form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
+            return
+        }
 
         if (currentStep < steps.length - 1) {
 

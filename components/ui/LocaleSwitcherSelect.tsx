@@ -26,12 +26,17 @@ type Props = {
     defaultValue: string;
     items: Array<{ languageName: string; languageFlag: string }> | undefined;
     label: string;
+    // open: boolean;
+    // setOpen: any
 };
 
 export default function LocaleSwitcherSelect({
     defaultValue,
     items,
-    label
+    label,
+    // open,
+    // setOpen
+
 }: Props) {
     const t = useTranslations()
     const router = useRouter();
@@ -71,7 +76,7 @@ export default function LocaleSwitcherSelect({
         // const locale = value as Locale;
 
 
-        // if (session) router.refresh()
+        if (session) router.refresh()
     }
 
     useEffect(() => {
@@ -84,12 +89,11 @@ export default function LocaleSwitcherSelect({
 
     return (
 
-        <DropdownMenu>
+        <DropdownMenu >
             <DropdownMenuTrigger asChild>
                 <Button variant='outline' className="relative space-x-2 items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>
                     <p>{t("TAG_SITE_LANGUAGE")} : {selectedLanguage}</p>
-
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>

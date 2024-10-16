@@ -29,8 +29,9 @@ import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
-import { getMerchantUserInfo } from '@/lib/services/userService';
+import { getMerchantUserInfo, merchantUserInfoUpdate } from '@/lib/services/userService';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
+import { useToast } from '@/components/ui/use-toast';
 
 
 interface CellActionProps {
@@ -118,6 +119,8 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   const [permissionListCheckboxState, setPermissionListCheckboxState] = useState<boolean[]>();
   const [functionCheckboxState, setFunctionCheckboxState] = useState<boolean[][]>();
   const [subFunctionCheckboxStates, setSubFuntionCheckboxStates] = useState<boolean[][][]>();
+  const { toast } = useToast()
+
 
   const GetMerchantUserInfo = async () => {
     return await getMerchantUserInfo(data.muId)
@@ -325,7 +328,14 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
     };
     console.log('mechantUserEditParam = ', mechantUserEditParam);
 
-    // merchantUserInfoUpdate(mechantUserInviteNewUserParam)
+    const updateUserInfo = merchantUserInfoUpdate(data.muId, mechantUserEditParam)
+
+    updateUserInfo.then(() => {
+      toast({
+        title: "Success",
+        description: "User Info has been successfully Updated!",
+      });
+    })
   };
 
   const HandleConfirm = () => {

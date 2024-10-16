@@ -8,14 +8,16 @@ export default function LocaleSwitcher() {
     const t = useTranslations('TAG_LOCALE_SWITCHER');
     const locale = useLocale();
     const [languageData, setLanguageData] = useState()
-
-    const GetLanguage = async () => {
-        return await getLanguage()
-    }
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        GetLanguage().then((res) => setLanguageData(res))
-    }, [])
+        const GetLanguage = async () => {
+            const lanData = await getLanguage()
+            setLanguageData(lanData)
+        }
+        GetLanguage()
+
+    }, [open])
 
     useEffect(() => {
         console.log('languageData = ', languageData)

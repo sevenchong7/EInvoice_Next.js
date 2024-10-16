@@ -1,7 +1,7 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 // import StatusAction from './status-action';
-import { Merchant, Role, User } from '@/constants/data';
+import { Merchant, merchantUserList, Role, User } from '@/constants/data';
 
 interface merchatUserList {
 

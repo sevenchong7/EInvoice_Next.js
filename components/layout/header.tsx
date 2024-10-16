@@ -2,9 +2,7 @@ import ThemeToggle from '@/components/layout/ThemeToggle/theme-toggle';
 import { cn } from '@/lib/utils';
 import { MobileSidebar } from './mobile-sidebar';
 import { UserNav } from './user-nav';
-import Link from 'next/link';
 import { MerchantSelection } from './merchant';
-import LanguageSelection from './language';
 import LocaleSwitcher from '../ui/localesSwitch';
 
 export default function Header() {

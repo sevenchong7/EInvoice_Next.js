@@ -1,7 +1,6 @@
-"use client"
+"use client";
 import useHasAccess from "@/hooks/useHasAccess";
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 const PermissionCheck = ({
     permission,
@@ -9,20 +8,20 @@ const PermissionCheck = ({
     onPermissionGranted
 }: {
     permission: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
     onPermissionGranted?: () => void;
 }) => {
     const hasAccess = useHasAccess(permission);
 
+    useEffect(() => {
+        if (hasAccess && onPermissionGranted) {
+            onPermissionGranted();
+        }
+    }, [hasAccess, onPermissionGranted]);
+
     if (!hasAccess) {
         return null;
     }
-
-    useEffect(() => {
-        if (onPermissionGranted != undefined) {
-            onPermissionGranted!();
-        }
-    }, [])
 
     return <>{children}</>;
 };

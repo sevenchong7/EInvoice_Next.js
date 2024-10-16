@@ -1,12 +1,12 @@
 import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
-import { Merchant, User } from "@/constants/data";
+import { Merchant, MerchantContent, User } from "@/constants/data";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface StatusActionProps {
-    data: Merchant;
+    data: MerchantContent;
 }
 
 export default function StatusAction({ data }: StatusActionProps) {
@@ -54,15 +54,15 @@ export default function StatusAction({ data }: StatusActionProps) {
                     <Button
                         onClick={() => setOpenModal(true)}
                         className={cn(
-                            "relative flex items-center transition-all duration-300 m-auto min-w-[100px]",
-                            data.status === "Active" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
+                            "relative flex items-center transition-all duration-300 m-auto min-w-[110px]",
+                            data.status === "ACTIVE" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
                             "rounded-lg"
                         )}
                     >
                         <div
                             className={cn(
                                 "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400",
-                                data.status === "Active" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
+                                data.status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
                             )}
                         />
                         <p

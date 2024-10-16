@@ -8,8 +8,9 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   images: {
-    domains: ['utfs.io']
+    domains: ['52.187.55.33']
   }
 };
 

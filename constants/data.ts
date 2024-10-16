@@ -18,6 +18,26 @@ export type Merchant = {
 
 };
 
+export type MerchantContent = {
+  merchantId: number,
+  companyName: string,
+  registrationNo: string,
+  businessTinNo: string,
+  sstRegNo: string,
+  tourRegNo: string,
+  address: string,
+  city: string,
+  postcode: string,
+  stateId: string,
+  country: string,
+  joinDate: string,
+  contactPrefix: string,
+  contact: string,
+  status: string,
+  email: string,
+  loginId: string
+}
+
 export type MerchantInfo = {
   address: string;
   businessTinNo: string;
@@ -48,6 +68,95 @@ export type packageList = {
   Descriptions: [];
   MainMenu: [];
 }
+
+export type CountryList = {
+  countryName: string;
+  countryCode: string;
+  contactPrefix: string;
+  stateList: []
+}
+
+export type StateList = {
+  stateName: string;
+  stateCode: string;
+
+}
+
+export type permissionList = {
+  Function: Function[],
+  Route: string,
+  selected: boolean
+}
+
+export type Function = {
+  FunctionName: string,
+  selected: boolean
+  subFunctions: subFunction[]
+  value: string
+}
+
+export type subFunction = {
+  FunctionName: string,
+  selected: boolean,
+  value: string
+}
+
+export type Users = {
+  content: contents[]
+  page: number,
+  size: number,
+  totalElements: number,
+  totalPages: number
+}
+
+export type contents = {
+  muId: number,
+  username: string,
+  role: string,
+  status: string,
+  merchantName: string
+}
+
+export type Role = {
+  mupId: number;
+  role: string;
+  currentPackageId: number;
+  merchantName: string;
+  roleQuantity: number;
+  lastModify: string;
+  // user: User[],
+  // accessControl: AccessControl
+};
+
+export type RoleInfo = {
+  mupId: number;
+  role: string;
+  currentPackageId: number;
+  merchantName: string;
+  roleQuantity: number;
+  lastModify: string;
+  merchantUserList: merchantUserList
+  permissionList: permissionList[]
+}
+
+export type merchantUserList = {
+  content: content[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+
+}
+
+export type content = {
+  muId: number;
+  username: string
+  role: string;
+  status: string;
+  merchantName: string;
+
+}
+
 
 
 export const merchants: Merchant[] = [
@@ -514,32 +623,6 @@ export const companys: Company =
   subscription: 'Standard'
 }
 
-export type Users = {
-  content: contents[]
-  page: number,
-  size: number,
-  totalElements: number,
-  totalPages: number
-}
-
-export type contents = {
-  muId: number,
-  username: string,
-  role: string,
-  status: string,
-  merchantName: string
-}
-
-export type Role = {
-  mupId: number;
-  role: string;
-  currentPackageId: number;
-  merchantName: string;
-  roleQuantity: number;
-  lastModify: string;
-  // user: User[],
-  // accessControl: AccessControl
-};
 
 // export const roles: Role[] = [
 //   {
@@ -871,7 +954,7 @@ export const navItems: NavItem[] = [
         href: '/dashboard/user/roleListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read'],
+        permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create'],
         // children: [
         //   {
         //     title: 'Add User',

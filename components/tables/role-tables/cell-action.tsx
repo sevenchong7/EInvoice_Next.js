@@ -21,11 +21,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Merchant, Role, User } from '@/constants/data';
+import { Merchant, Role, RoleInfo, User } from '@/constants/data';
 import { cn } from '@/lib/utils';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -35,6 +35,7 @@ import { useTranslations } from 'next-intl';
 import React from 'react';
 import { editRole, getRoleInfo } from '@/lib/services/userService';
 import roleMerchantData from '@/constants/role_merchant.json';
+import { useToast } from '@/components/ui/use-toast';
 
 interface CellActionProps {
   data: Role;
@@ -55,63 +56,42 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
-          <EditUser data={data} open={open} />
+          <EditUser data={data} open={open} setOpen={setOpen} />
         </Sheet>
       </div>
     </>
   );
 };
 
-interface roleInfo {
-  mupId: string,
-  currentPackageId: number,
-  roleQuantity: number,
-  merchantUserList: [],
-  permissionList: permissionList[]
-}
-
-interface permissionList {
-  Function: Function[],
-  Route: string,
-  selected: boolean
-}
-
-interface Function {
-  FunctionName: string,
-  selected: boolean
-  subFunctions: subFunction[]
-  value: string
-}
-
-interface subFunction {
-  FunctionName: string,
-  selected: boolean,
-  value: string
-}
-
-const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
+const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen: any }) => {
   const [loading, setLoading] = useState(false);
   const t = useTranslations()
   const [openModal, setOpenModal] = useState(false);
-  const [roleInfo, setRoleInfo] = useState<roleInfo>()
+  const [roleInfo, setRoleInfo] = useState<RoleInfo>();
   const [permissionListCheckboxState, setPermissionListCheckboxState] = useState<boolean[]>()
   const [functionCheckboxState, setFunctionCheckboxState] = useState<boolean[][]>()
   const [subFunctionCheckboxStates, setSubFuntionCheckboxStates] = useState<boolean[][][]>();
+  const { toast } = useToast();
 
-  const GetRoleInfo = async () => {
-    return await getRoleInfo(data.mupId)
-  }
+
 
   useEffect(() => {
-    if (open) {
+    if (open == true) {
       console.log('data = ', data);
       console.log('mupId = ', data.mupId);
 
+      const GetRoleInfo = () => {
+        const getRole = getRoleInfo(data.mupId)
+        getRole.then((res) => {
+          setRoleInfo(res)
+        })
+      }
+
       if (data.mupId != undefined) {
-        GetRoleInfo().then((res) => setRoleInfo(res))
+        GetRoleInfo()
       }
     }
-  }, [open, data]);
+  }, [open]);
 
   useEffect(() => {
     if (roleInfo != undefined)
@@ -124,7 +104,6 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
       setFunctionCheckboxState(roleInfo.permissionList.map((data) => data.Function.map((value) => value.selected)));
       setSubFuntionCheckboxStates(roleInfo.permissionList.map((data) => data.Function.map((value) => value.subFunctions.map((res) => res.selected))));
     }
-
   }, [roleInfo]);
 
   const handlePermissionListCheckboxState = (routeIndex: number, check: boolean) => {
@@ -281,7 +260,16 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
 
     console.log('editRoleParam = ', editRoleParam)
 
-    // editRole(editRoleParam)
+    const roleEdit = editRole(editRoleParam)
+
+    roleEdit.then(() => {
+      setOpen(false)
+      toast({
+        title: "Success",
+        description: "Role has been Edit successfully!",
+      });
+    })
+
   }
 
   const HandleConfirm = () => {
@@ -303,6 +291,7 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
     const { tempPermissionList } = checkChange();
     console.log('tempPermissionList = ', tempPermissionList)
     HandleSubmit(tempPermissionList)
+    setOpenModal(false)
   };
 
   return (
@@ -311,7 +300,7 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         onConfirm={onConfirm}
-        loading={loading}
+        loading={false}
         title={t('TAG_CONFIRMATION')}
         content={t('TAG_CONFIRMATION_MODAL_DESC')}
       />
@@ -324,7 +313,11 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
             </SheetHeader>
             <div className="">
               <div className="w-full px-1">
-                <RoleUserClient data={roleMerchantData.data.merchantUserList.content} />
+                {roleInfo && roleInfo.merchantUserList ? (
+                  <RoleUserClient data={roleInfo.merchantUserList} />
+                ) : (
+                  <p>No user data available</p> // Fallback content if undefined
+                )}
               </div>
 
               <div className="">
@@ -332,46 +325,50 @@ const EditUser = ({ data, open }: { data: Role, open: boolean }) => {
                   {t('TAG_ACCESS_CONTROL')}:
                 </Label>
                 <Separator />
-                <Accordion type='multiple' defaultValue={[]}>
-                  {
-                    roleInfo?.permissionList.map((roleInfoRes, roleInfoIndex) => {
-                      return <AccordionItem value={roleInfoRes.Route} key={roleInfoIndex}>
-                        <div className='flex flex-row items-center space-x-2'>
-                          <AccordionTrigger className='justify-start '></AccordionTrigger>
-                          <Checkbox id={roleInfoRes.Route} checked={permissionListCheckboxState?.[roleInfoIndex]} onCheckedChange={(check: boolean) => handlePermissionListCheckboxState(roleInfoIndex, check)} />
-                          <label htmlFor={roleInfoRes.Route}>{roleInfoRes.Route}</label>
-                        </div>
-                        <div className='pl-[50px] pt-2'>
-                          {
-                            roleInfoRes.Function.map((funcRes, funcIndex) => {
-                              return <AccordionContent key={funcIndex}>
-                                <AccordionItem value={funcRes.FunctionName} >
-                                  <div className='flex flex-row items-center space-x-2'>
-                                    <AccordionTrigger className='justify-start '></AccordionTrigger>
-                                    <Checkbox id={funcRes.FunctionName} checked={functionCheckboxState?.[roleInfoIndex]?.[funcIndex]} onCheckedChange={(check: boolean) => handleFunctionCheckboxState(roleInfoIndex, funcIndex, check)} />
-                                    <label htmlFor={funcRes.FunctionName}>{funcRes.FunctionName}</label>
-                                  </div>
-                                  <div className='pl-[50px] pt-2'>
-                                    {
-                                      funcRes.subFunctions.map((subFuncRes, subFuncIndex) => {
-                                        return <AccordionContent key={subFuncIndex}>
-                                          <div className='flex flex-row space-x-2 items-center'>
-                                            <Checkbox id={subFuncRes.FunctionName} checked={subFunctionCheckboxStates?.[roleInfoIndex]?.[funcIndex]?.[subFuncIndex]} onCheckedChange={(check: boolean) => handleSubFunctionCheckboxStates(roleInfoIndex, funcIndex, subFuncIndex, check)} />
-                                            <label htmlFor={subFuncRes.FunctionName}>{subFuncRes.FunctionName}</label>
-                                          </div>
-                                        </AccordionContent>
-                                      })
-                                    }
-                                  </div>
-                                </AccordionItem>
-                              </AccordionContent>
-                            })
-                          }
-                        </div>
-                      </AccordionItem>
-                    })
-                  }
-                </Accordion>
+                <section>
+                  <Suspense fallback={<p>Loading Access Control...</p>}>
+                    <Accordion type='multiple' defaultValue={[]}>
+                      {
+                        roleInfo?.permissionList.map((roleInfoRes, roleInfoIndex) => {
+                          return <AccordionItem value={roleInfoRes.Route} key={roleInfoIndex}>
+                            <div className='flex flex-row items-center space-x-2'>
+                              <AccordionTrigger className='justify-start '></AccordionTrigger>
+                              <Checkbox id={roleInfoRes.Route} checked={permissionListCheckboxState?.[roleInfoIndex]} onCheckedChange={(check: boolean) => handlePermissionListCheckboxState(roleInfoIndex, check)} />
+                              <label htmlFor={roleInfoRes.Route}>{roleInfoRes.Route}</label>
+                            </div>
+                            <div className='pl-[50px] pt-2'>
+                              {
+                                roleInfoRes.Function.map((funcRes, funcIndex) => {
+                                  return <AccordionContent key={funcIndex}>
+                                    <AccordionItem value={funcRes.FunctionName} >
+                                      <div className='flex flex-row items-center space-x-2'>
+                                        <AccordionTrigger className='justify-start '></AccordionTrigger>
+                                        <Checkbox id={funcRes.FunctionName} checked={functionCheckboxState?.[roleInfoIndex]?.[funcIndex]} onCheckedChange={(check: boolean) => handleFunctionCheckboxState(roleInfoIndex, funcIndex, check)} />
+                                        <label htmlFor={funcRes.FunctionName}>{funcRes.FunctionName}</label>
+                                      </div>
+                                      <div className='pl-[50px] pt-2'>
+                                        {
+                                          funcRes.subFunctions.map((subFuncRes, subFuncIndex) => {
+                                            return <AccordionContent key={subFuncIndex}>
+                                              <div className='flex flex-row space-x-2 items-center'>
+                                                <Checkbox id={subFuncRes.FunctionName} checked={subFunctionCheckboxStates?.[roleInfoIndex]?.[funcIndex]?.[subFuncIndex]} onCheckedChange={(check: boolean) => handleSubFunctionCheckboxStates(roleInfoIndex, funcIndex, subFuncIndex, check)} />
+                                                <label htmlFor={subFuncRes.FunctionName}>{subFuncRes.FunctionName}</label>
+                                              </div>
+                                            </AccordionContent>
+                                          })
+                                        }
+                                      </div>
+                                    </AccordionItem>
+                                  </AccordionContent>
+                                })
+                              }
+                            </div>
+                          </AccordionItem>
+                        })
+                      }
+                    </Accordion>
+                  </Suspense>
+                </section>
               </div>
             </div>
             <SheetFooter>

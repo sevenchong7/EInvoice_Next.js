@@ -22,7 +22,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -120,42 +120,42 @@ export function DataTable<TData, TValue>({
     }));
   };
 
-  const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString());
+  // const createQueryString = React.useCallback(
+  //   (params: Record<string, string | number | null>) => {
+  //     const newSearchParams = new URLSearchParams(searchParams?.toString());
 
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
-          newSearchParams.delete(key);
-        } else {
-          newSearchParams.set(key, String(value));
-        }
-      }
+  //     for (const [key, value] of Object.entries(params)) {
+  //       if (value === null) {
+  //         newSearchParams.delete(key);
+  //       } else {
+  //         newSearchParams.set(key, String(value));
+  //       }
+  //     }
 
-      return newSearchParams.toString();
-    },
-    [searchParams]
-  );
+  //     return newSearchParams.toString();
+  //   },
+  //   [searchParams]
+  // );
 
-  // Handle server-side pagination
-  const [{ pageIndex, pageSize }, setPaginations] =
-    React.useState<PaginationState>({
-      pageIndex: fallbackPage - 1,
-      pageSize: fallbackPerPage
-    });
+  // // Handle server-side pagination
+  // const [{ pageIndex, pageSize }, setPaginations] =
+  //   React.useState<PaginationState>({
+  //     pageIndex: fallbackPage - 1,
+  //     pageSize: fallbackPerPage
+  //   });
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        limit: pageSize
-      })}`,
-      {
-        scroll: false
-      }
-    );
+  // React.useEffect(() => {
+  //   router.push(
+  //     `${pathname}?${createQueryString({
+  //       page: pageIndex + 1,
+  //       limit: pageSize
+  //     })}`,
+  //     {
+  //       scroll: false
+  //     }
+  //   );
 
-  }, [pageIndex, pageSize]);
+  // }, [pageIndex, pageSize]);
 
 
   // React.useEffect(() => {
@@ -192,10 +192,20 @@ export function DataTable<TData, TValue>({
 
   // }, []);
 
+  const handlePermissionGranted = useCallback(() => {
+    setColumnVisibility(prev => ({
+      ...prev,
+      merchant: true,
+    }));
+  }, []);
+
 
   return (
     <>
-      <PermissionCheck permission="userList.su.read" onPermissionGranted={() => setColumnVisibility({ merchant: true })}>
+      <PermissionCheck
+        permission="userList.su.read"
+        onPermissionGranted={handlePermissionGranted}
+      >
         <></>
       </PermissionCheck>
       <div className='grid lg:grid-cols-5 gap-4 '>

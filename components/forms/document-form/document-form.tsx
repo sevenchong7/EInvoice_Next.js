@@ -49,7 +49,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
     // const toastMessage = initialData ? 'Product updated.' : 'Product created.';
     // const action = initialData ? 'Save changes' : 'Create';
     const [previousStep, setPreviousStep] = useState(0);
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(0);
     const [data, setData] = useState({});
     const delta = currentStep - previousStep;
 

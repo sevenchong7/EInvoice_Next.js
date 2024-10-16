@@ -2,30 +2,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import StatusAction from './status-action';
 import { CellAction } from './cell-action';
-import { Merchant } from '@/constants/data';
+import { MerchantContent } from '@/constants/data';
 
-export const columns: ColumnDef<any>[] = [
-  // {
-  //   id: 'select',
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={table.getIsAllPageRowsSelected()}
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false
-  // },
-
-
+export const columns: ColumnDef<MerchantContent>[] = [
   {
     accessorKey: 'merchantId',
     header: 'TAG_NO',
@@ -47,12 +26,12 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "sstRegNo",
-    header: 'SST',
+    header: 'TAG_SST_REG_NO',
     enableGlobalFilter: true,
   },
   {
     accessorKey: "tourRegNo",
-    header: 'tourRegNo',
+    header: 'TAG_TOUR_REG_NO',
     enableGlobalFilter: true,
   },
   {
@@ -71,7 +50,7 @@ export const columns: ColumnDef<any>[] = [
   //   enableColumnFilter: false,
   // },
   {
-    header: 'Contact',
+    header: 'TAG_CONTACT_NO',
     enableColumnFilter: false,
     cell: ({ row }) => `${row.original.contactPrefix} ${row.original.contact}`,
   },
@@ -82,22 +61,22 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "city",
-    header: 'city',
+    header: 'TAG_CITY',
     enableColumnFilter: false,
   },
   {
     accessorKey: "stateId",
-    header: 'state',
+    header: 'TAG_STATE',
     enableColumnFilter: false,
   },
   {
     accessorKey: "country",
-    header: 'country',
+    header: 'TAG_COUNTRY',
     enableColumnFilter: false,
   },
   {
     accessorKey: 'joinDate',
-    header: 'joinDate',
+    header: 'TAG_JOIN_DATE',
     enableColumnFilter: true,
   },
   {

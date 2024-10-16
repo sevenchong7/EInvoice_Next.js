@@ -2,14 +2,14 @@
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { Role, User } from '@/constants/data';
+import { merchantUserList, Role, User } from '@/constants/data';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { DataTable } from './role-data-table';
 
 interface ProductsClientProps {
-  data: any[];
+  data: merchantUserList;
 }
 
 export const RoleUserClient: React.FC<ProductsClientProps> = ({ data }) => {
@@ -31,7 +31,7 @@ export const RoleUserClient: React.FC<ProductsClientProps> = ({ data }) => {
       </div> */}
       {/* <Separator /> */}
       <div className='space-y-5'>
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data.content} />
       </div>
     </>
   );

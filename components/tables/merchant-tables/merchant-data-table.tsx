@@ -49,6 +49,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Paginator from './merchant-table-paging';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useTranslations } from 'next-intl';
+import { MerchantContent } from '@/constants/data';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -115,42 +116,51 @@ export function DataTable<TData, TValue>({
     }));
   };
 
-  const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString());
+  const checkHeadersInData = (data: any, index: number, headers: string) => {
+    // Get the keys of the data object
+    const dataKeys = Object.keys(data[index]);
+    // console.log('dataKeys =', dataKeys)
 
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
-          newSearchParams.delete(key);
-        } else {
-          newSearchParams.set(key, String(value));
-        }
-      }
+    // Check if any header exists in the dataKeys
+    return dataKeys.includes(headers);
+  };
 
-      return newSearchParams.toString();
-    },
-    [searchParams]
-  );
+  // const createQueryString = React.useCallback(
+  //   (params: Record<string, string | number | null>) => {
+  //     const newSearchParams = new URLSearchParams(searchParams?.toString());
+
+  //     for (const [key, value] of Object.entries(params)) {
+  //       if (value === null) {
+  //         newSearchParams.delete(key);
+  //       } else {
+  //         newSearchParams.set(key, String(value));
+  //       }
+  //     }
+
+  //     return newSearchParams.toString();
+  //   },
+  //   [searchParams]
+  // );
 
   // Handle server-side pagination
-  const [{ pageIndex, pageSize }, setPaginations] =
-    React.useState<PaginationState>({
-      pageIndex: fallbackPage - 1,
-      pageSize: fallbackPerPage
-    });
+  // const [{ pageIndex, pageSize }, setPaginations] =
+  //   React.useState<PaginationState>({
+  //     pageIndex: fallbackPage - 1,
+  //     pageSize: fallbackPerPage
+  //   });
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        limit: pageSize
-      })}`,
-      {
-        scroll: false
-      }
-    );
+  // React.useEffect(() => {
+  //   router.push(
+  //     `${pathname}?${createQueryString({
+  //       page: pageIndex + 1,
+  //       limit: pageSize
+  //     })}`,
+  //     {
+  //       scroll: false
+  //     }
+  //   );
 
-  }, [pageIndex, pageSize]);
+  // }, [pageIndex, pageSize]);
 
 
   return (
@@ -244,8 +254,9 @@ export function DataTable<TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className='flex flex-auto min-w-screen bg-gray-300 rounded-lg '>
               {headerGroup.headers.map((header, index) => {
+                // console.log("header = ", header)
                 return (
-                  <TableHead key={header.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-tr rounded-br lg:z-10")} >
+                  <TableHead key={header.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id === 'email' && 'min-w-[300px]', header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-tr rounded-br lg:z-10")} >
                     {header.isPlaceholder
                       ? null
                       : header.id == 'actions' ?
@@ -318,27 +329,35 @@ export function DataTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
                 className={cn('flex flex-row py-[5px]')}
-
               >
+
                 {row.getVisibleCells().map((cell, index) => {
-                  const data = flexRender(
+                  const finaldata = flexRender(
                     cell.column.columnDef.cell,
                     cell.getContext()
                   )
-                  return (
-                    <TableCell key={cell.id} className={cn("flex items-center border-b ", cell.column.id == 'merchantId' ? " min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", cell.column.id == 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-10 lg:shadow dark:bg-black dark:shadow-gray-400", cell.column.id == 'actions' && "flex-auto items-center justify-center  w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black")}>
-                      {
-                        // flexRender(
-                        //   cell.column.columnDef.cell,
-                        //   cell.getContext()
-                        // )
+                  // Example usage
+                  const hasValidHeader = checkHeadersInData(data, rowIndex, cell.column.id);
+                  // console.log('hasValidHeader = ', hasValidHeader); // This will return true if any header is found in data
 
-                        data != null && data != undefined && data != '' ? data : "NA"
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "flex items-center border-b",
+                        cell.column.id === 'merchantId' ? "min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]",
+                        cell.column.id === 'email' && 'min-w-[300px]',
+                        cell.column.id === 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-10 lg:shadow dark:bg-black dark:shadow-gray-400",
+                        cell.column.id === 'actions' && "flex-auto items-center justify-center w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
+                      )}
+                    >
+                      {
+                        // Show 'NA' if the cell's column ID does not exist in the headers
+                        hasValidHeader || cell.column.id === 'actions' ? finaldata : 'NA'
                       }
                     </TableCell>
                   )
-                }
-                )}
+                })}
               </TableRow>
             ))
           ) : (
@@ -354,13 +373,9 @@ export function DataTable<TData, TValue>({
         </TableBody>
 
       </Table>
-      {/* <ScrollBar orientation="horizontal" /> */}
-      {/* </ScrollArea> */}
+
       <div className="flex items-center justify-center space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div> */}
+
         <div className="space-x-2">
           <Paginator
             currentPage={table.getState().pagination.pageIndex + 1}
@@ -368,22 +383,7 @@ export function DataTable<TData, TValue>({
             onPageChange={(pageNumber: number) => table.setPageIndex(pageNumber - 1)}
             showPreviousNext
           />
-          {/* <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button> */}
+
         </div>
       </div>
     </>

@@ -1,12 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import UserAuthForm from '@/components/forms/user-auth-form';
-import { buttonVariants } from '@/components/ui/button';
-import { url } from 'inspector';
 import Image from 'next/image';
 import img from '@/public/bgImg.png'
-import image from '@/public/Group28.png'
-
 
 export const metadata: Metadata = {
   title: 'Authentication',

@@ -43,7 +43,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             isOpen={isOpen}
             onClose={onClose}
         >
-            <div className='text-center w-full whitespace-pre-wrap' aria-description='dialog-description'>{content}</div>
+            <div className='items-center text-center w-full whitespace-pre-wrap' aria-description='dialog-description'>{content}</div>
             <div className="flex w-full items-center justify-between space-x-2 pt-6">
                 <Button disabled={loading} variant="outline" onClick={onClose}>
                     {t('TAG_CANCEL')}

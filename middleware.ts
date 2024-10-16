@@ -70,10 +70,6 @@ const paths = [
     path: "/dashboard/user",
     permission: ['userList.read', 'roleList.read', 'userList.su.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create'],
   },
-  // {
-  //   path: "/dashboard/employee",
-  //   permission: ["employee.access"],
-  // },
   {
     path: "/dashboard/document",
     permission: ['docCreate.create'],
@@ -86,10 +82,6 @@ const paths = [
     path: "/dashboard/document/createDocument/documentDownload",
     permission: ['docCreate.create', 'docCreate.createMyFav'],
   },
-  // {
-  //   path: "/dashboard/employee/[id]",
-  //   permission: ["employee.all"],
-  // },
   {
     path: "/dashboard/profile",
     permission: ['profile.read'],
@@ -108,7 +100,7 @@ const paths = [
   },
   {
     path: "/dashboard/user/roleListing",
-    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read'],
+    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create'],
   },
   {
     path: "/dashboard/user/userListing/[id]",

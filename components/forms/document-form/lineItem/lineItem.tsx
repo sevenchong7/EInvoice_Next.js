@@ -240,7 +240,6 @@ export default function LineItem(
         }
     }
 
-    // const title = initialData != null ? 'Edit Line Itme' : 'Add Line Item';
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
             <SheetContent className="md:min-w-[970px] min-w-full">

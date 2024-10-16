@@ -30,7 +30,7 @@ import Required from "@/components/ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { getMerchantInfo } from "@/lib/services/userService";
-import { merchants } from "@/constants/data";
+import { CountryList, merchants, StateList } from "@/constants/data";
 import { getCountry } from "@/lib/services/generalService";
 
 interface MerchantParam {
@@ -50,19 +50,6 @@ interface MerchantParam {
 
 }
 
-interface CountryPromp {
-    countryName: string;
-    countryCode: string;
-    contactPrefix: string;
-    stateList: []
-}
-
-interface StatePromp {
-    stateName: string;
-    stateCode: string;
-
-}
-
 export default function DocumentFormStep2(
     {
         form,
@@ -79,12 +66,12 @@ export default function DocumentFormStep2(
     const [buyerError, setBuyerError] = useState(false);
 
     const [merchantInfo, setMerchantInfo] = useState<MerchantParam>()
-    const [supplierCountries, setSupplierCountries] = useState<CountryPromp[]>()
-    const [supplierStates, setSupplierStates] = useState<StatePromp[]>();
-    const [buyerCountries, setBuyerCountries] = useState<CountryPromp[]>()
-    const [buyerStates, setBuyerStates] = useState<StatePromp[]>();
-    const [deliveryCountries, setDeliveryCountries] = useState<CountryPromp[]>()
-    const [deliveryStates, setDeliveryStates] = useState<StatePromp[]>();
+    const [supplierCountries, setSupplierCountries] = useState<CountryList[]>()
+    const [supplierStates, setSupplierStates] = useState<StateList[]>();
+    const [buyerCountries, setBuyerCountries] = useState<CountryList[]>()
+    const [buyerStates, setBuyerStates] = useState<StateList[]>();
+    const [deliveryCountries, setDeliveryCountries] = useState<CountryList[]>()
+    const [deliveryStates, setDeliveryStates] = useState<StateList[]>();
 
     async function getMerchant() {
         return await getMerchantInfo();
@@ -125,7 +112,6 @@ export default function DocumentFormStep2(
     }, [merchantInfo])
 
     useEffect(() => {
-        console.log('1st time test')
         supplierCountries?.map((value) => {
             if (form.getValues('supplierCountry') == value.countryCode) {
                 setSupplierStates(value.stateList)

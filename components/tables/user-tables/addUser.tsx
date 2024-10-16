@@ -21,31 +21,19 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { mechantUserInviteNewUser, roleSelectionList, roleSelectionPermission } from '@/lib/services/userService';
+import { getLoginIdValidation, getRoleValidation, mechantUserInviteNewUser, roleSelectionList, roleSelectionPermission } from '@/lib/services/userService';
 import { cn } from '@/lib/utils';
+import { boolean } from 'zod';
+import { set } from 'date-fns';
+import { useToast } from '@/components/ui/use-toast';
+import { useSession } from 'next-auth/react';
 
-interface AccessControl {
-    createDashboard: boolean,
-    removeDashboard: boolean,
-    updateDashboard: boolean,
-    deleteDashboaed: boolean,
-    createUser: boolean,
-    removeUser: boolean,
-    updateUser: boolean,
-    deleteUser: boolean,
-    createProfile: boolean,
-    removeProfile: boolean,
-    updateProfile: boolean,
-    deleteProfile: boolean
-};
 
 interface rolePermission {
-
     currentPackageId: number,
     mupId: number,
     permissionList: permissionList[],
     roleQuantity: number
-
 }
 
 interface permissionList {
@@ -68,18 +56,17 @@ interface subFunction {
 }
 
 export default function AddUser() {
-    let mechantUserInviteNewUserParam: { loginId: string; role: string | undefined; hasNewRole: boolean; permission: string[]; } | undefined = undefined
     const router = useRouter();
     const t = useTranslations()
     const [checkAll, setCheckAll] = useState(false);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [roleModal, setRole] = useState('')
-    const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
     const [edit, setEdit] = useState(true);
-    const [roleSelection, setRoleSelection] = useState([]);
+    const [roleSelection, setRoleSelection] = useState<any>();
     const [rolePermission, setRolePermission] = useState<rolePermission>();
-    const [selectedRole, setSelectedRole] = useState<string>();
+    const [selectedRole, setSelectedRole] = useState<any>();
     const [permissionList, setPermissionList] = useState<string[]>([])
     const permissionListRef = useRef<string[]>([]);
     const [checkboxStates, setCheckboxStates] = useState<boolean[][][]>(
@@ -89,6 +76,15 @@ export default function AddUser() {
             )
             : []
     );
+    const [UsernameError, setUsernameError] = useState(true);
+    const [UsernameErrorMessage, setUsernameErrorMessage] = useState<string[]>()
+    const [roleError, setRoleError] = useState(true);
+    const [roleErrorMessage, setRoleErrorMessage] = useState<string>()
+    const [roleModalError, setRoleModalError] = useState(true)
+    const [roleModalErrorMessage, setRoleModalErrorMessage] = useState<string[]>()
+    const { toast } = useToast()
+    const session = useSession()
+
 
     const GetRoleSelectionList = async () => {
         return await roleSelectionList();
@@ -100,15 +96,15 @@ export default function AddUser() {
 
     useEffect(() => {
         GetRoleSelectionList().then((res) => {
+            console.log('role select list= ', res)
             setRoleSelection(res)
         })
     }, [])
 
     useEffect(() => {
-        console.log('selectedRole = ', roleSelection)
-        if (selectedRole !== '' && selectedRole !== undefined) {
+        if (selectedRole !== '' && selectedRole !== undefined && selectedRole !== null) {
             console.log('role selection = ', selectedRole)
-            GetRoleSelectionPermission(selectedRole).then((res) => {
+            GetRoleSelectionPermission(selectedRole.mupId).then((res) => {
                 setRolePermission(res.data)
             })
         }
@@ -119,8 +115,6 @@ export default function AddUser() {
             console.log('rolePermission = ', rolePermission)
         }
     }, [rolePermission])
-
-
 
     useEffect(() => {
         if (rolePermission?.permissionList) {
@@ -193,15 +187,27 @@ export default function AddUser() {
         return false
     }
 
-    const onConfirm = () => {
-        if (!checkDuplicateRole) return
+    const onConfirm = async () => {
+        const { tempPermissionList } = checkChange();
+        if (roleModal == null || roleModal == undefined || roleModal == '') {
+            setRoleModalError(false)
+            setRoleModalErrorMessage(['Please enter a new role'])
+            return
+        } else {
+            const checkRole = await getRoleValidation(roleModal, session.data?.user.merchantId)
+            if (checkRole.status == false) {
+                setRoleError(false)
+                setRoleErrorMessage(checkRole.error.errorMap.role)
+                return
+            } else {
+                setRoleError(true)
+            }
+        }
+
+        HandleSubmit(tempPermissionList);
 
     }
 
-    // useEffect(() => {
-
-    //     // return mechantUserInviteNewUserParam
-    // }, [permissionList, email, selectedRole])
     const checkChange = () => {
         let check = true;
         let tempPermissionList: any[] = [];
@@ -230,19 +236,54 @@ export default function AddUser() {
     };
 
     const HandleSubmit = (permissionListToSubmit: any[]) => {
-        const mechantUserInviteNewUserParam = {
-            "loginId": email,
-            "role": selectedRole,
-            "hasNewRole": false,
-            "permission": permissionListToSubmit,
-        };
-        // console.log(mechantUserInviteNewUserParam);
 
-        // mechantUserInviteNewUser(mechantUserInviteNewUserParam)
+        // console.log('roleModal or selectedRole = ', roleModal != null && roleModal != undefined && roleModal != '' ? roleModal : selectedRole.role)
+        const mechantUserInviteNewUserParam = {
+            "loginId": username,
+            "role": roleModal != null && roleModal != undefined && roleModal != '' ? roleModal : selectedRole.role,
+            "hasNewRole": false,
+            "permissionList": permissionListToSubmit,
+        };
+        console.log(mechantUserInviteNewUserParam);
+
+        const addNewUser = mechantUserInviteNewUser(mechantUserInviteNewUserParam)
+
+        addNewUser.then(() => {
+            toast({
+                title: "Success",
+                description: "New User has been added successfully!",
+            });
+        })
+
     };
 
-    function HandleConfirm() {
-        if (selectedRole == undefined) return;
+    async function HandleConfirm() {
+
+        if (selectedRole == undefined || selectedRole == null) {
+            setRoleError(false)
+            setRoleErrorMessage('Please select a role !')
+            return;
+        } else {
+            setRoleError(true)
+        }
+
+        if (username == null || username == undefined || username == '') {
+            setUsernameError(false)
+            setUsernameErrorMessage(['Plese enter the user name'])
+            return
+        } else {
+            setUsernameError(true)
+
+            const loginIdCheck = await getLoginIdValidation(username)
+
+            if (loginIdCheck.status == false) {
+                setUsernameError(false)
+                setUsernameErrorMessage(loginIdCheck.error.errorMap.username)
+                return
+            } else {
+                setUsernameError(true)
+            }
+        }
 
         const { check, tempPermissionList } = checkChange();
 
@@ -270,10 +311,10 @@ export default function AddUser() {
                     <div className='flex justify-center items-center w-1/2 space-x-5'>
                         <div>
                             <div className=' flex flex-1'>
-                                <Input value={email.trim()} placeholder="test@gmail.com" onChange={(e) => setEmail(e.target.value.trim())} />
+                                <Input value={username.trim()} placeholder="test@gmail.com" type='email' onChange={(e) => setUsername(e.target.value.trim())} />
                             </div>
                             {
-                                email == '' && <p className='text-red-500'>Please enter the email</p>
+                                UsernameError == false && <p className='text-red-500'>{UsernameErrorMessage}</p>
                             }
                         </div>
                         <div >
@@ -287,12 +328,15 @@ export default function AddUser() {
                                 </SelectTrigger>
                                 <SelectContent className="max-h-[300px] overflow-y-scroll">
                                     {roleSelection?.map((role: any) => (
-                                        <SelectItem key={role.mupId} value={role.mupId}>
+                                        <SelectItem key={role.mupId} value={role}>
                                             {role.role}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
+                            {
+                                roleError == false && <p className='text-red-500'>{roleErrorMessage}</p>
+                            }
                         </div>
                     </div>
                 </div>

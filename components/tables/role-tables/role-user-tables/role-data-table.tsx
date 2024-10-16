@@ -241,7 +241,7 @@ export function DataTable<TData, TValue>({
 
               >
                 {row.getVisibleCells().map((cell, index) => {
-                  console.log('cell = ', cell)
+                  // console.log('cell = ', cell)
                   // const adjustedIndex = index + 1;
                   return (
                     <TableCell key={cell.id} className={cn("flex items-center border-b ", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 w-full", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
