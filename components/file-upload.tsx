@@ -25,9 +25,11 @@ export default function FileUpload({
     let filteredFiles = files.filter((item) => item.key !== key);
     onRemove(filteredFiles);
   };
-  const onUpdateFile = (newFiles: UploadFileResponse[]) => {
+  const onUpdateFile = (newFiles: any) => {
     onChange([...value, ...newFiles]);
   };
+
+  // UploadFileResponse[])
   return (
     <div>
       <div className="mb-4 flex items-center gap-4">
@@ -78,10 +80,11 @@ export default function FileUpload({
             }}
             onClientUploadComplete={(res) => {
               // Do something with the response
-              const data: UploadFileResponse[] | undefined = res;
-              if (data) {
-                onUpdateFile(data);
-              }
+              console.log('image res = ', res)
+              // const data: UploadFileResponse[] | undefined = res;
+              // if (data) {
+              //   onUpdateFile(data);
+              // }
             }}
             onUploadError={(error: Error) => {
               toast({

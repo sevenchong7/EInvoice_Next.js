@@ -14,14 +14,16 @@ import { useEffect, useState } from "react";
 import { permissionList } from "@/constants/data";
 import { Toast, ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 
 
 
 //Todo
 export default function AddRole({ openSheet, permissionListData, setOpen, setSelectUserModal, mId }: { openSheet: boolean, permissionListData: any, setOpen: any, setSelectUserModal: any, mId: any }) {
-    const [loading, setLoading] = useState(false);
     const t = useTranslations()
+    const router = useRouter()
+    const [loading, setLoading] = useState(false);
     const onConfirm = async () => { };
     const [permissionListing, setPermissionListiong] = useState<permissionList[]>()
     const [permissionListCheckboxState, setPermissionListCheckboxState] = useState<boolean[]>()
@@ -35,6 +37,7 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
     const [roleErrorMessage, setRoleErrorMessage] = useState<string[]>()
     const [permissionError, setPermissionError] = useState(true)
     const [permissionErrorMessage, setPermissionErrorMessage] = useState<string[]>()
+
 
 
     useEffect(() => {
@@ -228,6 +231,7 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
                         });
                         setOpen(false)
                         setSelectUserModal(false)
+                        router.refresh()
                     })
                 }
             })

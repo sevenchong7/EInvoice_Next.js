@@ -117,22 +117,23 @@ export default function Subscriptions() {
                         <div className="bg-blue-900 text-white rounded-t-lg shadow-md shadow-black/50">
                             <div className="p-3 pl-5">
                                 <h1 className="text-3xl font-bold">{
-                                    subscriptionInfo?.packageList.map((res) => {
+                                    subscriptionInfo?.packageList.map((res, index) => {
                                         if (res.PackageIdentifier === subscriptionInfo?.currentPackageId) {
-                                            return res.PackageName
+                                            return <p key={index}>{res.PackageName}</p>
                                         }
                                     })
-                                }</h1>
+                                }
+                                </h1>
                             </div>
                             <div className="bg-gray-400 text-black px-5 ">
                                 <div className="grid gap-2 grid-rows-none py-4 space-y-5 text-lg font-semibold">
                                     {
-                                        subscriptionInfo.packageList.map((res) => {
+                                        subscriptionInfo.packageList.map((res, resIndex) => {
                                             if (res.PackageIdentifier === subscriptionInfo.currentPackageId) {
                                                 return (
-                                                    <div>
+                                                    <div key={resIndex}>
                                                         {res.Descriptions.map((description, index) => (
-                                                            <div className="flex space-x-5 items-start pb-4">
+                                                            <div key={index} className="flex space-x-5 items-start pb-4">
                                                                 <div className="text-blue-800 dark:text-blue-300">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                                         <path d="M20 6 9 17l-5-5" />
@@ -147,9 +148,21 @@ export default function Subscriptions() {
                                         })
                                     }
                                 </div>
-                                <div className="flex justify-end py-2">
-                                    <Button className="bg-blue-900 hover:bg-blue-700" onClick={() => setUnSubscribeModal(true)}>{t('TAG_UNSUBSCRIBE')}</Button>
-                                </div>
+                                {
+                                    subscriptionInfo.packageList.map((res, index) => {
+                                        console.log('sub = ', res)
+                                        if (res.PackageIdentifier === subscriptionInfo.currentPackageId) {
+                                            if (res.PackageName !== "Free") {
+                                                return (
+                                                    <div key={index} className="flex justify-end py-2">
+                                                        <Button className="bg-blue-900 hover:bg-blue-700" onClick={() => setUnSubscribeModal(true)}>{t('TAG_UNSUBSCRIBE')}</Button>
+                                                    </div>
+                                                )
+                                            }
+                                        }
+                                    })
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -157,21 +170,21 @@ export default function Subscriptions() {
 
                 <h1 className="text-3xl font-bold">{t('TAG_AVAILABLE_PLAN')}</h1>
                 {
-                    subscriptionInfo?.packageList.map((res) => {
+                    subscriptionInfo?.packageList.map((res, index) => {
                         if (res.PackageIdentifier !== subscriptionInfo.currentPackageId) {
-                            return <div className="bg-gray-300 text-black dark:bg-gray-800 dark:text-white rounded-t-lg shadow-md shadow-gray-500/50">
+                            return <div key={index} className="bg-gray-300 text-black dark:bg-gray-800 dark:text-white rounded-t-lg shadow-md shadow-gray-500/50">
                                 <div className="p-3 pl-5">
                                     <h1 className="text-3xl font-bold">{res.PackageName}</h1>
                                 </div>
                                 <div className="bg-white dark:bg-gray-600 dark:text-white border-x border-b border-black text-black px-5 ">
                                     <div className="grid gap-2 grid-rows-none py-4 space-y-1 text-lg font-semibold">
                                         {
-                                            subscriptionInfo.packageList.map((data) => {
+                                            subscriptionInfo.packageList.map((data, dataIndex) => {
                                                 if (data.PackageIdentifier == res.PackageIdentifier) {
                                                     return (
-                                                        <div>
+                                                        <div key={dataIndex}>
                                                             {data.Descriptions.map((description, index) => (
-                                                                <div className="flex space-x-5 items-start pb-4">
+                                                                <div key={index} className="flex space-x-5 items-start pb-4">
                                                                     <div className="text-blue-800 dark:text-blue-300">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                                             <path d="M20 6 9 17l-5-5" />

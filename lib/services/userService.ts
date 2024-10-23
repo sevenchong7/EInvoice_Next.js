@@ -1,6 +1,8 @@
 'use server';
 import { auth } from '@/auth';
-import { get, post, put } from '@/lib/api';
+import { get, post, put, upload } from '@/lib/api';
+import { postRegenerateToken } from './generalService';
+import CheckTokenExpiry from './checkTokenExpiry';
 
 export const getRoles = async () => {
     const headers = await getHeaders();
@@ -33,7 +35,7 @@ export const addRole = async (body: any) => {
 export const register = async (body: any) => {
     const response = await post("/v1/user/register", body);
 
-    return response.data;
+    return response;
 }
 
 export const forgetPassword = async (body: any) => {
@@ -120,7 +122,14 @@ export const editMerchantInfo = async (id: any, body: any) => {
 }
 
 export const getSubscription = async () => {
-    const response = await get('/v1/role/subscriptions');
+    const headers = await getHeaders();
+    const response = await get('/v1/role/subscriptions', headers);
+
+    return response.data;
+}
+
+export const getRegisterPackage = async () => {
+    const response = await get('/v1/role/reg/subscriptions');
 
     return response.data;
 }
@@ -133,8 +142,8 @@ export const getRoleValidation = async (body: any, id: any) => {
 }
 
 export const getLoginIdValidation = async (body: any) => {
-    const headers = await getHeaders();
-    const response = await get(`/v1/user/validate/${body}`, headers);
+    // const headers = await getHeaders();
+    const response = await get(`/v1/user/validate/${body}`);
 
     return response;
 }
@@ -145,10 +154,49 @@ export const getDefaultPermission = async (body: any) => {
 
     return response.data;
 }
+export const updatePackage = async (body: any) => {
+    const headers = await getHeaders();
+    const response = await put('/v1/role/package', body, headers);
 
+    return response;
+}
+
+export const getSwitchRoleList = async () => {
+    const headers = await getHeaders();
+    const response = await get("/v1/user/switch-list", headers);
+
+    return response.data
+}
+
+export const getSwitchRole = async () => {
+    const headers = await getHeaders();
+    const response = await get("/v1/user/switch", headers);
+
+    return response.data;
+}
+
+export const getValidateEmail = async (body: any) => {
+    // const headers = await getHeaders();
+    const response = await get(`/v1/merchant/validate/${body}`)
+
+    return response;
+}
+
+export const postUploadAdmin = async (body: any) => {
+    const headers = await getHeaders();
+    const response = await upload('/v1/upload/admin', body, headers);
+
+    console.log('postUploadAdmin body = ', body)
+    return response;
+}
 
 const getHeaders = async () => {
     const session = await auth();
+
+    if (session != undefined) {
+        CheckTokenExpiry(session)
+    }
+
     const headers = {
         'Authorization': session?.user?.accessToken ? "Bearer " + session?.user?.accessToken : "",
         'X-MerchantID': session?.user?.merchantId ?? "", 'X-Accept-Language': session?.user.xAcceptLanguage ?? 'en'

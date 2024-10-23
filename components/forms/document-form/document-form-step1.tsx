@@ -271,7 +271,7 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
                 <div className="pt-[50px]">
                     <h1 className="text-3xl font-semibold">{t('TAG_BILLING_REFERENCE')}</h1>
                     <div className="w-full h-[1px] bg-gray-300"></div>
-                    <div className="gap-8 md:grid md:grid-cols-3 p-[10px]">
+                    <div className="gap-8 md:grid md:grid-cols-3 p-[10px] items-end">
                         <FormField
                             control={form.control}
                             name="invoiceDocRef"

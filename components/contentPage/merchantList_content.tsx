@@ -1,9 +1,10 @@
 'use client';
-import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
-import BreadCrumb from "./breadcrumb"
-import { MerchantClient } from "./tables/merchant-tables/client"
-import { MerchantContent } from "@/constants/data"
+import { MerchantContent } from "@/constants/data";
+import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+import BreadCrumb from "../breadcrumb";
+import { MerchantClient } from "../tables/merchant-tables/client";
+
 
 export default function MerchantListContent(data: any) {
     const t = useTranslations()

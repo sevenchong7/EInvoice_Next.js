@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet"
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useTranslations } from 'next-intl';
@@ -28,10 +28,10 @@ import { useSession } from 'next-auth/react';
 
 interface ProductsClientProps {
   roleData: Role[];
-  merchantData: MerchantContent[];
+  // merchantData: MerchantContent[];
 }
 
-export const RoleClient: React.FC<ProductsClientProps> = ({ roleData, merchantData }) => {
+export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
   const router = useRouter();
   const t = useTranslations();
   const hasAccess = useHasAccess('roleList.su.create');
@@ -43,6 +43,19 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData, merchantDa
   const [loading, setLoading] = useState(false)
   const session = useSession()
   const [mId, setMId] = useState<any>()
+  const [merchantList, setMerchantList] = useState<MerchantContent[]>([])
+
+
+  useEffect(() => {
+    const getMerchantListData = async () => {
+      const merchantData = await getMerchantList()
+      setMerchantList(merchantData)
+    }
+
+    if (hasAccess) {
+      getMerchantListData()
+    }
+  }, [])
 
   const HandlePermission = () => {
     console.log(hasAccess)
@@ -134,7 +147,7 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData, merchantDa
                     <SelectContent className='max-h-[300px] overflow-y-scroll'>
                       {/* @ts-ignore  */}
                       {
-                        merchantData?.map((merchantData: any, index: number) => (
+                        merchantList?.map((merchantData: any, index: number) => (
                           <SelectItem key={index} value={merchantData.merchantId}>
                             {merchantData.companyName}
                           </SelectItem>

@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Image from "next/image";
@@ -7,18 +8,23 @@ import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
 
-export default function RegisterUserStep3({ form }: { form: UseFormReturn<RegisterFormValues> }) {
-    const [selectPackage, setSelectPackage] = useState('');
+export default function RegisterUserStep3({ form, packageData }: { form: UseFormReturn<RegisterFormValues>, packageData: any }) {
+    const [packageListData, setPackageListData] = useState<any>()
+    const [selectPackage, setSelectPackage] = useState<number>();
     useEffect(() => {
         setSelectPackage(form.getValues('package'));
     }, [])
 
-    const HandlePackageSelect = (selection: string) => {
+    useEffect(() => {
+        setPackageListData(packageData)
+    }, [packageData])
+
+    const HandlePackageSelect = (selection: number) => {
         setSelectPackage(selection)
         form.setValue("package", selection)
     }
 
-    const PackageSelection = ({ id, title, price, content, onClick }: { id: string, title: string, price: string, content: any, onClick: () => void }) => {
+    const PackageSelection = ({ id, title, price, content, onClick }: { id: number, title: string, price: string, content: any, onClick: () => void }) => {
         return (
             <>
                 <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${id == selectPackage && "ring-2 ring-blue-800"} `}>
@@ -26,7 +32,7 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                         <div className="p-[10px]">
                             <div className="flex flex-col items-center justify-center pt-[10px]">
                                 <h1 className="text-2xl">{title}</h1>
-                                <h1 className="text-2xl font-medium pt-[20px]">{price}</h1>
+                                <h1 className="text-2xl font-medium pt-[20px]">RM {price}</h1>
                                 <p className="mt-[5px]">per package/month</p>
                             </div>
                             <div className="grid grid-cols-3">
@@ -60,16 +66,22 @@ export default function RegisterUserStep3({ form }: { form: UseFormReturn<Regist
                 render={({ field }) => (
                     <FormItem>
                         <FormControl>
-                            <div className="flex flex-row justify-between w-full grid-col-3 ">
-                                <div className='col-span-1 mr-[10px]'>
-                                    <PackageSelection id='0' title='test' price='test' content={['test', 'test', 'test', 'test', 'test']} onClick={() => HandlePackageSelect("1")} />
+                            <div className="flex flex-row justify-evenly w-full grid-col-none ">
+                                {
+                                    packageListData?.packageList.map((res: any, index: number) => {
+                                        return <div key={index}>
+                                            <PackageSelection id={res.PackageIdentifier} title={res.PackageName} price={res.PackagePrice} content={res.Descriptions} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                        </div>
+                                    })
+                                }
+                                {/* <div className='col-span-1 mr-[10px]'>
                                 </div>
                                 <div className='col-span-1 mr-[10px]'>
                                     <PackageSelection id='1' title='test' price='test' content={['test test test test test test test test test test test test']} onClick={() => HandlePackageSelect("2")} />
                                 </div>
                                 <div className='col-span-1 mr-[10px]'>
                                     <PackageSelection id='2' title='test' price='test' content={['test']} onClick={() => HandlePackageSelect("3")} />
-                                </div>
+                                </div> */}
                             </div>
                         </FormControl>
                         <div className='flex item-center justify-center pt-[20px]'>

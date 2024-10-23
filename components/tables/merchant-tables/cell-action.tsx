@@ -84,7 +84,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
 
 const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolean, setOpen: any }) => {
-  const t = useTranslations()
+  const t = useTranslations();
+  const { toast } = useToast();
+  const router = useRouter();
   const [username, setUsername] = useState(data.loginId)
   const [companyEmail, setCompanyEmail] = useState(data.email);
   const [companyName, setCompanyName] = useState(data.companyName);
@@ -104,7 +106,6 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
   const [disableValidate, setDisableValidate] = useState(true);
   const [countryList, setCountryList] = useState<CountryList[]>()
   const [stateList, setStateList] = useState<StateList[]>()
-  const { toast } = useToast();
 
 
   useEffect(() => {
@@ -195,7 +196,7 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
         title: "Success",
         description: "Merchant has been edit successfully!",
       });
-
+      router.refresh()
     })
   }
 

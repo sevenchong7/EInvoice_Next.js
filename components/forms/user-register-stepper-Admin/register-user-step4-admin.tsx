@@ -48,10 +48,27 @@ export default function RegisterUserStep4Admin(
 
     const [loading, setLoading] = useState(false);
     const t = useTranslations()
+    const [selectedImage, setSelectedImage] = useState<File[][] | undefined>([]);
+
+    // const handleImageUpload = async (event) => {
+    //     const file = event.target.files[0];
+    //     const formData = new FormData();
+    //     formData.append('image', file);
+
+    //     try {
+    //         const response = await axios.post('/api/enhance-image', formData);
+    //         // Handle the enhanced image response here
+    //         console.log('Enhanced image:', response.data);
+    //         // Update state or display the enhanced image
+    //     } catch (error) {
+    //         console.error('Error enhancing image:', error);
+    //     }
+    // };
 
     const {
         control,
-        formState: { errors }
+        formState: { errors },
+        watch
     } = form;
 
     const { append, remove, fields } = useFieldArray({
@@ -66,52 +83,110 @@ export default function RegisterUserStep4Admin(
         //         form.setValue(`payment.${index}.paymentAmount`, )
         //     })
         // }
+
+        form.getValues('payment').forEach((payment, index) => {
+            const imgUrls = form.getValues(`payment.${index}.imgUrl`);
+
+            setSelectedImage((prevSelectedImage) => {
+                const updatedSelectedImage = [...(prevSelectedImage || [])]; // Ensure the previous array exists or is empty
+                updatedSelectedImage[index] = imgUrls; // Set images for the current payment index
+                return updatedSelectedImage; // Return the updated state
+            });
+        });
+
     }, [])
 
+    useEffect(() => {
+        console.log('payment total index = ', form.getValues('payment').length)
+    }, [form.watch('payment')])
+
+    const HandleUploadImage = (imageData: any, index: number) => {
+        const files = imageData.target.files;
+        console.log('index = ', index);
+
+        if (files) {
+            const filesArray: File[] = files ? Array.from(files) : [];
+            setSelectedImage((prev) => {
+                const updatedImages = prev ? [...prev] : [];
+                updatedImages[index] = filesArray;
+                return updatedImages;
+            });
+
+            form.setValue(`payment.${index}.imgUrl`, filesArray);
+        }
+    }
+
+    const handleRemoveFile = (index: number, indexToRemove: number) => {
+        const currentFiles = form.getValues(`payment.${index}.imgUrl`);
+        console.log('remove index =', index)
+        console.log('indexToRemove index =', indexToRemove)
+        setSelectedImage((prev) => {
+            if (!prev) return prev;
+
+            const updatedFiles = prev.map((files, preindex) => {
+                if (preindex === index) {
+                    return files.filter((_, i) => i !== indexToRemove);
+                }
+                return files;
+            });
+
+            return updatedFiles.filter((files) => files.length > 0);
+        });
+
+
+        if (currentFiles) {
+            const updatedFiles = currentFiles.filter((_: any, currentIndex: number) => currentIndex !== indexToRemove);
+            form.setValue(`payment.${index}.imgUrl`, updatedFiles);
+
+            console.log('Updated image value in form = ', form.getValues(`payment.${index}.imgUrl`));
+        }
+    };
 
     return (
         <>
             <div className="flex flex-col w-3/4 items-center justify-center mx-auto">
                 <Summary />
                 {
-                    form.getValues('package') !== '1' &&
+                    form.getValues('package') !== 1 &&
                     <div className="w-full pt-[20px]">
-                        {fields?.map((field, index) => (
+                        {fields?.map((_, index) => (
                             <Accordion
                                 type="single"
                                 collapsible
                                 defaultValue="item-1"
-                                key={field.id}
+                                key={index}
                             >
-                                <AccordionItem value="item-1">
-                                    <AccordionTrigger
-                                        className={cn(
-                                            'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
-                                            errors?.payment?.[index] && 'text-red-700'
-                                        )}
-                                    >
-                                        <h1 className="md:text-2xl text-base">
-                                            {`${t('TAG_PAYMENT_METHOD')} ${index + 1}`}
-                                        </h1>
+                                <AccordionItem value="item-1" className="flex flex-col w-full">
+                                    <div className="flex items-center space-x-5 justify-between">
+                                        <AccordionTrigger
+                                            className={cn(
+                                                'flex grow !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
+                                                errors?.payment?.[index] && 'text-red-700'
+                                            )}
+                                        >
+                                            <h1 className="flex md:text-2xl text-base">
+                                                {`${t('TAG_PAYMENT_METHOD')} ${index + 1}`}
+                                            </h1>
 
-                                        {
-                                            index !== 0 &&
-                                            <Button
-                                                // variant="outline"
-                                                // size="icon"
-                                                className="absolute right-8"
-                                                onClick={() => remove(index)}
-                                            >
-                                                <Trash2Icon className="h-4 w-4 " />
-                                            </Button>
-                                        }
-
-                                        {errors?.payment?.[index] && (
-                                            <span className="alert absolute right-8">
-                                                <AlertTriangleIcon className="h-4 w-4 text-red-700" />
-                                            </span>
+                                            {errors?.payment?.[index] && (
+                                                <span className="alert absolute right-8">
+                                                    <AlertTriangleIcon className="h-4 w-4 text-red-700" />
+                                                </span>
+                                            )}
+                                        </AccordionTrigger>
+                                        {index !== 0 && (
+                                            <div className="flex justify-end items-end">
+                                                <Button
+                                                    // variant="outline"
+                                                    // size="icon"
+                                                    className=""
+                                                    onClick={() => remove(index)}
+                                                >
+                                                    <Trash2Icon className="h-4 w-4 " />
+                                                </Button>
+                                            </div>
                                         )}
-                                    </AccordionTrigger>
+                                    </div>
                                     <AccordionContent>
                                         <div
                                             className={cn(
@@ -123,7 +198,7 @@ export default function RegisterUserStep4Admin(
                                                 name={`payment.${index}.paymentMethod`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>{t('TAG_PAYMENT_METHOD')}*</FormLabel>
+                                                        <FormLabel>{t('TAG_PAYMENT_METHOD')} *</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 type="text"
@@ -172,23 +247,43 @@ export default function RegisterUserStep4Admin(
                                                 )}
                                             />
 
-                                            <div className="w-3/4 col-span-3 mx-auto">
+                                            <div className="lg:w-3/4 col-span-3 mx-auto space-y-4">
                                                 <FormField
                                                     control={form.control}
                                                     name={`payment.${index}.imgUrl`}
                                                     render={({ field }) => (
-                                                        <FormItem>
+                                                        <FormItem >
+                                                            <FormLabel htmlFor={index.toString()} className="flex custom-file-upload border w-full p-3 rounded-lg">Choose Files: {selectedImage?.[index] != undefined ? selectedImage?.[index]?.length > 0 ? selectedImage[index].length + " file" : "No File Selected" : "No File Selected"}</FormLabel>
                                                             <FormControl>
-                                                                <FileUpload
-                                                                    onChange={field.onChange}
-                                                                    onRemove={field.onChange}
-                                                                    value={field.value}
+                                                                <Input
+                                                                    type="file"
+                                                                    disabled={loading}
+                                                                    multiple
+                                                                    onChange={(e) => HandleUploadImage(e, index)}
+                                                                    style={{ display: 'none' }}
+                                                                    className="hidden-file-input"
+                                                                    id={index.toString()}
                                                                 />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}
                                                 />
+                                                <div>
+                                                    {
+                                                        selectedImage?.[index]?.map((file: any, fileIndex: number) => (
+                                                            <div className="space-x-5 space-y-1 flex w-full items-end" key={fileIndex}>
+                                                                <p>{fileIndex + 1}.</p>
+                                                                <p className="text-nowrap"> {file.name} </p>
+                                                                <div className="flex justify-end w-full">
+                                                                    <button className="bg-red-500 p-1 rounded text-white" onClick={() => handleRemoveFile(index, fileIndex)}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </AccordionContent>

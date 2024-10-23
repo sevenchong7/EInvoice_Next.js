@@ -351,7 +351,7 @@ export function DataTable<TData, TValue>({
                         cell.column.id === 'actions' && "flex-auto items-center justify-center w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
                       )}
                     >
-                      {
+                      {cell.column.id == "merchantId" ? <p>{rowIndex + 1}</p> :
                         // Show 'NA' if the cell's column ID does not exist in the headers
                         hasValidHeader || cell.column.id === 'actions' ? finaldata : 'NA'
                       }

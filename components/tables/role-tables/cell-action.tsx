@@ -64,6 +64,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 };
 
 const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen: any }) => {
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
   const t = useTranslations()
   const [openModal, setOpenModal] = useState(false);
@@ -268,6 +269,7 @@ const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen:
         title: "Success",
         description: "Role has been Edit successfully!",
       });
+      router.refresh()
     })
 
   }

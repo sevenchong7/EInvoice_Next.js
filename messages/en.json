@@ -44,7 +44,7 @@
     "TAG_PER_PACKAGE_MONTH": "per package/month",
     "TAG_SUBSCRIBE": "Subscribe",
     "TAG_SUMMARY": "Summary",
-    "TAG_PAYMENT_METHOD ": "Payment Method ",
+    "TAG_PAYMENT_METHOD": "Payment Method",
     "TAG_PAYMENT_AMOUNT": "Payment Amount",
     "TAG_REFERENCE_NO": "Reference No",
     "TAG_ADD_MORE": "Add More",
@@ -294,5 +294,6 @@
     "TAG_JOIN_DATE": "joinDate",
     "TAG_TOUR_REG_NO": "tourRegNo",
     "TAG_SST_REG_NO": "SST RegNo",
-    "": "The User is duplicate "
+    "TAG_CONTACT_PREFIX": "Contact Prefix",
+    "": ""
 }

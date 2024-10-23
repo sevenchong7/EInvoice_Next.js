@@ -79,7 +79,7 @@ export default function AddUser() {
     const [UsernameError, setUsernameError] = useState(true);
     const [UsernameErrorMessage, setUsernameErrorMessage] = useState<string[]>()
     const [roleError, setRoleError] = useState(true);
-    const [roleErrorMessage, setRoleErrorMessage] = useState<string>()
+    const [roleErrorMessage, setRoleErrorMessage] = useState<string[]>()
     const [roleModalError, setRoleModalError] = useState(true)
     const [roleModalErrorMessage, setRoleModalErrorMessage] = useState<string[]>()
     const { toast } = useToast()
@@ -195,6 +195,7 @@ export default function AddUser() {
             return
         } else {
             const checkRole = await getRoleValidation(roleModal, session.data?.user.merchantId)
+            console.log(checkRole)
             if (checkRole.status == false) {
                 setRoleError(false)
                 setRoleErrorMessage(checkRole.error.errorMap.role)
@@ -253,6 +254,7 @@ export default function AddUser() {
                 title: "Success",
                 description: "New User has been added successfully!",
             });
+            router.refresh()
         })
 
     };
@@ -261,7 +263,7 @@ export default function AddUser() {
 
         if (selectedRole == undefined || selectedRole == null) {
             setRoleError(false)
-            setRoleErrorMessage('Please select a role !')
+            setRoleErrorMessage(['Please select a role !'])
             return;
         } else {
             setRoleError(true)
@@ -305,10 +307,10 @@ export default function AddUser() {
             </div>
             <Separator />
             <div className='px-5'>
-                <div className='flex flex-col items-center justify-center space-y-5'>
+                <div className='flex flex-col items-center justify-center space-y-5 '>
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>
                     <h1 className='text-3xl font-semibold'>{t('TAG_ADD_USER_DESC')}</h1>
-                    <div className='flex justify-center items-center w-1/2 space-x-5'>
+                    <div className='flex justify-center items-center lg:w-1/2 space-x-5'>
                         <div>
                             <div className=' flex flex-1'>
                                 <Input value={username.trim()} placeholder="test@gmail.com" type='email' onChange={(e) => setUsername(e.target.value.trim())} />
@@ -334,9 +336,7 @@ export default function AddUser() {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {
-                                roleError == false && <p className='text-red-500'>{roleErrorMessage}</p>
-                            }
+
                         </div>
                     </div>
                 </div>
@@ -351,7 +351,7 @@ export default function AddUser() {
                         <label htmlFor='edit'>{t('TAG_EDIT')}</label>
                     </div>
                 </div>
-                <div className='gird grid-rows-4 pt-[30px]'>
+                <div className='gird grid-rows-4 pt-[30px] lg:text-base md:text-base sm:text-xs text-xs'>
                     <div className='grid grid-cols-4 bg-gray-200 w-full rounded-t-lg  border-x border-t '>
                         <div className='flex items-center justify-center border-r '>
                             <p className=' my-2'>
@@ -369,25 +369,25 @@ export default function AddUser() {
                     {rolePermission?.permissionList ?
                         rolePermission.permissionList.map((data, index) => {
                             return <div key={index}>
-                                <div className={cn(index % 2 !== 0 && 'bg-blue-100/30', index % 2 == 0 && 'border-y', 'grid grid-cols-4 border-x  w-full ')}>
+                                <div className={cn(index % 2 !== 0 && 'bg-blue-100/30', 'grid grid-cols-4 border-x  w-full  border-b ')}>
                                     <div className='flex items-center justify-center border-r'>
                                         {data.Route}
                                     </div>
 
                                     <div className='col-span-3 '>
                                         {data.Function.map((value, valueIndex) => {
-                                            return <div key={valueIndex} className={cn(valueIndex != data.Function.length - 1 && 'border-b pb-1', valueIndex != data.Function.length && valueIndex != 0 && 'pt-1', 'flex flex-cols grid grid-rows-none items-center auto-rows-min grid grid-cols-3 gap-4 ')}>
+                                            return <div key={valueIndex} className={cn(valueIndex != data.Function.length - 1 && 'pb-1', valueIndex != data.Function.length && valueIndex != 0 && 'pt-1', 'flex flex-cols grid grid-rows-none items-center auto-rows-min grid grid-cols-3 gap-4 ')}>
                                                 <div className='flex items-center ml-4'>
                                                     {value.FunctionName}
                                                 </div>
                                                 <div className='col-span-2'>
                                                     {
                                                         value?.subFunctions.map((sub, subIndex) => {
-                                                            return <div key={subIndex} className='flex items-center w-full py-2 grid grid-cols-2 gap-4'>
+                                                            return <div key={subIndex} className='flex items-center w-full py-2 grid grid-cols-2 pl-5 justify-between'>
                                                                 <div>
                                                                     {sub.FunctionName}
                                                                 </div>
-                                                                <div className='flex items-center'>
+                                                                <div className='flex items-center justify-end pr-5'>
                                                                     <Checkbox disabled={edit} checked={checkboxStates[index]?.[valueIndex]?.[subIndex]} onCheckedChange={() => handleCheckedChange(index, valueIndex, subIndex)} />
                                                                 </div>
                                                             </div>
@@ -431,6 +431,9 @@ export default function AddUser() {
                         <div className='flex m-auto w-72'>
                             <Input value={roleModal} placeholder="Example" onChange={(e) => setRole(e.target.value)} />
                         </div>
+                        {
+                            roleError == false && <p className='text-red-500'>{roleErrorMessage}</p>
+                        }
                         <br />
                         <p className='text-center text-sm text-gray-400'>{t('TAG_ADD_USER_CONFIM_MODAL_REMIDER')}.</p>
                     </div>

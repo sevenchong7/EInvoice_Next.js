@@ -56,7 +56,7 @@ export const registerSchema = z.object({
   country: z.string().trim().optional(),
   contactPrefix: z.string().trim().optional(),
   contactNo: z.string().trim().optional(),
-  package: z.string().trim().min(1, { message: 'Please select one Package!' }),
+  package: z.coerce.number().min(1, { message: 'Please select one Package!' }),
   paymentMethod: z.string().optional()
 }).refine((data) => {
   return data.password === data.confirmPw;
@@ -64,7 +64,7 @@ export const registerSchema = z.object({
   path: ["confirmPw"],
   message: "Password and Confirm Password didn't match!",
 }).superRefine((data, ctx) => {
-  if (data.package !== '1') {
+  if (data.package !== 1) {
     if (!data.paymentMethod) {
       ctx.addIssue({
         code: 'custom',
@@ -109,12 +109,16 @@ const ImgSchema = z.object({
 
 const IMG_MAX_LIMIT = 3;
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 export const registerUserAdminSchema = z.object({
 
+  username: z.string().trim().min(1, { message: "Please Enter the Username !" }),
   email: z.string().trim().email({ message: "Please Enter a valid Email Address ! " }),
   companyName: z.string().trim().min(3, { message: "Company Name must be at least 3 characters !" }),
-  businessRegisterNo: z.string().trim().min(3, { message: "Register No must be at least 3 characters !" }),
-  businessTinNo: z.string().trim().min(3, { message: "Business Tin No must be at least 3 characters !" }),
+  businessRegisterNo: z.string().trim().regex(/^\d{12}$/, { message: 'At least 12 digit number' }),
+  businessTinNo: z.string().trim().regex(/^(C|CS|D|E|F|FA|PT|TA|TC|TN|TR|TP|J|LE)\d{11}$/, { message: 'The value must start with one of the prefixes (C, CS, D, E, F, FA, PT, TA, TC, TN, TR, TP, J, LE) followed by 11 digits' }),
   password: z.string().trim().min(3, { message: "Password must be enter !" }),
   confirmPw: z.string().trim().min(3, { message: "Confirm Password must be enter !" }),
   streetAddress: z.string().trim().optional(),
@@ -123,17 +127,32 @@ export const registerUserAdminSchema = z.object({
   townCity: z.string().trim().optional(),
   state: z.string().trim().optional(),
   country: z.string().trim().optional(),
+  contactPrefix: z.string().trim().optional(),
   contactNo: z.string().trim().optional(),
-  package: z.string().min(1, { message: 'Please select one Package!' }),
+  package: z.coerce.number().min(1, { message: "Please Select a package !" }),
   payment: z.array(
     z.object({
       paymentMethod: z.string().optional(),
       paymentAmount: z.coerce.number().optional(),
       referenceNo: z.string().trim(),
       imgUrl: z
-        .array(ImgSchema)
-        .max(IMG_MAX_LIMIT, { message: 'You can only add up to 3 images' })
-      // .min(1, { message: 'At least one image must be added.' }),
+        .array(z.custom<File>())
+        .refine(
+          (files) => {
+            return files.every((file) => file instanceof File);
+          },
+          {
+            message: 'Expected a file',
+          },
+        )
+        .refine(
+          (files) => files.every((file) => file.size <= MAX_FILE_SIZE),
+          `File size should be less than 2mb.`,
+        )
+        .refine(
+          (files) => files.every((file) => ACCEPTED_IMAGE_TYPES.includes(file.type)),
+          'Only these types are allowed .jpg, .jpeg, .png and .webp',
+        ),
     })
   ),
 }).refine((data) => {
@@ -141,26 +160,37 @@ export const registerUserAdminSchema = z.object({
 }, {
   path: ["confirmPw"],
   message: "Password and Confirm Password didn't match!",
-}).superRefine((data, ctx) => {
-  if (data.package !== '1') {
-    data.payment.forEach((payment, index) => {
-      if (!payment.paymentMethod) {
-        ctx.addIssue({
-          code: 'custom',
-          path: [`payment.${index}.paymentMethod`],
-          message: 'Please Select one Payment Method!',
-        });
-      }
-      if (!payment.paymentAmount || payment.paymentAmount <= 0) {
-        ctx.addIssue({
-          code: 'custom',
-          path: [`payment.${index}.paymentAmount`],
-          message: 'Amount must be more than 0!',
-        });
-      }
-    });
-  }
-});
+})
+  .superRefine((data, ctx) => {
+    if (data.package !== 1) {
+      data.payment.forEach((payment, index) => {
+        if (!payment.paymentMethod) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [`payment.${index}.paymentMethod`],
+            message: 'Please Select one Payment Method!',
+          });
+        }
+        if (!payment.paymentAmount || payment.paymentAmount <= 0) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [`payment.${index}.paymentAmount`],
+            message: 'Amount must be more than 0!',
+          });
+        }
+        if (!payment.imgUrl || payment.imgUrl.length <= 0) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [`payment.${index}.imgUrl`],
+            message: "Atleast one Image requried !",
+          });
+        }
+      });
+    }
+    else {
+      return true
+    }
+  });
 
 export type RegisterUserAdminFormValues = z.infer<typeof registerUserAdminSchema>;
 

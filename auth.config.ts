@@ -4,6 +4,7 @@ import CredentialProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import { decryptAES, encryptAES } from './lib/api';
 import { login } from './lib/services/authService';
+import { postRegenerateToken } from './lib/services/generalService';
 
 class AuthErrorWithMsg extends AuthError {
   constructor(message: string) {
@@ -55,9 +56,27 @@ const authConfig = {
     signIn: '/' //sigin page
   },
   callbacks: {
-    jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger, session }) {
       if (trigger === 'update') {
-        token.xAcceptLanguage = session.xAcceptLanguage
+        // Merge multiple updates at once into the token
+        token = {
+          ...token, // Keep existing token values
+          // accessToken: session.accessToken ?? token.accessToken,
+          // accessTokenExpiry: session.accessTokenExpiry ?? token.accessTokenExpiry,
+          // refreshToken: session.refreshToken ?? token.refreshToken,
+          // refreshTokenExpiry: session.refreshTokenExpiry ?? token.refreshTokenExpiry,
+          xAcceptLanguage: session.xAcceptLanguage ?? token.xAcceptLanguage, // Update xAcceptLanguage or keep the existing value
+          merchantResponse: {
+            ...token.merchantResponse, // Preserve the rest of the merchantResponse object
+            merchantId: session.merchantId ?? token.merchantResponse.merchantId, // Update merchantId or keep the existing value
+          },
+          merchantPermissResponse: {
+            ...token.merchantPermissResponse, // Preserve the rest of the merchantPermissResponse object
+            permission: session.permissions ?? token.merchantPermissResponse.permission, // Update permissions or keep the existing value
+          }
+        };
+
+        return token; // Return the updated token after all updates
       }
 
       if (user) {
@@ -77,6 +96,7 @@ const authConfig = {
         refreshTokenExpiry: token.refreshTokenExpiry,
         merchantId: token.merchantResponse.merchantId,
         xAcceptLanguage: token.xAcceptLanguage,
+        emailDisplay: token.emailDisplay
       }
 
       // console.log("Session ", session)

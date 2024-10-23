@@ -1,10 +1,10 @@
 'use client'
-import { useTranslations } from "next-intl"
-import BreadCrumb from "./breadcrumb"
-import { UserClient } from "./tables/user-tables/client"
-import { useEffect, useState } from "react"
 import { contents } from "@/constants/data"
-import { getUserList } from "@/lib/services/userService"
+import { useTranslations } from "next-intl"
+import { useState, useEffect } from "react"
+import BreadCrumb from "../breadcrumb"
+import { UserClient } from "../tables/user-tables/client"
+
 
 export default function UserListContent(data: any) {
     const t = useTranslations()

@@ -52,6 +52,9 @@ export type MerchantInfo = {
   postcode: string;
   registrationNo: string;
   stateId: string;
+  sstRegNo: string;
+  tourRegNo: string;
+
 
 }
 
@@ -156,6 +159,7 @@ export type content = {
   merchantName: string;
 
 }
+
 
 
 

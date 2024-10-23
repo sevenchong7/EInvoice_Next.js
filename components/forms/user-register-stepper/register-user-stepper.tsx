@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function RegisterUserStepper(
-    { steps, currentStep }: { steps: any, currentStep: number }
+    { steps, currentStep, setCurrentStep }: { steps: any, currentStep: number, setCurrentStep: any }
 ) {
     return (
         <>
@@ -20,10 +20,13 @@ export default function RegisterUserStepper(
 
                                 </div>
                                 {index < 4 ?
-                                    <div className='flex flex-col items-center justify-center '>
-                                        <div className='rounded-full bg-white h-[50px] w-[50px]' />
-                                        <div className='h-[100px] w-[3px] bg-white' />
-                                    </div>
+                                    <button onClick={() => setCurrentStep(index)}>
+                                        <div className='flex flex-col items-center justify-center '>
+                                            <div className='rounded-full bg-white h-[50px] w-[50px]' />
+                                            <div className='h-[100px] w-[3px] bg-white' />
+                                        </div>
+                                    </button>
+
                                     :
                                     <div className=' rounded-full bg-white h-[50px] w-[50px] ' />
                                 }
@@ -41,10 +44,13 @@ export default function RegisterUserStepper(
 
                                     </div>
                                     {index < 4 ?
-                                        <div className='flex flex-col items-center justify-center '>
-                                            <div className='rounded-full bg-white h-[50px] w-[50px]' />
-                                            <div className='h-[100px] w-[3px] bg-white' />
-                                        </div>
+                                        <button onClick={() => setCurrentStep(index)}>
+                                            <div className='flex flex-col items-center justify-center '>
+                                                <div className='rounded-full bg-white h-[50px] w-[50px]' />
+                                                <div className='h-[100px] w-[3px] bg-white' />
+                                            </div>
+                                        </button>
+
                                         :
                                         <div className='rounded-full bg-white h-[50px] w-[50px]' />
                                     }

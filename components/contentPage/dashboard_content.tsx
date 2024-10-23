@@ -20,6 +20,11 @@ import React, { useEffect } from "react";
 
 
 export default function DashboardContent() {
+    const session = useSession()
+
+    useEffect(() => {
+        console.log('login session = ', session.data?.user)
+    }, [])
     return (
         <ScrollArea className="h-full">
             <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">

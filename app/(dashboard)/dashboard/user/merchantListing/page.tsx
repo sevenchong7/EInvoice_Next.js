@@ -1,4 +1,4 @@
-import MerchantListContent from '@/components/merchantList_content';
+import MerchantListContent from '@/components/contentPage/merchantList_content';
 import { getMerchantList } from '@/lib/services/userService';
 
 export default async function page() {

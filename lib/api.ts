@@ -7,6 +7,8 @@ const API_BASE_URL = process.env.BACKEND_API_URL;
 const secretkey = process.env.BACKEND_API_SECRETKEY || "";
 var CryptoJS = require("crypto-js");
 
+
+
 // Define your encryption function using AES with your encryption key
 export function encryptAES(data: any, key: string) {
     // Convert key from string to byte array
@@ -58,6 +60,7 @@ export function decryptAES(data: any, key: string) {
 
 // Helper for GET requests (no body required)
 export async function get(url: string, headers?: {}) {
+
     console.log("headers ", headers)
 
     console.log("[API GET] ", API_BASE_URL + url)
@@ -87,7 +90,7 @@ export async function get(url: string, headers?: {}) {
 }
 
 // Helper for POST requests (with body)
-export async function post(url: string, body: {}, headers?: {}) {
+export async function post(url: string, body: any, headers?: {}) {
     // console.log("access_token ", access_token)
     console.log("headers ", headers)
 
@@ -121,8 +124,8 @@ export async function post(url: string, body: {}, headers?: {}) {
 
 
 
-// Helper for POST requests (with body)
-export async function put(url: string, body: {}, headers?: {}) {
+// Helper for PUT requests (with body)
+export async function put(url: string, body: any, headers?: {}) {
     // console.log("access_token ", access_token)
     console.log("headers ", headers)
 
@@ -154,3 +157,37 @@ export async function put(url: string, body: {}, headers?: {}) {
     return JSON.parse(rawResponse);
 }
 
+// Helper for POST requests (with body)
+export async function upload(url: string, body: any, headers?: {}) {
+    // console.log("access_token ", access_token)
+    console.log("headers ", headers)
+    console.log("body ", body)
+
+
+    console.log(`[API POST] ${API_BASE_URL + url} ${JSON.stringify(body)}`)
+
+    // const encryptedBody = encryptAES(JSON.stringify(body), secretkey)
+
+    const response = await fetch(API_BASE_URL + url, {
+        method: 'POST',
+        headers: {
+            // 'Content-Type': 'application/json',
+            // "Content-Type": "multipart/form-data",
+            ...headers,
+        },
+        body: body,
+    });
+
+
+    const uploadResponse = await response.json();
+
+    // const rawResponse = decryptAES(encryptredResponse, secretkey);
+    // console.log("[API response] " + url, JSON.parse(rawResponse));
+
+    if (!response.ok) {
+        // throw new Error(`Error: ${response.status}`);
+        return JSON.parse(uploadResponse);
+    }
+
+    return JSON.parse(uploadResponse);
+}

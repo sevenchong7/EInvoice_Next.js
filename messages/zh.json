@@ -293,5 +293,7 @@
     "TAG_SELECT_ROLE": "请选择职位",
     "TAG_TOUR_REG_NO": "旅游登记号",
     "TAG_SST_REG_NO": "SST 登记号",
-    "TAG_JOIN_DATE": "加入日期"
+    "TAG_JOIN_DATE": "加入日期",
+    "TAG_CONTACT_PREFIX": "联系方式前缀",
+    "": ""
 }

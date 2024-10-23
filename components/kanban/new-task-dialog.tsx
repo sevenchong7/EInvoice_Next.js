@@ -36,7 +36,7 @@ export default function NewTaskDialog() {
           ＋ Add New Todo
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Add New Todo</DialogTitle>
           <DialogDescription>

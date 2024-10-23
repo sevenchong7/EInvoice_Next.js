@@ -13,6 +13,7 @@ declare module 'next-auth' {
       refreshTokenExpiry: string
       merchantId: number
       xAcceptLanguage: string
+      emailDisplay: string
     } & UserSession;
   }
 
@@ -40,6 +41,7 @@ declare module "next-auth/jwt" {
       role: string;
     },
     xAcceptLanguage: string
+    emailDisplay: string
 
   }
 }

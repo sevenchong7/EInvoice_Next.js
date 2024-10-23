@@ -107,6 +107,8 @@ interface subFunction {
 
 const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   const t = useTranslations();
+  const router = useRouter()
+  const { toast } = useToast()
   const [username, setUsername] = useState(data.username);
   // const [email, setEmail] = useState('');
   const [role, setRole] = useState(data.role);
@@ -119,7 +121,6 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   const [permissionListCheckboxState, setPermissionListCheckboxState] = useState<boolean[]>();
   const [functionCheckboxState, setFunctionCheckboxState] = useState<boolean[][]>();
   const [subFunctionCheckboxStates, setSubFuntionCheckboxStates] = useState<boolean[][][]>();
-  const { toast } = useToast()
 
 
   const GetMerchantUserInfo = async () => {
@@ -335,6 +336,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
         title: "Success",
         description: "User Info has been successfully Updated!",
       });
+      router.refresh();
     })
   };
 

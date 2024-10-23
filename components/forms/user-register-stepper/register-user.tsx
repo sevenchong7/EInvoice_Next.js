@@ -23,13 +23,15 @@ import RegisterUserStep4 from './register-user-step4';
 import RegisterUserStep5 from './register-user-step5';
 import approve from '@/public/Approval.png'
 import React from 'react';
-import { getLoginIdValidation, register } from '@/lib/services/userService';
+import { getLoginIdValidation, getValidateEmail, register } from '@/lib/services/userService';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function RegisterUserForm({ packageData }: { packageData: any }) {
     const [previousStep, setPreviousStep] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
     const [data, setData] = useState({});
     const router = useRouter();
+    const { toast } = useToast();
 
     const defaultValues = {
         username: '',
@@ -44,7 +46,7 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
         zipCode: "",
         townCity: "",
         contactNo: "",
-        package: '',
+        // package: '',
         paymentMethod: '',
     }
 
@@ -123,6 +125,21 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
         }
 
         const registerData = register(registerParam)
+
+        registerData.then((res) => {
+            if (res.status === true) {
+                toast({
+                    title: "Success",
+                    description: "The new Merchant has been create sucessfully !"
+                })
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: "Error",
+                    description: "Something went wrong!"
+                })
+            }
+        })
         // console.log(registerData)
         form.reset();
     };
@@ -138,11 +155,17 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
         if (!output) return;
 
         const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
+        const checkEmailDuplicate = await getValidateEmail(form.getValues('email'))
 
-        if (checkLoginIdDuplicate.status === false) {
-            console.log(checkLoginIdDuplicate)
-            // form.trigger('username', { shouldFocus: true })
-            form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
+
+        if (checkLoginIdDuplicate.status === false || checkEmailDuplicate.status === false) {
+            if (checkLoginIdDuplicate.status === false) {
+                form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
+            }
+
+            if (checkEmailDuplicate.status === false) {
+                form.setError('email', { message: checkEmailDuplicate.error.errorMap.companyEmail })
+            }
             return
         }
 
@@ -152,9 +175,8 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
             setCurrentStep((step) => step + 1);
         }
 
-        if (currentStep === steps.length - 1) {
-            console.log('submit')
-
+        if (currentStep === steps.length - 2) {
+            await form.handleSubmit(processForm)();
         }
     };
 
@@ -176,13 +198,13 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
     };
 
     const HandleLogin = async () => {
-        await form.handleSubmit(processForm)();
+        // await form.handleSubmit(processForm)();
         router.push('/');
     }
 
     return (
         <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-5 lg:px-0">
-            <RegisterUserStepper steps={steps} currentStep={currentStep} />
+            <RegisterUserStepper steps={steps} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 
             <div className="flex h-full items-center p-4 lg:p-8 col-span-3">
                 <div className={`mx-auto flex w-full flex-col justify-center items-center  ${currentStep != 2 && "sm:w-[620px] "}`}>
@@ -232,7 +254,7 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
                                 }
                                 {
                                     currentStep == 2 &&
-                                    <RegisterUserStep3 form={form} />
+                                    <RegisterUserStep3 form={form} packageData={packageData} />
                                 }
                                 {
                                     currentStep == 3 &&
@@ -262,7 +284,7 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
                                     className="rounded bg-blue-900 px-2 py-1 text-sm font-semibold text-white shadow-sm  hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50 min-w-[100px]"
                                 >
                                     {
-                                        currentStep === 3 ? form.getValues('package') === '1' ? "register" : "Continue to Payment" : currentStep === 1 ? "Skip" : "Next"
+                                        currentStep === 3 ? form.getValues('package') === 1 ? "register" : "Continue to Payment" : currentStep === 1 ? "Skip" : "Next"
                                     }
                                 </button>
                             </div> :

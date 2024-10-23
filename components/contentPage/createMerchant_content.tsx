@@ -1,0 +1,18 @@
+'use client'
+import { useTranslations } from "next-intl";
+import BreadCrumb from "../breadcrumb";
+import { RegisterUserStepperAdmin } from "../forms/user-register-stepper-Admin/register-user-admin";
+
+export default function CreateMerchant({ packageData }: { packageData: any }) {
+    const t = useTranslations()
+    const breadcrumbItems = [
+        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_CREATE_MERCHANT'), link: '/dashboard/user/createMerchant' }
+    ];
+    return (
+        <div className="flex flex-col flex-1 h-full space-y-1 p-5">
+            <BreadCrumb items={breadcrumbItems} />
+            <RegisterUserStepperAdmin initialData={undefined} categories={undefined} packageData={packageData} />
+        </div>
+    )
+}

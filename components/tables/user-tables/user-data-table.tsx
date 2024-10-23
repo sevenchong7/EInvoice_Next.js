@@ -342,7 +342,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className='flex flex-row w-full py-[10px]'>
                 {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id} className={cn("flex  items-center dark:text-black", index == 0 ? " flex-auto max-w-[100px] pl-[20px]" : "flex-1 md:w-full min-w-[100px]", header.id == 'status' && " flex-auto max-w-[200px]", header.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")} >
+                    <TableHead key={header.id} className={cn("flex  items-center dark:text-black", index == 0 ? " flex-auto max-w-[100px] pl-[20px]" : "flex-1 md:w-full w-[200px]", header.id == 'status' && " flex-auto max-w-[200px]", header.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")} >
                       {header.isPlaceholder
                         ? null
                         : header.id == 'actions' ? null :
@@ -382,7 +382,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className=' -col '>
+          <TableBody className=''>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, rowIndex) => (
                 <TableRow
@@ -393,12 +393,14 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell, index) => {
                     return (
-                      <TableCell key={cell.id} className={cn("flex flex-row items-center border-b", index == 0 ? " flex-auto min-w-[100px] max-w-[100px] pl-[30px]" : "flex-1 md:w-full min-w-[100px]", cell.column.id == 'status' && "flex flex-auto  max-w-[200px] ", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
+                      <TableCell key={cell.id} className={cn("flex flex-row items-center border-b", index == 0 ? " flex-auto min-w-[100px] max-w-[100px] pl-[30px]" : "flex-1 md:w-full w-[200px]", cell.column.id == 'status' && "flex flex-auto  max-w-[200px] ", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")
+                      }>
                         {
-                          flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )
+                          cell.column.id == "muId" ? <p>{rowIndex + 1}</p> :
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )
                         }
                       </TableCell>
                     )
@@ -419,7 +421,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
         <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      </ScrollArea >
       <div className="flex items-center justify-center space-x-2 py-4">
         {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}

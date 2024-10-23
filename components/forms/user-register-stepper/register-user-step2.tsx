@@ -7,31 +7,20 @@ import { UseFormReturn } from "react-hook-form";
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCountry } from "@/lib/services/generalService";
+import { CountryList, StateList } from "@/constants/data";
 
-interface CountryPromp {
-    countryName: string;
-    countryCode: string;
-    contactPrefix: string;
-    stateList: []
-}
-
-interface StatePromp {
-    stateName: string;
-    stateCode: string;
-
-}
 
 export default function RegisterUserStep2({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);
-    const [countries, setCountries] = useState<CountryPromp[]>()
-    const [states, setStates] = useState<StatePromp[]>();
+    const [countries, setCountries] = useState<CountryList[]>()
+    const [states, setStates] = useState<StateList[]>();
 
     const GetCountryInfo = async () => {
         return await getCountry();
     }
 
     useEffect(() => {
-        console.log('step 2 useeffecet')
+        // console.log('step 2 useeffecet')
         GetCountryInfo().then((value) => {
             console.log('country = ', value)
             setCountries(value)

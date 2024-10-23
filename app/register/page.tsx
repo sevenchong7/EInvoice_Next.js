@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import RegisterUserForm from '@/components/forms/user-register-stepper/register-user';
-import { getSubscription } from '@/lib/services/userService';
+import { getRegisterPackage } from '@/lib/services/userService';
 
 export const metadata: Metadata = {
     title: 'Register',
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthenticationPage() {
-    const packageData = await getSubscription()
+    const packageData = await getRegisterPackage()
     return (
         <RegisterUserForm packageData={packageData} />
     );

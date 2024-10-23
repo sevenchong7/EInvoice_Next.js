@@ -23,9 +23,11 @@ import Required from "../ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
-import { MerchantInfo, SubscriptionInfo } from "@/constants/data";
+import { CountryList, MerchantInfo, StateList, SubscriptionInfo } from "@/constants/data";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from "../ui/scroll-area";
 
-export default function UserProfile() {
+export default function UserProfile({ subscriptionData, merchantInfoData, countryData }: { subscriptionData: any, merchantInfoData: any, countryData: any }) {
     const t = useTranslations()
     const router = useRouter()
     // const { setCompany, company } = useStore();
@@ -33,23 +35,26 @@ export default function UserProfile() {
     const [open, setOpen] = useState(false);
     const [merchantInfo, setMerchantInfo] = useState<MerchantInfo>()
     const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>();
+    const [openSheet, setOpenSheet] = useState(false)
 
-    const GetMerchantInfo = () => {
-        return getMerchantInfo()
-    }
+    // const GetMerchantInfo = () => {
+    //     return getMerchantInfo()
+    // }
 
-    const GetSubscription = () => {
-        return getSubscription()
-    }
+    // const GetSubscription = () => {
+    //     return getSubscription()
+    // }
 
     useEffect(() => {
-        GetMerchantInfo().then((data) => setMerchantInfo(data))
-        GetSubscription().then((subData) => setSubscriptionInfo(subData))
-    }, [])
+        setMerchantInfo(merchantInfoData)
+        setSubscriptionInfo(subscriptionData)
+        // GetMerchantInfo().then((data) => setMerchantInfo(data))
+        // GetSubscription().then((subData) => setSubscriptionInfo(subData))
+    }, [subscriptionData, merchantInfoData])
 
     useEffect(() => {
         console.log('merchantInfo = ', merchantInfo)
-        if (merchantInfo?.address == '') {
+        if (merchantInfo?.address == '' || merchantInfo?.address == undefined || merchantInfo?.address == null) {
             setIncomplete(true);
         }
     }, [merchantInfo])
@@ -80,7 +85,7 @@ export default function UserProfile() {
                         <div className="flex flex-row items-center justify-between">
                             <div className="flex flex-row space-x-5">
                                 <div className="flex flex-col bg-gray-400 text-center items-center justify-center rounded-full h-10 w-10">
-                                    <h1 className="text-lg font-medium">S</h1>
+                                    <h1 className="text-lg font-medium">{merchantInfo?.companyName.charAt(0).toUpperCase()}</h1>
                                 </div>
                                 <div className="flex flex-col">
                                     <h1>{merchantInfo?.companyName}</h1>
@@ -105,14 +110,14 @@ export default function UserProfile() {
             </div>
             <Separator />
             <div className="flex justify-between items-center w-full">
-                <div className="md:flex flex-row items-center md:space-x-5">
+                <div className="flex flex-row items-center space-x-5">
                     <div className="flex items-center space-x-1">
-                        <div className="flex bg-gray-300 rounded-full md:w-20 md:h-20 w-5 h-5 items-center justify-center">
-                            <h1 className="text-center font-semibold md:text-5xl text-xs">S</h1>
+                        <div className="flex bg-gray-300 rounded-full md:w-20 md:h-20 w-10 h-10 items-center justify-center">
+                            <h1 className="text-center font-semibold md:text-5xl text-2xl">{merchantInfo?.companyName.charAt(0).toUpperCase()}</h1>
                         </div>
                         <div className="flex flex-col ">
-                            <h1 className="md:text-3xl text-xs font-semibold">{merchantInfo?.companyName}</h1>
-                            <p className="text-gray-400 md:text-sm text-xs">{merchantInfo?.registrationNo}</p>
+                            <h1 className="md:text-3xl text-md font-semibold">{merchantInfo?.companyName}</h1>
+                            <p className="text-gray-400 md:text-sm text-sm">{merchantInfo?.registrationNo}</p>
                         </div>
                     </div>
                     <div>
@@ -130,30 +135,32 @@ export default function UserProfile() {
 
             <div className="md:grid md:grid-cols-2 gap-8">
                 <div className="rounded-lg shadow-md shadow-gray-400 p-5">
-                    <div className="flex justify-between items-center ">
+                    <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-medium">{t('TAG_PERSONAL_INFROMATION')}</h1>
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <Button >{t('TAG_EDIT')}</Button>
-                            </SheetTrigger>
-                            <EditPersonalInfo data={merchantInfo} />
-                        </Sheet>
-
+                        <div>
+                            <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+                                <SheetTrigger asChild>
+                                    <Button>{t('TAG_EDIT')}</Button>
+                                </SheetTrigger>
+                                <EditProfile merchantInfoData={merchantInfo} countryData={countryData} openSheet={openSheet} />
+                            </Sheet>
+                        </div>
                     </div>
-                    <div className="gap-4  grid md:grid-cols-2 py-10">
-                        <div className="pl-8">
+                    <div className="gap-4 grid md:grid-cols-2 py-10">
+                        <div className="pl-8 col-span-2">
                             <h1>{t('TAG_COMPANY_NAME')}</h1>
                             <p className="font-light">{merchantInfo?.companyName}</p>
                         </div>
-                        <div className="pl-10">
-                            <h1>{t('TAG_REGISTER_NO')}</h1>
-                            <p className="font-light">{merchantInfo?.registrationNo}</p>
-                        </div>
-                        <div className="pl-8">
+                        <div className="pl-8 col-span-2">
                             <h1>{t('TAG_EMAIL')}</h1>
                             <p className="font-light">{merchantInfo?.email}</p>
                         </div>
-                        <div className="pl-10">
+                        <div className="pl-8">
+                            <h1>{t('TAG_REGISTER_NO')}</h1>
+                            <p className="font-light">{merchantInfo?.registrationNo}</p>
+                        </div>
+
+                        <div className="pl-8">
                             <h1>{t('TAG_BUSINESS_TIN_NO')}</h1>
                             <p className="font-light">{merchantInfo?.businessTinNo}</p>
                         </div>
@@ -161,7 +168,7 @@ export default function UserProfile() {
                 </div>
 
                 <div className="rounded-lg shadow-md shadow-gray-400 p-5">
-                    <div className="flex justify-between items-center ">
+                    <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-medium">{t('TAG_SUBSCRIPTIONS')}</h1>
                         <Button onClick={() => router.push('/dashboard/profile/subscription')}>{t('TAG_VIEW')}</Button>
 
@@ -185,7 +192,7 @@ export default function UserProfile() {
                 <div className="col-span-2 rounded-lg shadow-md shadow-gray-400 p-5">
                     <div className="flex justify-between items-center ">
                         <div className="flex flex-row items-center space-x-5">
-                            <h1 className="text-2xl font-medium">{t('TAG_COMPANY_INFORMATION')}</h1>
+                            <h1 className="text-2xl font-medium text-nowrap">{t('TAG_COMPANY_INFORMATION')}</h1>
                             {
                                 incomplete ?
                                     <Incomplete />
@@ -195,14 +202,14 @@ export default function UserProfile() {
                                     </div>
                             }
                         </div>
-                        <Sheet>
+                        {/* <Sheet>
                             <SheetTrigger asChild>
                                 <Button >{t('TAG_EDIT')}</Button>
                             </SheetTrigger>
                             <EditCompanyInfo data={merchantInfo} />
-                        </Sheet>
+                        </Sheet> */}
                     </div>
-                    <div className="grid grid-cols-2 py-10">
+                    <div className="lg:grid lg:grid-cols-2 py-10">
                         <div className="gap-8 grid grid-cols-2 ">
                             <div className="col-span-2 pl-8">
                                 <h1 className="text-2xl">{t('TAG_ADDRESS')}</h1>
@@ -268,6 +275,7 @@ export default function UserProfile() {
                                 </div>
                             </div>
                         </div>
+
                         <div className="gap-8 grid grid-cols-2 auto-rows-min">
                             <div className="col-span-2 pl-8">
                                 <h1 className="text-2xl">{t('TAG_CONTACT')}</h1>
@@ -302,138 +310,220 @@ const Incomplete = () => {
 }
 
 
-const EditPersonalInfo = ({ data }: { data: MerchantInfo | undefined }) => {
-    const [companyName, setCompanyName] = useState(data?.companyName);
-    const [regNo, setRegNo] = useState(data?.registrationNo);
-    const [email, setEmail] = useState(data?.email);
-    const [businessTinNo, setBusinessTinNo] = useState(data?.businessTinNo);
+const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInfoData: MerchantInfo | undefined, countryData: CountryList[], openSheet: boolean }) => {
+    const [companyName, setCompanyName] = useState(merchantInfoData?.companyName);
+    const [regNo, setRegNo] = useState(merchantInfoData?.registrationNo);
+    const [email, setEmail] = useState(merchantInfoData?.email);
+    const [businessTinNo, setBusinessTinNo] = useState(merchantInfoData?.businessTinNo);
+    const [address, setAddress] = useState(merchantInfoData?.address);
+    const [zipCode, setZipCode] = useState(merchantInfoData?.postcode);
+    const [town, setTown] = useState(merchantInfoData?.city);
+    const [state, setState] = useState(merchantInfoData?.stateId);
+    const [country, setCountry] = useState(merchantInfoData?.country);
+    const [contact, setContact] = useState(merchantInfoData?.contact);
+    const [contactPrefix, setContactPrefix] = useState(merchantInfoData?.contactPrefix)
+    const [stateList, setStateList] = useState<StateList[]>()
+
     const t = useTranslations();
+
+    useEffect(() => {
+        if (openSheet) {
+            countryData?.map((value) => {
+                if (value.countryCode === merchantInfoData?.country) {
+                    setStateList(value.stateList)
+                    setContactPrefix(value.contactPrefix)
+                }
+            })
+        }
+    }, [openSheet, countryData])
+
+    useEffect(() => {
+        if (openSheet) {
+            console.log('country data = ', country)
+            countryData?.map((value) => {
+                if (value.countryCode === country) {
+                    setStateList(value.stateList)
+                    setContactPrefix(value.contactPrefix)
+                }
+            })
+        }
+    }, [openSheet, country])
+
+    useEffect(() => {
+        if (openSheet) {
+            // console.log('edit data = ', data)
+            // setStatus(data.status)
+            setCountry(merchantInfoData?.country)
+            setState(merchantInfoData?.stateId)
+        }
+    }, [openSheet])
 
     const HandleEditProfile = () => {
-
+        const editProfileParam = {
+            "companyName": companyName,
+            "companyEmail": email,
+            "registrationNo": regNo,
+            "busTinNo": businessTinNo,
+            "sstRegNo": merchantInfoData?.sstRegNo,
+            "tourRegNo": merchantInfoData?.tourRegNo,
+            "streetAddress": address,
+            "postCode": zipCode,
+            "city": town,
+            "state": state,
+            "country": country,
+            "contactPrefix": '',
+            "contact": contact
+        }
     }
 
     return (
-        <SheetContent className="md:min-w-[500px]">
-            <SheetHeader>
-                <SheetTitle className='text-2xl'>{t('TAG_PERSONAL_INFROMATION')}</SheetTitle>
-                {/* <SheetDescription>
-          Make changes to your profile here. Click save when you're done.
-        </SheetDescription> */}
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-5 items-center gap-8">
-                    <Label htmlFor="name" className="col-span-2">
-                        {t('TAG_COMPANY_NAME')}
-                    </Label>
-                    <Input id="name" value={companyName} placeholder={data?.companyName} onChange={(e) => setCompanyName(e.target.value)} className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-5 items-center gap-8">
-                    <Label htmlFor="email" className="col-span-2">
-                        {t('TAG_EMAIL')}
-                    </Label>
-                    <Input id="email" value={email} placeholder={data?.email} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-5 items-center gap-8">
-                    <Label htmlFor="role" className="col-span-2">
-                        {t('TAG_REGISTRATION_NO')}
-                    </Label>
-                    <Input id="role" type='text' value={regNo} placeholder={data?.registrationNo} onChange={(e) => setRegNo(e.target.value)} className="col-span-3" disabled={true} />
-                </div>
-                <div className="grid grid-cols-5 items-center gap-8">
-                    <Label htmlFor="businessTinNo" className="col-span-2">
-                        {t('TAG_BUSINESS_TIN_NO')}
-                    </Label>
-                    <Input id="businessTinNo" value={businessTinNo} placeholder={data?.businessTinNo} type='text' onChange={(e) => setBusinessTinNo(e.target.value)} className="col-span-3" disabled={true} />
-                </div>
+        <ScrollArea onWheel={(e) => {
+            e.stopPropagation();
+        }}>
+            <SheetContent className="md:min-w-[500px] lg:min-w-[500px] sm:min-w-full  space-y-2">
 
-            </div>
-            <SheetFooter>
-                <SheetClose asChild>
-                    <Button type="submit" onClick={() => HandleEditProfile()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
-                </SheetClose>
-            </SheetFooter>
-        </SheetContent>
-    )
-}
+                <SheetHeader>
+                    <SheetTitle className='text-2xl'>{t('TAG_PERSONAL_INFROMATION')}</SheetTitle>
+                </SheetHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-5 items-center gap-8">
+                        <Label htmlFor="name" className="col-span-2">
+                            {t('TAG_COMPANY_NAME')}
+                        </Label>
+                        <Input id="name" value={companyName} placeholder={merchantInfoData?.companyName} onChange={(e) => setCompanyName(e.target.value)} className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-5 items-center gap-8">
+                        <Label htmlFor="email" className="col-span-2">
+                            {t('TAG_EMAIL')}
+                        </Label>
+                        <Input id="email" value={email} placeholder={merchantInfoData?.email} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-5 items-center gap-8">
+                        <Label htmlFor="role" className="col-span-2">
+                            {t('TAG_REGISTRATION_NO')}
+                        </Label>
+                        <Input id="role" type='text' value={regNo} placeholder={merchantInfoData?.registrationNo} onChange={(e) => setRegNo(e.target.value)} className="col-span-3" disabled={true} />
+                    </div>
+                    <div className="grid grid-cols-5 items-center gap-8">
+                        <Label htmlFor="businessTinNo" className="col-span-2">
+                            {t('TAG_BUSINESS_TIN_NO')}
+                        </Label>
+                        <Input id="businessTinNo" value={businessTinNo} placeholder={merchantInfoData?.businessTinNo} type='text' onChange={(e) => setBusinessTinNo(e.target.value)} className="col-span-3" disabled={true} />
+                    </div>
 
-const EditCompanyInfo = ({ data }: { data: MerchantInfo | undefined }) => {
-    const t = useTranslations();
-    const [address, setAddress] = useState(data?.address);
-    // const [apt_suite_building, setApt_suite_building] = useState('');
-    const [zipCode, setZipCode] = useState(data?.postcode);
-    const [town, setTown] = useState(data?.city);
-    const [state, setState] = useState(data?.stateId);
-    const [country, setCountry] = useState(data?.country);
-    const [contact, setContact] = useState(data?.contact);
-
-    const HandleEditCompanyInfo = () => {
-
-    }
-
-    return (
-        <SheetContent className="md:min-w-[500px]">
-            <SheetHeader>
-                <SheetTitle className='text-2xl'>{t('TAG_COMPANY_INFORMATION')}</SheetTitle>
-                {/* <SheetDescription>
-          Make changes to your profile here. Click save when you're done.
-        </SheetDescription> */}
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-                <h1 className="text-2xl font-medium">{t('TAG_ADDRESS')}</h1>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="address" className="text-nowrap">
-                        {t('TAG_STREET_ADDRESS')} <Required />
-                    </Label>
-                    <Input id="address" value={address} placeholder={data?.address} onChange={(e) => setAddress(e.target.value)} />
                 </div>
-                {/* <div className="grid grid-cols-2 items-center gap-4">
+                <div>
+                    <SheetHeader>
+                        <SheetTitle className='text-2xl'>{t('TAG_COMPANY_INFORMATION')}</SheetTitle>
+                    </SheetHeader>
+                    <div className="grid gap-4 py-4">
+                        <h1 className="text-2xl font-medium">{t('TAG_ADDRESS')}</h1>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="address" className="text-nowrap">
+                                {t('TAG_STREET_ADDRESS')} <Required />
+                            </Label>
+                            <Input id="address" value={address} placeholder={merchantInfoData?.address} onChange={(e) => setAddress(e.target.value)} />
+                        </div>
+                        {/* <div className="grid grid-cols-2 items-center gap-4">
                     <Label htmlFor="apt" >
                         {t('TAG_APT_SUITE_BUILDING')}
                     </Label>
                     <Input id="apt" type='text' value={apt_suite_building} placeholder={company.apt_suite_building} onChange={(e) => setApt_suite_building(e.target.value)} />
                 </div> */}
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="zipCode" className="text-nowrap">
-                        {t('TAG_ZIPCODE')} <Required />
-                    </Label>
-                    <Input id="zipCode" value={zipCode} placeholder={data?.postcode} type='email' onChange={(e) => setZipCode(e.target.value)} />
-                </div>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="town" className="text-nowrap">
-                        {t('TAG_TOWN_CITY')} <Required />
-                    </Label>
-                    <Input id="town" value={town} placeholder={data?.city} type='text' onChange={(e) => setTown(e.target.value)} />
-                </div>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="state" className="text-nowrap">
-                        {t('TAG_STATE')} <Required />
-                    </Label>
-                    <Input id="state" value={state} placeholder={data?.stateId} type='text' onChange={(e) => setState(e.target.value)} />
-                </div>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="country" className="text-nowrap">
-                        {t('TAG_COUNTRY')} <Required />
-                    </Label>
-                    <Input id="country" value={country} placeholder={data?.country} type='text' onChange={(e) => setCountry(e.target.value)} />
-                </div>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="zipCode" className="text-nowrap">
+                                {t('TAG_ZIPCODE')} <Required />
+                            </Label>
+                            <Input id="zipCode" value={zipCode} placeholder={merchantInfoData?.postcode} type='email' onChange={(e) => setZipCode(e.target.value)} />
+                        </div>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="town" className="text-nowrap">
+                                {t('TAG_TOWN_CITY')} <Required />
+                            </Label>
+                            <Input id="town" value={town} placeholder={merchantInfoData?.city} type='text' onChange={(e) => setTown(e.target.value)} />
+                        </div>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="state" className="text-nowrap">
+                                {t('TAG_STATE')} <Required />
+                            </Label>
+                            <Select
+                                // disabled={editable}
+                                value={state}
+                                onValueChange={(value) => setState(value)}
+                            // defaultValue={field.value}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue
+                                        // defaultValue={field.value}
+                                        placeholder="Select a State"
+                                    />
+                                </SelectTrigger>
+                                <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                    {/* @ts-ignore  */}
+                                    <SelectGroup>
+                                        {stateList?.map((state, index) => (
+                                            <SelectItem key={index} value={state.stateCode}>
+                                                {state.stateName}
+                                            </SelectItem>
 
-            </div>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="country" className="text-nowrap">
+                                {t('TAG_COUNTRY')} <Required />
+                            </Label>
+                            <Select
+                                // disabled={editable}
+                                value={country}
+                                onValueChange={(value) => setCountry(value)}
+                            // defaultValue={field.value}
+                            >
+                                {/* <FormControl> */}
+                                <SelectTrigger>
+                                    <SelectValue
+                                        placeholder="Select a Country"
+                                    />
+                                </SelectTrigger>
+                                {/* </FormControl> */}
+                                <SelectContent >
+                                    {/* @ts-ignore  */}
+                                    <SelectGroup className='max-h-[300px]'>
+                                        {countryData?.map((country, index) => (
+                                            <SelectItem key={index} value={country.countryCode}>
+                                                {country.countryName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-            <div className="grid gap-4 py-4">
-                <h1 className="text-2xl font-medium">{t('TAG_CONTACT')}</h1>
-                <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="contact" className="text-nowrap">
-                        {t('TAG_CONTACT_NO')}.<Required />
-                    </Label>
-                    <Input id="contact" value={contact} placeholder={data?.contact} onChange={(e) => setContact(e.target.value)} />
+                    </div>
+
+                    <div className="grid gap-4 py-4">
+                        <h1 className="text-2xl font-medium">{t('TAG_CONTACT')}</h1>
+                        <div className="grid grid-cols-2 items-center gap-4">
+                            <Label htmlFor="contact" className="text-nowrap">
+                                {t('TAG_CONTACT_NO')}.<Required />
+                            </Label>
+                            <div className="flex space-x-2">
+                                <Input id="contactPrefix" value={contactPrefix} placeholder={merchantInfoData?.contactPrefix} onChange={(e) => setContactPrefix(e.target.value)} disabled={true} className="max-w-[70px]" />
+                                <Input id="contact" value={contact} placeholder={merchantInfoData?.contact} onChange={(e) => setContact(e.target.value)} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <SheetFooter>
-                <SheetClose asChild>
-                    <Button type="submit" onClick={() => HandleEditCompanyInfo()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
-                </SheetClose>
-            </SheetFooter>
-        </SheetContent>
+                <SheetFooter>
+                    <SheetClose asChild>
+                        <Button type="submit" onClick={() => HandleEditProfile()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
+                    </SheetClose>
+                </SheetFooter>
+            </SheetContent>
+        </ScrollArea>
+
+
     )
 }

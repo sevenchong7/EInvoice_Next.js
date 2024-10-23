@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
 
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 6,
+    pageSize: 10,
   })
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -116,42 +116,42 @@ export function DataTable<TData, TValue>({
     }));
   };
 
-  // const createQueryString = React.useCallback(
-  //   (params: Record<string, string | number | null>) => {
-  //     const newSearchParams = new URLSearchParams(searchParams?.toString());
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
 
-  //     for (const [key, value] of Object.entries(params)) {
-  //       if (value === null) {
-  //         newSearchParams.delete(key);
-  //       } else {
-  //         newSearchParams.set(key, String(value));
-  //       }
-  //     }
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
 
-  //     return newSearchParams.toString();
-  //   },
-  //   [searchParams]
-  // );
+      return newSearchParams.toString();
+    },
+    [searchParams]
+  );
 
-  // Handle server-side pagination
-  // const [{ pageIndex, pageSize }, setPaginations] =
-  //   React.useState<PaginationState>({
-  //     pageIndex: fallbackPage - 1,
-  //     pageSize: fallbackPerPage
-  //   });
+  // Handle server - side pagination
+  const [{ pageIndex, pageSize }, setPaginations] =
+    React.useState<PaginationState>({
+      pageIndex: fallbackPage - 1,
+      pageSize: fallbackPerPage
+    });
 
-  // React.useEffect(() => {
-  //   router.push(
-  //     `${pathname}?${createQueryString({
-  //       page: pageIndex + 1,
-  //       limit: pageSize
-  //     })}`,
-  //     {
-  //       scroll: false
-  //     }
-  //   );
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        page: pageIndex + 1,
+        limit: pageSize
+      })}`,
+      {
+        scroll: false
+      }
+    );
 
-  // }, [pageIndex, pageSize]);
+  }, [pageIndex, pageSize]);
 
   const handlePermissionGranted = useCallback(() => {
     setColumnVisibility(prev => ({
@@ -262,104 +262,105 @@ export function DataTable<TData, TValue>({
         </DropdownMenu>
       </div >
       <Separator />
-      {/* <ScrollArea className=" h-[calc(80vh-210px)]"> */}
-      <Table className="flex flex-col">
-        <TableHeader className='flex'>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className='flex flex-auto min-w-screen bg-gray-300 rounded-lg '>
-              {headerGroup.headers.map((header, index) => {
-                return (
-                  <TableHead key={header.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 md:w-full  min-w-[90px]", header.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")} >
-                    {header.isPlaceholder
-                      ? null
-                      : header.id == 'actions' ? null :
-                        <div
-                          className={
-                            header.column.getCanSort()
-                              ? 'cursor-pointer select-none'
-                              : ''
-                          }
-                          onClick={header.column.getToggleSortingHandler()}
-                          title={
-                            header.column.getCanSort()
-                              ? header.column.getNextSortingOrder() === 'asc'
-                                ? 'Sort ascending'
-                                : header.column.getNextSortingOrder() === 'desc'
-                                  ? 'Sort descending'
-                                  : 'Clear sort'
-                              : undefined
-                          }
-                        >
-                          <div className='flex items-center'>
-                            {t(flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            ))}
-                            {{
-                              asc: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg>,
-                              desc: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg>,
-                            }[header.column.getIsSorted() as string] ??
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 16 4 4 4-4" /><path d="M7 20V4" /><path d="m21 8-4-4-4 4" /><path d="M17 4v16" /></svg>}
-                          </div>
-                        </div>
-                    }
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody className=''>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, rowIndex) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                className={cn('flex flex-row py-[5px]')}
-              >
-                {row.getVisibleCells().map((cell, index) => {
+      <ScrollArea className=" h-[calc(80vh-210px)]">
+        <Table className="flex flex-col">
+          <TableHeader className='flex bg-gray-300 rounded-lg '>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className='flex flex-row w-full py-[10px] '>
+                {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableCell key={cell.id} className={cn("flex items-center border-b ", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 md:w-full  min-w-[90px]", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
-                      {
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
+                    <TableHead key={header.id} className={cn("flex  items-center dark:text-black", index == 0 ? " flex-auto max-w-[100px] pl-[20px]" : "flex-1 md:w-full w-[150px]", header.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")} >
+                      {header.isPlaceholder
+                        ? null
+                        : header.id == 'actions' ? null :
+                          <div
+                            className={
+                              header.column.getCanSort()
+                                ? 'cursor-pointer select-none'
+                                : ''
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                            title={
+                              header.column.getCanSort()
+                                ? header.column.getNextSortingOrder() === 'asc'
+                                  ? 'Sort ascending'
+                                  : header.column.getNextSortingOrder() === 'desc'
+                                    ? 'Sort descending'
+                                    : 'Clear sort'
+                                : undefined
+                            }
+                          >
+                            <div className='flex items-center'>
+                              {t(flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              ))}
+                              {{
+                                asc: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg>,
+                                desc: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg>,
+                              }[header.column.getIsSorted() as string] ??
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 16 4 4 4-4" /><path d="M7 20V4" /><path d="m21 8-4-4-4 4" /><path d="M17 4v16" /></svg>}
+                            </div>
+                          </div>
                       }
-                    </TableCell>
-                  )
-                }
-                )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            ))}
+          </TableHeader>
+          <TableBody className='flex flex-col min-w-screen'>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row, rowIndex) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className={cn('flex flex-row  py-[5px]')}
+                >
+                  {row.getVisibleCells().map((cell, index) => {
+                    return (
+                      <TableCell key={cell.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 w-full  w-[150px]", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
+                        {cell.column.id == "mupId" ? <p>{rowIndex + 1}</p> :
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )
+                        }
+                      </TableCell>
+                    )
+                  }
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
 
-      </Table>
-      {/* <ScrollBar orientation="horizontal" /> */}
-      {/* </ScrollArea> */}
-      <div className="flex items-center justify-center space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+      {/* <div className="flex items-center justify-center space-x-2 py-4"> */}
+      {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div> */}
-        <div className="space-x-2">
-          <Paginator
-            currentPage={table.getState().pagination.pageIndex + 1}
-            totalPages={table.getPageCount()}
-            onPageChange={(pageNumber: number) => table.setPageIndex(pageNumber - 1)}
-            showPreviousNext
-          />
-          {/* <Button
+      <div className="space-x-2">
+        <Paginator
+          currentPage={table.getState().pagination.pageIndex + 1}
+          totalPages={2}
+          // table.getPageCount()
+          onPageChange={(pageNumber: number) => table.setPageIndex(pageNumber - 1)}
+          showPreviousNext
+        />
+        {/* <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
@@ -375,8 +376,8 @@ export function DataTable<TData, TValue>({
           >
             Next
           </Button> */}
-        </div>
       </div>
+      {/* </div > */}
     </>
   );
 }
