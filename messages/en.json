@@ -295,5 +295,7 @@
     "TAG_TOUR_REG_NO": "tourRegNo",
     "TAG_SST_REG_NO": "SST RegNo",
     "TAG_CONTACT_PREFIX": "Contact Prefix",
+    "TAG_SUBSCRIPTION_LIST": "Subscription List",
+    "TAG_MANAGE_SUBSCRIPTION_LIST": "Manage Subscription List",
     "": ""
 }

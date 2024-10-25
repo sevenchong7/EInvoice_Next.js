@@ -61,7 +61,7 @@ export function decryptAES(data: any, key: string) {
 // Helper for GET requests (no body required)
 export async function get(url: string, headers?: {}) {
 
-    console.log("headers ", headers)
+    console.log("[API] headers =", headers)
 
     console.log("[API GET] ", API_BASE_URL + url)
     const response = await fetch(API_BASE_URL + url, {

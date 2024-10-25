@@ -30,7 +30,8 @@ import {
   User2Icon,
   UserX2Icon,
   X,
-  Clipboard
+  Clipboard,
+  CalendarCheck2
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -65,6 +66,7 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   document: Clipboard,
+  subscription: CalendarCheck2,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

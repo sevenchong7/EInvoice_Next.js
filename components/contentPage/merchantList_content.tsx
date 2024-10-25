@@ -13,7 +13,6 @@ export default function MerchantListContent(data: any) {
     useEffect(() => {
         setMerchantData(data.data.content)
 
-        console.log('merchant List = ', data)
     }, [data])
 
 

@@ -18,17 +18,19 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-
   return (
     <>
       <SessionProvider session={session}>
+        {/* <UpdateSession updatedSession={updatedSession} /> */}
         <Header />
+        {/* <InactivityRedirectWrapper> */}
         <div className="flex h-screen overflow-hidden">
           <Sidebar />
           <Suspense fallback={<Loading />}>
             <main className="h-full w-full pt-16 overflow-hidden">{children}</main>
           </Suspense>
         </div>
+        {/* </InactivityRedirectWrapper> */}
       </SessionProvider>
     </>
   );

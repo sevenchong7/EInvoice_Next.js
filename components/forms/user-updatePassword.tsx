@@ -135,7 +135,7 @@ export default function UpdatePassword() {
                                             />
                                             <div className="flex items-center justify-between">
                                                 <Button variant={'outline'} className="bg-gray-300 dark:bg-gray-500">{t('TAG_CANCEL')}</Button>
-                                                <Button onClick={() => handleSubmit()} className="bg-blue-900 hover:bg-blue-800">{t('TAG_SUBMIT')}</Button>
+                                                <Button onClick={() => handleSubmit()} className="bg-blue-900 hover:bg-blue-800 dark:text-white">{t('TAG_SUBMIT')}</Button>
                                             </div>
                                         </div>
                                         <div></div>

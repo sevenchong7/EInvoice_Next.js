@@ -1,8 +1,8 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl';
 import LocaleSwitcherSelect from './LocaleSwitcherSelect';
-import { getLanguage } from '@/lib/services/generalService';
 import { useEffect, useState } from 'react';
+import { getLanguage } from '@/lib/services/userService';
 
 export default function LocaleSwitcher() {
     const t = useTranslations('TAG_LOCALE_SWITCHER');
@@ -18,10 +18,6 @@ export default function LocaleSwitcher() {
         GetLanguage()
 
     }, [open])
-
-    useEffect(() => {
-        console.log('languageData = ', languageData)
-    }, [languageData])
 
     return (
         <LocaleSwitcherSelect

@@ -80,7 +80,6 @@ export default function FileUpload({
             }}
             onClientUploadComplete={(res) => {
               // Do something with the response
-              console.log('image res = ', res)
               // const data: UploadFileResponse[] | undefined = res;
               // if (data) {
               //   onUpdateFile(data);

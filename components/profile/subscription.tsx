@@ -12,6 +12,7 @@ import { CustomeModal } from "../modal/custome-modal";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
+import { ConfirmButton } from "../ui/confirmButton";
 
 export default function Subscriptions() {
     const router = useRouter()
@@ -20,7 +21,7 @@ export default function Subscriptions() {
     const [unSubscribeModal, setUnSubscribeModal] = useState(false);
     const [subscriptionModal, setSubscriptionModal] = useState(false);
     const [loading, setloading] = useState(false);
-    const [selectSubscription, setSelectSubscription] = useState('');
+    const [selectSubscription, setSelectSubscription] = useState<number>();
     // const [merchantInfo, setMerchantInfo] = useState<MerchantInfo>()
     const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>();
 
@@ -46,7 +47,7 @@ export default function Subscriptions() {
         router.push('/dashboard/profile/subscription/information')
     }
 
-    const HandleSubscribe = (sub: string) => {
+    const HandleSubscribe = (sub: number) => {
         setSubscriptionModal(true)
         setSelectSubscription(sub)
         // setloading(true)
@@ -75,7 +76,7 @@ export default function Subscriptions() {
                             </div>
                             <div className="flex w-full justify-between items-center pt-10">
                                 <Button onClick={() => setUnSubscribeModal(false)} className="bg-gray-400 hover:bg-gray-300">{t('TAG_CANCEL')}</Button>
-                                <Button onClick={() => HandleUnsubscribe()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</Button>
+                                <ConfirmButton onClick={() => HandleUnsubscribe()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</ConfirmButton>
                             </div>
                         </div>
                     </>
@@ -96,7 +97,7 @@ export default function Subscriptions() {
                             </div>
                             <div className="flex w-full justify-between items-center pt-10">
                                 <Button onClick={() => setSubscriptionModal(false)} className="bg-gray-400 hover:bg-gray-300">{t('TAG_CANCEL')}</Button>
-                                <Button onClick={() => HandleSubscriptionMadal()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</Button>
+                                <ConfirmButton onClick={() => HandleSubscriptionMadal()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</ConfirmButton>
                             </div>
                         </div>
                     </>
@@ -150,12 +151,11 @@ export default function Subscriptions() {
                                 </div>
                                 {
                                     subscriptionInfo.packageList.map((res, index) => {
-                                        console.log('sub = ', res)
                                         if (res.PackageIdentifier === subscriptionInfo.currentPackageId) {
                                             if (res.PackageName !== "Free") {
                                                 return (
                                                     <div key={index} className="flex justify-end py-2">
-                                                        <Button className="bg-blue-900 hover:bg-blue-700" onClick={() => setUnSubscribeModal(true)}>{t('TAG_UNSUBSCRIBE')}</Button>
+                                                        <Button className="bg-blue-900 hover:bg-blue-700 dark:text-white" onClick={() => setUnSubscribeModal(true)}>{t('TAG_UNSUBSCRIBE')}</Button>
                                                     </div>
                                                 )
                                             }
@@ -200,7 +200,7 @@ export default function Subscriptions() {
                                         }
                                     </div>
                                     <div className="flex justify-end py-2">
-                                        <Button className="bg-blue-900 hover:bg-blue-700" onClick={() => HandleSubscribe('Free')}>{t('TAG_SUBSCRIBE')}</Button>
+                                        <Button className="bg-blue-900 hover:bg-blue-700 dark:text-white" onClick={() => HandleSubscribe(res.PackageIdentifier)}>{t('TAG_SUBSCRIBE')}</Button>
                                     </div>
                                 </div>
                             </div>

@@ -20,9 +20,7 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
     }
 
     useEffect(() => {
-        // console.log('step 2 useeffecet')
         GetCountryInfo().then((value) => {
-            console.log('country = ', value)
             setCountries(value)
         })
     }, [])

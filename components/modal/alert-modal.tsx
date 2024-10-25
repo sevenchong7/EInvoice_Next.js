@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { title } from 'process';
 import { useTranslations } from 'next-intl';
+import { ConfirmButton } from '../ui/confirmButton';
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -44,9 +45,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         <Button disabled={loading} variant="outline" onClick={onClose}>
           {t('TAG_CANCEL')}
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
+        <ConfirmButton disabled={loading} variant="destructive" onClick={onConfirm}>
           {t('TAG_CONFIRM')}
-        </Button>
+        </ConfirmButton>
       </div>
     </Modal>
   );

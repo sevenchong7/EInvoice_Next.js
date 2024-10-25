@@ -62,13 +62,13 @@ export default function StatusAction({ data }: StatusActionProps) {
                     >
                         <div
                             className={cn(
-                                "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400",
+                                "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400 ",
                                 data.status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
                             )}
                         />
                         <p
                             className={cn(
-                                textVisible ? "opacity-100 " : "opacity-0", data.status === "ACTIVE" && 'dark:text-white'
+                                textVisible ? "opacity-100" : "opacity-0", data.status === "ACTIVE" && "dark:text-white"
                             )}
                         >
                             {data.status}

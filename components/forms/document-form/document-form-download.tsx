@@ -20,9 +20,12 @@ import { Separator } from "@/components/ui/separator";
 import Head from "next/head";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { ConfirmButton } from "@/components/ui/confirmButton";
 
 export default function DocumentDownload() {
     const t = useTranslations()
+    const { toast } = useToast()
     let docDownloadRef = useRef<HTMLDivElement | null>(null);
 
     const HandleDownload = async () => {
@@ -41,6 +44,12 @@ export default function DocumentDownload() {
                 )
             }
         } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: "Error",
+                description: "Something went wrong when download Please conatact the developer !"
+
+            })
             console.log('Error during PDF download:', error);
         }
     }
@@ -75,9 +84,9 @@ export default function DocumentDownload() {
 
                                     {/* Button */}
                                     <div className="w-full flex flex-col justify-start">
-                                        <Button onClick={() => HandleDownload()} className="w-full bg-blue-800 hover:bg-blue-600">
+                                        <ConfirmButton onClick={() => HandleDownload()} className="w-full bg-blue-800 hover:bg-blue-600">
                                             {t('TAG_CONFIRM')}
-                                        </Button>
+                                        </ConfirmButton>
                                     </div>
                                 </div>
                             </SheetContent>

@@ -21,9 +21,7 @@ export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<R
     }
 
     useEffect(() => {
-        // console.log('step 2 useeffecet')
         GetCountryInfo().then((value) => {
-            console.log('country = ', value)
             setCountries(value)
         })
     }, [])

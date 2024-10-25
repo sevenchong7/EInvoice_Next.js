@@ -32,6 +32,7 @@ import { useTranslations } from 'next-intl';
 import { getMerchantUserInfo, merchantUserInfoUpdate } from '@/lib/services/userService';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { useToast } from '@/components/ui/use-toast';
+import { ConfirmButton } from '@/components/ui/confirmButton';
 
 
 interface CellActionProps {
@@ -61,14 +62,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <div className='flex flex-row space-x-5'>
         <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>
-            <button className='border-2 border-blue-800 text-blue-800 rounded-lg p-1 hover:bg-gray-200'>
+            <button className='border-2 border-blue-800 text-blue-800 rounded-lg p-1 hover:bg-gray-200 dark:hover:bg-gray-500'>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
           <EditUser data={data} open={openSheet} />
         </Sheet>
 
-        <button onClick={() => setOpenAlertModal(true)} className='border-2 border-black rounded-lg p-1 hover:bg-gray-200'>
+        <button onClick={() => setOpenAlertModal(true)} className='border-2 border-black dark:border-white rounded-lg p-1 hover:bg-gray-200 dark:hover:bg-gray-500'>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
         </button>
       </div>
@@ -129,19 +130,11 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
 
   useEffect(() => {
     if (open) {
-      console.log('data = ', data);
-      console.log('muId = ', data.muId);
-
       if (data.muId != undefined) {
         GetMerchantUserInfo().then((res) => setMerchantUserInfo(res))
       }
     }
   }, [open, data]);
-
-  useEffect(() => {
-    if (merchantUserInfo != undefined)
-      console.log('role Info = ', merchantUserInfo)
-  }, [merchantUserInfo])
 
   useEffect(() => {
     if (merchantUserInfo?.permissionList) {
@@ -327,7 +320,6 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
       "role": newRole != "" ? newRole : role,
       "permission": permissionListToSubmit
     };
-    console.log('mechantUserEditParam = ', mechantUserEditParam);
 
     const updateUserInfo = merchantUserInfoUpdate(data.muId, mechantUserEditParam)
 
@@ -343,7 +335,6 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   const HandleConfirm = () => {
     const { check, tempPermissionList } = checkChange();
 
-    console.log(check)
 
     if (!check) {
       setOpenModal(true)
@@ -372,7 +363,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
           <Label htmlFor="username" >
             {t('TAG_EMAIL')}
           </Label>
-          <Input id="username" value={username} disabled={true} type='string' onChange={(e) => setUsername(e.target.value)} className="col-span-3" />
+          <Input id="username" value={username} disabled={true} type='string' onChange={(e) => setUsername(e.target.value)} className="col-span-3 dark:text-white" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="role">
@@ -391,19 +382,19 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
                 onClick={HandleStatus}
                 className={cn(
                   "relative flex items-center transition-all duration-300",
-                  status === "Y" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
+                  status === "Y" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right ",
                   "rounded-lg"
                 )}
               >
                 <div
                   className={cn(
-                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                    status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
+                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 ",
+                    status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear dark:bg-gray-400"
                   )}
                 />
                 <div
                   className={cn(
-                    textVisible ? "opacity-100 " : "opacity-0"
+                    textVisible ? "opacity-100 " : "opacity-0", status === "Y" && 'text-white'
                   )}
                 >
                   {status === 'Y' ? <p>Active</p> : <p>Inactive</p>}
@@ -482,7 +473,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
       </div>
       <SheetFooter>
         {/* <SheetClose asChild> */}
-        <Button type="submit" onClick={() => HandleConfirm()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
+        <ConfirmButton type="submit" onClick={() => HandleConfirm()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</ConfirmButton>
         {/* </SheetClose> */}
       </SheetFooter>
     </SheetContent>

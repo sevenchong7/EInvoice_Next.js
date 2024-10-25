@@ -46,10 +46,10 @@ import { Checkbox } from '@radix-ui/react-checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import Paginator from './merchant-table-paging';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useTranslations } from 'next-intl';
 import { MerchantContent } from '@/constants/data';
+import Paginator from './subscriptionList-table-paging';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -254,7 +254,7 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id} className='flex flex-auto min-w-screen bg-gray-300 rounded-lg '>
               {headerGroup.headers.map((header, index) => {
                 return (
-                  <TableHead key={header.id} className={cn("flex items-center dark:text-black overflow-hide", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id === 'email' && 'min-w-[300px]', header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-lg lg:z-10")} >
+                  <TableHead key={header.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id === 'email' && 'min-w-[300px]', header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-tr rounded-br lg:z-10")} >
                     {header.isPlaceholder
                       ? null
                       : header.id == 'actions' ?

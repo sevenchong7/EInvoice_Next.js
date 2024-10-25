@@ -96,13 +96,9 @@ export default function RegisterUserStep4Admin(
 
     }, [])
 
-    useEffect(() => {
-        console.log('payment total index = ', form.getValues('payment').length)
-    }, [form.watch('payment')])
 
     const HandleUploadImage = (imageData: any, index: number) => {
         const files = imageData.target.files;
-        console.log('index = ', index);
 
         if (files) {
             const filesArray: File[] = files ? Array.from(files) : [];
@@ -118,8 +114,6 @@ export default function RegisterUserStep4Admin(
 
     const handleRemoveFile = (index: number, indexToRemove: number) => {
         const currentFiles = form.getValues(`payment.${index}.imgUrl`);
-        console.log('remove index =', index)
-        console.log('indexToRemove index =', indexToRemove)
         setSelectedImage((prev) => {
             if (!prev) return prev;
 
@@ -137,8 +131,6 @@ export default function RegisterUserStep4Admin(
         if (currentFiles) {
             const updatedFiles = currentFiles.filter((_: any, currentIndex: number) => currentIndex !== indexToRemove);
             form.setValue(`payment.${index}.imgUrl`, updatedFiles);
-
-            console.log('Updated image value in form = ', form.getValues(`payment.${index}.imgUrl`));
         }
     };
 

@@ -1,5 +1,6 @@
 import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
+import { ConfirmButton } from "@/components/ui/confirmButton";
 import { contents, User } from "@/constants/data";
 import { merchantUserUpdateStatus } from "@/lib/services/userService";
 import { cn } from "@/lib/utils";
@@ -49,7 +50,7 @@ export default function StatusAction({ data }: StatusActionProps) {
                             </div>
                             <div className="flex w-full justify-between items-center pt-10">
                                 <Button onClick={() => setOpenModal(false)} className="bg-gray-400 hover:bg-gray-300">{t('TAG_CANCEL')}</Button>
-                                <Button onClick={() => HandleStatus()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</Button>
+                                <ConfirmButton onClick={() => HandleStatus()} className="bg-blue-800 hover:bg-blue-600">{t('TAG_CONFIRM')}</ConfirmButton>
                             </div>
                         </div>
                     </>
@@ -71,13 +72,13 @@ export default function StatusAction({ data }: StatusActionProps) {
                         >
                             <div
                                 className={cn(
-                                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
+                                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400",
                                     data.status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
                                 )}
                             />
                             <div
                                 className={cn(
-                                    textVisible ? "opacity-100 " : "opacity-0"
+                                    textVisible ? "opacity-100 " : "opacity-0", data.status === "Y" && 'dark:text-white'
                                 )}
                             >
                                 {data.status == 'Y' ? <p>Active</p> : <p>Inactive</p>}

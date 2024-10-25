@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import GoogleSignInButton from '../github-auth-button';
@@ -26,13 +26,13 @@ import React from 'react';
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Please enter the Username' }),
   password: z.string().min(1, { message: "Please enter the Password" }),
-  rmbMe: z.boolean().default(false).optional()
+  rmbMe: z.boolean().default(false)
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -47,6 +47,64 @@ export default function UserAuthForm() {
     defaultValues
   });
 
+  const checkRemeberMe = () => {
+    const storedRmbMe = localStorage.getItem('rmbMe');
+    const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null;
+    console.log('[checkRemeberMe] rememberMe= ', rememberMe)
+    // if (session != undefined || session != null) {
+    if (rememberMe === true) {
+      const storeSession = localStorage.getItem('session')
+      const sessionData = storeSession ? JSON.parse(storeSession) : null
+      const username = localStorage.getItem('username')
+
+      if (sessionData != null) {
+        const currentDate = new Date;
+        const compareDate = new Date(sessionData.user.accessTokenExpiry);
+
+        if (currentDate > compareDate) {
+          localStorage.removeItem('username')
+          localStorage.removeItem('rmbMe')
+          localStorage.removeItem('session')
+          // router.replace('/')
+        } else if (currentDate < compareDate) {
+          const sessionUpdate = update({
+            loginId: username,
+            permission: sessionData.user.permissions,
+            accessToken: sessionData.user.accessToken,
+            accessTokenExpiry: sessionData.user.accessTokenExpiry,
+            refreshToken: sessionData.user.refreshToken,
+            refreshTokenExpiry: sessionData.user.refreshTokenExpiry,
+            merchantId: sessionData.user.merchantId,
+            xAcceptLanguage: sessionData.user.xAcceptLanguage,
+            emailDisplay: sessionData.user.emailDisplay
+          })
+
+          sessionUpdate.then(() => {
+            router.replace('/dashboard')
+          })
+        }
+      } else {
+        localStorage.removeItem('username')
+        localStorage.removeItem('rmbMe')
+        localStorage.removeItem('session')
+      }
+    } else {
+      localStorage.removeItem('username')
+      localStorage.removeItem('rmbMe')
+      localStorage.removeItem('session')
+      // router.replace('/')
+    }
+    // } else {
+    //   localStorage.removeItem('username')
+    //   localStorage.removeItem('rmbMe')
+    //   localStorage.removeItem('session')
+    // }
+  }
+
+  useEffect(() => {
+    checkRemeberMe()
+  }, [])
+
 
   const onSubmit = async (data: UserFormValue) => {
 
@@ -56,10 +114,7 @@ export default function UserAuthForm() {
     //   callbackUrl: callbackUrl ?? '/dashboard',
     //   redirect: false
     // })
-
     const signInStatus = await login(data.username, data.password);
-
-    // console.log("signInStatus ", signInStatus);
 
     if (signInStatus?.error) {
       toast({
@@ -68,6 +123,21 @@ export default function UserAuthForm() {
         description: `Your username or password is incorrect.`
       });
     } else {
+      const checkRmbMe = form.getValues('rmbMe');
+      if (checkRmbMe === true) {
+        const rememberMe = form.getValues('rmbMe')
+        const username = form.getValues('username')
+
+
+        localStorage.setItem('rmbMe', JSON.stringify(rememberMe))
+        localStorage.setItem('username', username)
+        // localStorage.setItem('session', JSON.stringify(session))
+      }
+      //  else {
+      //   localStorage.removeItem('username')
+      //   localStorage.removeItem('rmbMe')
+      //   localStorage.removeItem('session')
+      // }
       // window.history.pushState(null, '', window.location.href);
       // window.history.replaceState(null, '', '/dashboard');
 

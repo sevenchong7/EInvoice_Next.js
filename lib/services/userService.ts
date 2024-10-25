@@ -1,8 +1,7 @@
 'use server';
-import { auth } from '@/auth';
+import { auth, signOut } from '@/auth';
 import { get, post, put, upload } from '@/lib/api';
-import { postRegenerateToken } from './generalService';
-import CheckTokenExpiry from './checkTokenExpiry';
+import { redirect } from 'next/navigation';
 
 export const getRoles = async () => {
     const headers = await getHeaders();
@@ -190,17 +189,39 @@ export const postUploadAdmin = async (body: any) => {
     return response;
 }
 
+export const getLanguage = async () => {
+    const headers = await getHeaders();
+    const response = await get("/language", headers);
+
+    return response.data;
+}
+
+export const putPackageUpdate = async (body: any) => {
+    const headers = await getHeaders();
+    const response = await put('/v1/role/package', headers, body);
+
+    return response.data;
+}
+
+
 const getHeaders = async () => {
     const session = await auth();
 
-    if (session != undefined) {
-        CheckTokenExpiry(session)
+    if (!session) {
+        redirect('/')
+    }
+    const currentDate = new Date()
+    const refreshDate = new Date(session.user.refreshTokenExpiry)
+
+    if (currentDate > refreshDate) {
+        redirect('/')
     }
 
     const headers = {
-        'Authorization': session?.user?.accessToken ? "Bearer " + session?.user?.accessToken : "",
-        'X-MerchantID': session?.user?.merchantId ?? "", 'X-Accept-Language': session?.user.xAcceptLanguage ?? 'en'
-    }
+        'Authorization': session?.user.accessToken ? "Bearer " + session.user.accessToken : "",
+        'X-MerchantID': session?.user.merchantId ?? "",
+        'X-Accept-Language': session?.user.xAcceptLanguage ?? 'en',
+    };
 
-    return headers;
+    return headers
 }

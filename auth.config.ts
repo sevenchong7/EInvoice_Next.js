@@ -4,6 +4,7 @@ import CredentialProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import { decryptAES, encryptAES } from './lib/api';
 import { login } from './lib/services/authService';
+import { redirect } from 'next/navigation';
 import { postRegenerateToken } from './lib/services/generalService';
 
 class AuthErrorWithMsg extends AuthError {
@@ -57,6 +58,8 @@ const authConfig = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
+      const currentDate = new Date();
+
       if (trigger === 'update') {
         // Merge multiple updates at once into the token
         token = {
@@ -73,7 +76,8 @@ const authConfig = {
           merchantPermissResponse: {
             ...token.merchantPermissResponse, // Preserve the rest of the merchantPermissResponse object
             permission: session.permissions ?? token.merchantPermissResponse.permission, // Update permissions or keep the existing value
-          }
+          },
+          emailDisplay: session.emailDisplay ?? token.emailDisplay
         };
 
         return token; // Return the updated token after all updates
@@ -82,6 +86,36 @@ const authConfig = {
       if (user) {
         token = { ...token, ...user }
         console.log("First token ", token)
+      }
+
+      const accessTokenExpiryDate = new Date(token.accessTokenExpiry);
+      const refreshTokenExpiryDate = new Date(token.refreshTokenExpiry);
+
+      if (currentDate > accessTokenExpiryDate) {
+        console.log('[CheckTokenExpiry] Access token expired, attempting to refresh.');
+        if (currentDate > refreshTokenExpiryDate) {
+          console.log('[CheckTokenExpiry] Refresh token also expired.');
+          return token;
+        } else {
+          try {
+            const refreshTokenParam = { "refreshToken": token.refreshToken }
+            const refreshedToken = await postRegenerateToken(refreshTokenParam);
+            console.log('[CheckTokenExpiry] Refresh token is valid. Updating session.');
+            token = {
+              ...token,
+              accessToken: refreshedToken.accessToken,
+              accessTokenExpiry: refreshedToken.accessTokenExpiry,
+              refreshToken: refreshedToken.refreshToken,
+              refreshTokenExpiry: refreshedToken.refreshTokenExpiry,
+            }
+            console.log('[CheckTokenExpiry] Updated session tokens successfully.');
+            return token;
+          } catch (error) {
+            console.log('[CheckTokenExpiry] refresh Access Token error = .', error);
+          }
+        }
+      } else {
+        console.log('[CheckTokenExpiry] Access token is still valid.');
       }
 
       return token;

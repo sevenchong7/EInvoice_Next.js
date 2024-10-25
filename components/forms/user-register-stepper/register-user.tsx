@@ -140,7 +140,6 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
                 })
             }
         })
-        // console.log(registerData)
         form.reset();
     };
 
@@ -179,12 +178,6 @@ export default function RegisterUserForm({ packageData }: { packageData: any }) 
             await form.handleSubmit(processForm)();
         }
     };
-
-    useEffect(() => {
-        console.log('length ', steps.length)
-        console.log(currentStep)
-
-    }, [currentStep])
 
     const prev = () => {
         if (currentStep == 0) {

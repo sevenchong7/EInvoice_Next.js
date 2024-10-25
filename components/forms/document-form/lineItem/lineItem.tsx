@@ -29,6 +29,7 @@ import {
 import Required from "@/components/ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { ConfirmButton } from "@/components/ui/confirmButton";
 
 export default function LineItem(
     {
@@ -972,7 +973,7 @@ export default function LineItem(
                             </div>
                         </div>
                         <div className="flex justify-end pt-[20px]">
-                            <Button type="submit" className="bg-blue-800 hover:bg-blue-900" onClick={() => HandleSubmitLineItem()}>{t('TAG_CONFIRM')}</Button>
+                            <ConfirmButton type="submit" className="bg-blue-800 hover:bg-blue-900" onClick={() => HandleSubmitLineItem()}>{t('TAG_CONFIRM')}</ConfirmButton>
                         </div>
                     </div>
                     <ScrollBar />

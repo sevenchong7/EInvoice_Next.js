@@ -15,6 +15,7 @@ import { permissionList } from "@/constants/data";
 import { Toast, ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { ConfirmButton } from "@/components/ui/confirmButton";
 
 
 
@@ -48,10 +49,6 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
             setRole('')
         }
     }, [openSheet])
-
-    useEffect(() => {
-        console.log('permissionListing = ', permissionListing)
-    }, [permissionListing])
 
     useEffect(() => {
         if (permissionListing) {
@@ -209,7 +206,6 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
 
     const HandleConfirm = () => {
         const { tempPermissionList } = checkPermission()
-        console.log(role)
         if (role != '' && role != undefined && tempPermissionList.length != 0) {
             const checkRole = getRoleValidation(role, mId)
             checkRole.then((res) => {
@@ -334,7 +330,7 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
                         </div>
                         <SheetFooter>
                             {/* <SheetClose asChild> */}
-                            <Button type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => HandleConfirm()}>{t('TAG_CONFIRM')}</Button>
+                            <ConfirmButton type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => HandleConfirm()}>{t('TAG_CONFIRM')}</ConfirmButton>
                             {/* </SheetClose> */}
                         </SheetFooter>
                     </div>

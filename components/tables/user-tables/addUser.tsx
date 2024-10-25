@@ -27,6 +27,7 @@ import { boolean } from 'zod';
 import { set } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { useSession } from 'next-auth/react';
+import { ConfirmButton } from '@/components/ui/confirmButton';
 
 
 interface rolePermission {
@@ -96,25 +97,17 @@ export default function AddUser() {
 
     useEffect(() => {
         GetRoleSelectionList().then((res) => {
-            console.log('role select list= ', res)
             setRoleSelection(res)
         })
     }, [])
 
     useEffect(() => {
         if (selectedRole !== '' && selectedRole !== undefined && selectedRole !== null) {
-            console.log('role selection = ', selectedRole)
             GetRoleSelectionPermission(selectedRole.mupId).then((res) => {
                 setRolePermission(res.data)
             })
         }
     }, [selectedRole])
-
-    useEffect(() => {
-        if (rolePermission != undefined) {
-            console.log('rolePermission = ', rolePermission)
-        }
-    }, [rolePermission])
 
     useEffect(() => {
         if (rolePermission?.permissionList) {
@@ -195,7 +188,6 @@ export default function AddUser() {
             return
         } else {
             const checkRole = await getRoleValidation(roleModal, session.data?.user.merchantId)
-            console.log(checkRole)
             if (checkRole.status == false) {
                 setRoleError(false)
                 setRoleErrorMessage(checkRole.error.errorMap.role)
@@ -238,14 +230,12 @@ export default function AddUser() {
 
     const HandleSubmit = (permissionListToSubmit: any[]) => {
 
-        // console.log('roleModal or selectedRole = ', roleModal != null && roleModal != undefined && roleModal != '' ? roleModal : selectedRole.role)
         const mechantUserInviteNewUserParam = {
             "loginId": username,
             "role": roleModal != null && roleModal != undefined && roleModal != '' ? roleModal : selectedRole.role,
             "hasNewRole": false,
             "permissionList": permissionListToSubmit,
         };
-        console.log(mechantUserInviteNewUserParam);
 
         const addNewUser = mechantUserInviteNewUser(mechantUserInviteNewUserParam)
 
@@ -416,7 +406,7 @@ export default function AddUser() {
                 </div>
                 <div className='flex justify-between pt-[100px]'>
                     <Button className='bg-gray-300 hover:bg-gray-200' onClick={() => router.back()}>{t('TAG_BACK')}</Button>
-                    <Button className='bg-blue-800 hover:bg-blue-700' onClick={() => HandleConfirm()}>{t('TAG_CONFIRM')}</Button>
+                    <ConfirmButton className='bg-blue-800 hover:bg-blue-700' onClick={() => HandleConfirm()}>{t('TAG_CONFIRM')}</ConfirmButton>
                 </div>
             </div >
             <ConfirmModal

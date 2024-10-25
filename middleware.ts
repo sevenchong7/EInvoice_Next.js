@@ -125,5 +125,9 @@ const paths = [
   {
     path: "/dashboard/updatePassword",
     permission: ["updatePassword.update"],
+  },
+  {
+    path: "/dashboard/subscriptionList",
+    permission: ["subscriptionList.read"]
   }
 ];

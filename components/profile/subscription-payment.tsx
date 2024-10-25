@@ -8,15 +8,17 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { putPackageUpdate } from "@/lib/services/userService";
+import { ConfirmButton } from "../ui/confirmButton";
 
-export default function SubscriptionPayment({ subPackage }: { subPackage: string | null }) {
+export default function SubscriptionPayment({ subPackage }: { subPackage: number | null }) {
     const router = useRouter();
     const [payment, setPayment] = useState('');
     const [error, setError] = useState(false)
     const t = useTranslations()
 
     const HandlePayment = () => {
-        if (subPackage !== 'Free') {
+        if (subPackage !== 1) {
             if (payment == '') {
                 setError(true);
                 return
@@ -24,7 +26,11 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
                 setError(false);
             }
         }
-
+        const packageUpdateParam = {
+            "packageId": subPackage,
+            "changeType": "U"
+        }
+        // putPackageUpdate(packageUpdateParam)
         router.push('/dashboard/profile/subscription/payment/information')
     }
 
@@ -54,14 +60,14 @@ export default function SubscriptionPayment({ subPackage }: { subPackage: string
             <div className="p-1">
                 <Summary subPackage={subPackage} />
                 {
-                    subPackage !== 'Free' &&
+                    subPackage !== 1 &&
                     <PaymentMethod />
                 }
             </div>
             <div className="flex flex-col h-full justify-end md:pb-4 pb-10">
                 <div className="flex flex-row  justify-between items-center">
                     <Button onClick={() => router.back()} className="">{t('TAG_BACK')}</Button>
-                    <Button onClick={() => HandlePayment()} className="">{subPackage === 'Free' ? t('TAG_CONFIRM') : t('TAG_CONTINUE_TO_PAYMENT')}</Button>
+                    <ConfirmButton onClick={() => HandlePayment()} className="">{subPackage === 1 ? t('TAG_CONFIRM') : t('TAG_CONTINUE_TO_PAYMENT')}</ConfirmButton>
                 </div>
             </div>
         </div>
@@ -84,7 +90,7 @@ const PaymentButton = ({ id, payment, src, name, onClick }: { id: string, paymen
 }
 
 
-const Summary = ({ subPackage }: { subPackage: string | null }) => {
+const Summary = ({ subPackage }: { subPackage: number | null }) => {
     const t = useTranslations()
     return (
         <>

@@ -41,7 +41,6 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
     const [charge, setCharge] = useState<number>(0);
     const [rouding, setRounding] = useState<number>(0);
     const [invoiceType, setInvoiceType] = useState('')
-    const [datetime, setDatetime] = useState()
 
     const {
         control,
@@ -111,7 +110,7 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
     }
 
     const handleClose = () => {
-        setOpenIndex(-1); // Close the sheet
+        setOpenIndex(-1);
     };
 
     const calculateTotals = () => {
@@ -142,7 +141,6 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
 
         form.setValue('totalExcludingTax', exclude);
 
-
     }, [discount, charge, form.watch('totalNetAmount')])
 
     useEffect(() => {
@@ -155,14 +153,12 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
     }, [form.watch('totalExcludingTax'), form.watch('totalTaxAmount')])
 
     useEffect(() => {
-
         const include = Number(form.getValues('totalIncludingTax')) ?? 0
         const round = rouding
         Number(form.setValue('totalRoundingAmount', rouding))
         const totalPayableAmount = include + round;
 
         form.setValue('totalPayableAmount', totalPayableAmount)
-
 
     }, [form.watch('totalIncludingTax'), rouding])
 
@@ -174,17 +170,9 @@ export default function DocumentFormStep1({ form }: { form: UseFormReturn<Docume
         }
     }, [form.watch('invoiceType')])
 
-
     useEffect(() => {
         setInvoiceType(form.getValues('invoiceType'))
     }, [])
-
-    // useEffect(() => {
-    //     console.log('field item length = ', fieldsItems.length)
-    //     if (fieldsItems.length == 0) {
-    //         form.setError('items', { message: 'At least one item is required' })
-    //     }
-    // }, [form.watch('items')])
 
     return (
         <>

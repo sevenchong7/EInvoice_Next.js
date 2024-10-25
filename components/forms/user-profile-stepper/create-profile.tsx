@@ -80,7 +80,6 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
         // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
       }
       router.refresh();
       router.push(`/dashboard/products`);
@@ -136,20 +135,6 @@ export const CreateProfileOne: React.FC<ProfileFormType> = ({
     },
     { id: 'Step 3', name: 'Complete' }
   ];
-
-  useEffect(() => {
-    console.log("profile : ", fields
-      ?.map((_, index) => [
-        `jobs.${index}.jobtitle`,
-        `jobs.${index}.employer`,
-        `jobs.${index}.startdate`,
-        `jobs.${index}.enddate`,
-        `jobs.${index}.jobcountry`,
-        `jobs.${index}.jobcity`
-        // Add other field names as needed
-      ])
-      .flat())
-  }, [])
 
   const next = async () => {
     const fields = steps[currentStep].fields;

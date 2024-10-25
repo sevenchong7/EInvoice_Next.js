@@ -985,6 +985,20 @@ export const navItems: NavItem[] = [
       }
     ]
   },
+  {
+    title: "TAG_SUBSCRIPTION_LIST",
+    href: '/dashboard/subscriptionList',
+    icon: "subscription",
+    label: "Subscription List",
+    permission: ["subscriptionList.read"],
+    // children: [
+    //   {
+    //     title: "TAG_SUBSCRIPTION_LIST",
+    //     href: "/dashboard/subscriptionList",
+    //     permission: ['docCreate.create', 'docCreate.createMyFav']
+    //   }
+    // ]
+  },
   // {
   //   title: 'Kanban',
   //   href: '/dashboard/kanban',

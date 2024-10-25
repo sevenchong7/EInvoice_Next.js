@@ -295,5 +295,7 @@
     "TAG_SST_REG_NO": "SST 登记号",
     "TAG_JOIN_DATE": "加入日期",
     "TAG_CONTACT_PREFIX": "联系方式前缀",
+    "TAG_SUBSCRIPTION_LIST": "订购列表",
+    "TAG_MANAGE_SUBSCRIPTION_LIST": "管理订购列表",
     "": ""
 }

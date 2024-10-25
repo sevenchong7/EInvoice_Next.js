@@ -58,7 +58,6 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
   }, [])
 
   const HandlePermission = () => {
-    console.log(hasAccess)
     if (!hasAccess) {
       //call API
       const getPermission = getDefaultPermission(session.data?.user.merchantId)
@@ -68,7 +67,6 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
         setMId(session.data?.user.merchantId)
         setPermissionList(res)
         setOpen(true)
-        console.log(res)
       })
 
       // setOpen(true)
@@ -90,7 +88,6 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
         setMId(merchantSelect)
         setPermissionList(res)
         setOpen(true)
-        console.log(res)
       })
     } else if (radioValueSelection == 'superAdmin') {
       const getPermission = getDefaultPermission(session.data?.user.merchantId)
@@ -100,7 +97,6 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
         setMId(session.data?.user.merchantId)
         setPermissionList(res)
         setOpen(true)
-        console.log(res)
 
       })
     }

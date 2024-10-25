@@ -319,7 +319,7 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell, index) => {
                     return (
-                      <TableCell key={cell.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 w-full  w-[150px]", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
+                      <TableCell key={cell.id} className={cn("flex items-center", index == 0 ? " flex-auto min-w-[50px] max-w-[100px] pl-[20px]" : "flex-1 w-full  w-[150px]", cell.column.id == 'actions' && " items-center justify-center flex-auto max-w-[100px]")}>
                         {cell.column.id == "mupId" ? <p>{rowIndex + 1}</p> :
                           flexRender(
                             cell.column.columnDef.cell,

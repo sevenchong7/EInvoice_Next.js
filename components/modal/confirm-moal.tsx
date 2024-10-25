@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { title } from 'process';
 import { useTranslations } from 'next-intl';
+import { ConfirmButton } from '../ui/confirmButton';
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -48,9 +49,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 <Button disabled={loading} variant="outline" onClick={onClose}>
                     {t('TAG_CANCEL')}
                 </Button>
-                <Button disabled={loading} className='bg-blue-800 hover:bg-blue-700' onClick={onConfirm}>
+                <ConfirmButton disabled={loading} className='bg-blue-800 hover:bg-blue-700' onClick={onConfirm}>
                     {t('TAG_CONFIRM')}
-                </Button>
+                </ConfirmButton>
             </div>
         </Modal>
     );

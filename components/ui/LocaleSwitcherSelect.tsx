@@ -57,7 +57,6 @@ export default function LocaleSwitcherSelect({
     }, [])
 
     async function onChange(value: string) {
-        console.log('value = ', value)
         if (value == 'English') {
             setSelectedLanguage('English')
             setLoacalData('en')
@@ -84,8 +83,6 @@ export default function LocaleSwitcherSelect({
             setUserLocale(localeData as Locale);
         });
     }, [localeData])
-
-    useEffect(() => { if (session) console.log('session = ', session) }, [session])
 
     return (
 

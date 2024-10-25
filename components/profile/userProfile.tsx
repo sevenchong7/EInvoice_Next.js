@@ -26,6 +26,7 @@ import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
 import { CountryList, MerchantInfo, StateList, SubscriptionInfo } from "@/constants/data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from "../ui/scroll-area";
+import { ConfirmButton } from "../ui/confirmButton";
 
 export default function UserProfile({ subscriptionData, merchantInfoData, countryData }: { subscriptionData: any, merchantInfoData: any, countryData: any }) {
     const t = useTranslations()
@@ -53,17 +54,13 @@ export default function UserProfile({ subscriptionData, merchantInfoData, countr
     }, [subscriptionData, merchantInfoData])
 
     useEffect(() => {
-        console.log('merchantInfo = ', merchantInfo)
         if (merchantInfo?.address == '' || merchantInfo?.address == undefined || merchantInfo?.address == null) {
             setIncomplete(true);
         }
     }, [merchantInfo])
 
-    useEffect(() => {
-        console.log('subscriptionInfo = ', subscriptionInfo)
-    }, [subscriptionInfo])
-
     const onConfirm = () => {
+        //TODO
     }
 
     return (
@@ -339,7 +336,6 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
 
     useEffect(() => {
         if (openSheet) {
-            console.log('country data = ', country)
             countryData?.map((value) => {
                 if (value.countryCode === country) {
                     setStateList(value.stateList)
@@ -351,8 +347,6 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
 
     useEffect(() => {
         if (openSheet) {
-            // console.log('edit data = ', data)
-            // setStatus(data.status)
             setCountry(merchantInfoData?.country)
             setState(merchantInfoData?.stateId)
         }
@@ -380,7 +374,7 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
         <ScrollArea onWheel={(e) => {
             e.stopPropagation();
         }}>
-            <SheetContent className="md:min-w-[500px] lg:min-w-[500px] sm:min-w-full  space-y-2">
+            <SheetContent className="md:min-w-[500px] lg:min-w-[500px]  max-[600px]:min-w-full  space-y-2">
 
                 <SheetHeader>
                     <SheetTitle className='text-2xl'>{t('TAG_PERSONAL_INFROMATION')}</SheetTitle>
@@ -518,7 +512,7 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
                 </div>
                 <SheetFooter>
                     <SheetClose asChild>
-                        <Button type="submit" onClick={() => HandleEditProfile()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</Button>
+                        <ConfirmButton type="submit" onClick={() => HandleEditProfile()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</ConfirmButton>
                     </SheetClose>
                 </SheetFooter>
             </SheetContent>

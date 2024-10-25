@@ -11,7 +11,6 @@ export default function RegisterUserStep4({ form }: { form: UseFormReturn<Regist
     const [payment, setPayment] = useState('')
 
     const HandlePayment = (selection: string) => {
-        console.log('payment selection : ', selection)
         setPayment(selection)
         form.setValue('paymentMethod', selection)
     }

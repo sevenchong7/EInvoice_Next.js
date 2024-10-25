@@ -14,14 +14,6 @@ import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const navItemsFiltered = useNavItems(navItems);
-  // const router = useRouter()
-  // const { data: session } = useSession()
-
-  useEffect(() => {
-    console.log("nav Item : ", navItemsFiltered)
-    // router.refresh()
-  }, [])
-
   const t = useTranslations()
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);

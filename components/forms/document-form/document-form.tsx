@@ -53,21 +53,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
     const [data, setData] = useState({});
     const delta = currentStep - previousStep;
 
-
-    // const GetCountryInfo = async () => {
-    //     return await getCountry();
-    // }
-
-    // useEffect(() => {
-    //     console.log('step 2 useeffecet')
-    //     GetCountryInfo().then((value) => {
-    //         console.log('country = ', value)
-    //         // setCountries(value)
-    //     })
-    // }, [])
-
-
-
     const { setDocData } = useStore()
 
     const defaultValues = {
@@ -380,7 +365,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
                 // await axios.post(`/ api / products / edit - product / ${ initialData._id }`, data);
             } else {
                 // const res = await axios.post(`/ api / products / create - product`, data);
-                // console.log("product", res);
             }
             router.refresh();
             router.push(`/ dashboard / products`);
@@ -426,7 +410,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
         // const itemOutput = await form.trigger('items')
         // if (!itemOutput) return
 
-        if (!output) { console.log('error'); return; }
+        if (!output) { return; }
 
 
 

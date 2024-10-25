@@ -67,7 +67,6 @@ export default function UserForgetPassword() {
             const forgetPasswordParam = { 'loginId': form.getValues('email') }
             setCurrentStep(currentStep + 1)
             const data = forgetPassword(forgetPasswordParam)
-            console.log('forget data = ', data)
         } else if (currentStep == 1) {
             // router.push("/resetPassword")
             setCurrentStep(0)

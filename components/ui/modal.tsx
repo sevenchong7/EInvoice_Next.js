@@ -32,6 +32,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange} >
+      {/* <VisuallyHidden></VisuallyHidden> */}
       <DialogContent className='md:min-w-[600px]' aria-describedby={undefined}>
         <DialogHeader className='items-center'>
           <DialogTitle className='text-2xl'>{title}</DialogTitle>

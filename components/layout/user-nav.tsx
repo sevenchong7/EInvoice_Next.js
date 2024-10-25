@@ -20,16 +20,6 @@ export function UserNav() {
   const router = useRouter();
   const t = useTranslations();
 
-  useEffect(() => {
-    console.log('userNav = ', session)
-    // console.log('userNav = ', session?.user.permissions)
-  }, [])
-
-  // const HandleLogout = () => {
-  //   signOut()
-  //   router.refresh()
-  // }
-
   if (session) {
     return (
       <DropdownMenu>

@@ -119,7 +119,6 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
         // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
       }
       router.refresh();
       router.push(`/dashboard/products`);
@@ -180,15 +179,12 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       }
     })
 
-
-
     const imgUrlData = form.getValues('payment')
       .map((payData, payIndex) => {
         const imgUrlParam = form.getValues(`payment.${payIndex}.imgUrl`); // Get imgUrl
         return imgUrlParam.map(url => url); // Ensure it's an array of File objects
       })
       .flat()
-
 
     const uploadImages = async (imgUrlData: any) => {
       const imgData = new FormData();
@@ -197,13 +193,9 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
         imgData.append('files', file);
       });
 
-      console.log('FormData content:', Array.from(imgData.entries()));
       const imageData = await postUploadAdmin(imgData);
 
-      // return imageData;
     };
-
-
 
     // const imgUrlData = form.getValues('payment')
     //   .map((payData, payIndex) => {

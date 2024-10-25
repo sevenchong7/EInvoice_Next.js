@@ -32,6 +32,7 @@ import React from "react";
 import { getMerchantInfo } from "@/lib/services/userService";
 import { CountryList, merchants, StateList } from "@/constants/data";
 import { getCountry } from "@/lib/services/generalService";
+import { ConfirmButton } from "@/components/ui/confirmButton";
 
 interface MerchantParam {
     address: string;
@@ -83,14 +84,12 @@ export default function DocumentFormStep2(
 
     useEffect(() => {
         GetCountryInfo().then((value) => {
-            console.log('country = ', value)
             setSupplierCountries(value)
             setBuyerCountries(value)
             setDeliveryCountries(value)
         })
 
         getMerchant().then((res) => {
-            console.log('res = ', res)
             setMerchantInfo(res)
         });
     }, [])
@@ -569,7 +568,7 @@ export default function DocumentFormStep2(
                                     <Button onClick={() => { setFav(false) }} type="button" variant="secondary">{t('TAG_CANCEL')}</Button>
                                 </DialogClose>
                                 <DialogClose>
-                                    <Button onClick={() => { HandleFav() }} type="submit">{t('TAG_CONFIRM')}</Button>
+                                    <ConfirmButton onClick={() => { HandleFav() }} type="submit">{t('TAG_CONFIRM')}</ConfirmButton>
                                 </DialogClose>
                             </DialogFooter>
                         </DialogContent>
@@ -687,7 +686,7 @@ export default function DocumentFormStep2(
                             )}
                         />
                         <div className="flex flex-col items-start">
-                            <Button className="bg-blue-800 hover:bg-blue-900 ">{t('TAG_VALIDATE')}</Button>
+                            <ConfirmButton className="bg-blue-800 hover:bg-blue-900 ">{t('TAG_VALIDATE')}</ConfirmButton>
                         </div>
                     </div>
                 </div>
@@ -945,7 +944,7 @@ export default function DocumentFormStep2(
                                     <Button onClick={() => { setFavDeli(false) }} type="button" variant="secondary">{t('TAG_CANCEL')}</Button>
                                 </DialogClose>
                                 <DialogClose>
-                                    <Button onClick={() => { HandleFavDeli() }} type="submit">{t('TAG_CONFIRM')}</Button>
+                                    <ConfirmButton onClick={() => { HandleFavDeli() }} type="submit">{t('TAG_CONFIRM')}</ConfirmButton>
                                 </DialogClose>
                             </DialogFooter>
                         </DialogContent>
@@ -1046,7 +1045,7 @@ export default function DocumentFormStep2(
                         />
 
                         <div className="flex flex-col items-start justify-end">
-                            <Button className="bg-blue-800 hover:bg-blue-900">{t('TAG_VALIDATE')}</Button>
+                            <ConfirmButton className="bg-blue-800 hover:bg-blue-900">{t('TAG_VALIDATE')}</ConfirmButton>
                         </div>
                     </div>
                 </div>

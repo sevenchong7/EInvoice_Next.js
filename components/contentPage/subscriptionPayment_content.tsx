@@ -17,7 +17,7 @@ export default function SubscriptionPaymentContent() {
     return (
         <div className="h-full space-y-4 p-4 pt-6 md:p-8">
             <BreadCrumb items={breadcrumbItems} />
-            <SubscriptionPayment subPackage={subPackage} />
+            <SubscriptionPayment subPackage={Number(subPackage)} />
         </div>
     )
 }
