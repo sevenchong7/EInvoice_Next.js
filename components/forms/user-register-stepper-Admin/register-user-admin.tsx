@@ -179,23 +179,30 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       }
     })
 
-    const imgUrlData = form.getValues('payment')
-      .map((payData, payIndex) => {
-        const imgUrlParam = form.getValues(`payment.${payIndex}.imgUrl`); // Get imgUrl
-        return imgUrlParam.map(url => url); // Ensure it's an array of File objects
-      })
-      .flat()
+    if (form.getValues('package') !== 1) {
+      const imgUrlData = form.getValues('payment')
+        .map((payData, payIndex) => {
+          const imgUrlParam = form.getValues(`payment.${payIndex}.imgUrl`); // Get imgUrl
+          return imgUrlParam.map(url => url); // Ensure it's an array of File objects
+        })
+        .flat()
 
-    const uploadImages = async (imgUrlData: any) => {
-      const imgData = new FormData();
+      const uploadImages = async (imgUrlData: any) => {
+        const imgData = new FormData();
 
-      imgUrlData.forEach(async (file: any, index: number) => {
-        imgData.append('files', file);
-      });
+        imgUrlData.forEach(async (file: any, index: number) => {
+          imgData.append('files', file);
+        });
 
-      const imageData = await postUploadAdmin(imgData);
+        const imageData = await postUploadAdmin(imgData);
 
-    };
+      };
+
+      const imageData = await uploadImages(imgUrlData)
+
+    }
+
+
 
     // const imgUrlData = form.getValues('payment')
     //   .map((payData, payIndex) => {
@@ -225,7 +232,6 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
     // Call the function to upload the images
     // await uploadImages(imgUrlData);
 
-    const imageData = await uploadImages(imgUrlData)
   }
 
   type FieldName = keyof RegisterUserAdminFormValues;

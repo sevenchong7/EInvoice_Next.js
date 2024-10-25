@@ -344,8 +344,8 @@ export function DataTable<TData, TValue>({
                         "flex items-center border-b",
                         cell.column.id === 'merchantId' ? "min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]",
                         cell.column.id === 'email' && 'min-w-[300px]',
-                        cell.column.id === 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-10 lg:shadow dark:bg-black dark:shadow-gray-400",
-                        cell.column.id === 'actions' && "flex-auto items-center justify-center w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
+                        cell.column.id === 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-20 lg:shadow dark:bg-black dark:shadow-gray-400",
+                        cell.column.id === 'actions' && "flex-auto items-center justify-center max-w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
                       )}
                     >
                       {cell.column.id == "merchantId" ? <p>{rowIndex + 1}</p> :

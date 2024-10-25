@@ -294,7 +294,7 @@ const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen:
         title={t('TAG_CONFIRMATION')}
         content={t('TAG_CONFIRMATION_MODAL_DESC')}
       />
-      <SheetContent className='md:min-w-[500px]'>
+      <SheetContent className='md:min-w-[500px] max-[600px]:w-full'>
         <ScrollArea className='h-full'>
           <div className='pr-5'>
             <SheetHeader>

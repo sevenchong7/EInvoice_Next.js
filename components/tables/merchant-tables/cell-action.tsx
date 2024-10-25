@@ -200,7 +200,7 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
   }
 
   return (
-    <SheetContent className='md:min-w-[500px]'>
+    <SheetContent className='md:min-w-[500px] max-[600px]:w-full'>
       <ScrollArea className='h-full ' onWheel={(e) => {
         e.stopPropagation();
       }}>
@@ -232,12 +232,12 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
                     <div
                       className={cn(
                         "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                        status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
+                        status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear dark:bg-black"
                       )}
                     />
                     <p
                       className={cn(
-                        textVisible ? "opacity-100 " : "opacity-0"
+                        textVisible ? "opacity-100 " : "opacity-0", status === "ACTIVE" && 'dark:text-white'
                       )}
                     >
                       {status}

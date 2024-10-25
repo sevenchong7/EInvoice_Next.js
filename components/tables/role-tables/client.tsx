@@ -49,7 +49,7 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
   useEffect(() => {
     const getMerchantListData = async () => {
       const merchantData = await getMerchantList()
-      setMerchantList(merchantData)
+      setMerchantList(merchantData.content)
     }
 
     if (hasAccess) {

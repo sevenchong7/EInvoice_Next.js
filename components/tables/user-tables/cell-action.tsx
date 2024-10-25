@@ -345,7 +345,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   }
 
   return (
-    <SheetContent>
+    <SheetContent className='max-[600px]:w-full'>
       <SheetHeader>
         <SheetTitle className='text-2xl'>{t('TAG_EDIT_USER_INFORMATION')}</SheetTitle>
         {/* <SheetDescription>

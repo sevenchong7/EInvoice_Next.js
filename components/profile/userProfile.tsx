@@ -56,6 +56,8 @@ export default function UserProfile({ subscriptionData, merchantInfoData, countr
     useEffect(() => {
         if (merchantInfo?.address == '' || merchantInfo?.address == undefined || merchantInfo?.address == null) {
             setIncomplete(true);
+        } else {
+            setIncomplete(false);
         }
     }, [merchantInfo])
 
@@ -84,7 +86,7 @@ export default function UserProfile({ subscriptionData, merchantInfoData, countr
                                 <div className="flex flex-col bg-gray-400 text-center items-center justify-center rounded-full h-10 w-10">
                                     <h1 className="text-lg font-medium">{merchantInfo?.companyName.charAt(0).toUpperCase()}</h1>
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="flex flex-col text-left">
                                     <h1>{merchantInfo?.companyName}</h1>
                                     <p className="text-sm text-gray-400">{merchantInfo?.registrationNo}</p>
                                 </div>
@@ -109,7 +111,7 @@ export default function UserProfile({ subscriptionData, merchantInfoData, countr
             <div className="flex justify-between items-center w-full">
                 <div className="flex flex-row items-center space-x-5">
                     <div className="flex items-center space-x-1">
-                        <div className="flex bg-gray-300 rounded-full md:w-20 md:h-20 w-10 h-10 items-center justify-center">
+                        <div className="flex bg-gray-300 rounded-full md:w-20 md:h-20 w-10 h-10 items-center justify-center dark:bg-gray-500">
                             <h1 className="text-center font-semibold md:text-5xl text-2xl">{merchantInfo?.companyName.charAt(0).toUpperCase()}</h1>
                         </div>
                         <div className="flex flex-col ">

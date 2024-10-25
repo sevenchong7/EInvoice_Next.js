@@ -11,11 +11,12 @@ import {
 import { getSwitchRole, getSwitchRoleList } from "@/lib/services/userService";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 export function MerchantSelection({ getSwitchRoleListData }: { getSwitchRoleListData: any }) {
     const t = useTranslations();
+    const router = useRouter();
     const { data: session, update } = useSession();
-    const [switchRoleList, setSwitchRoleList] = useState<any>()
     const [selectedRole, setSelectedRole] = useState<any>()
     const [open, setOpen] = useState(false)
 
@@ -46,6 +47,8 @@ export function MerchantSelection({ getSwitchRoleListData }: { getSwitchRoleList
 
         await update({ permissions: getSwitchRoleData.permission })
 
+        router.refresh()
+
     }
 
     return (
@@ -62,7 +65,7 @@ export function MerchantSelection({ getSwitchRoleListData }: { getSwitchRoleList
                 <SelectGroup>
                     <SelectLabel>{t('TAG_SELECT_MERCHANT')} </SelectLabel>
                     {
-                        getSwitchRoleListData?.map((data: any, index: any) => (
+                        getSwitchRoleListData?.map((data: any, index: number) => (
                             <SelectItem key={index} value={data.mid}>{data.merchantName}</SelectItem>
                         ))
                     }

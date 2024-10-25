@@ -186,7 +186,8 @@ export default function AddUser() {
             setRoleModalError(false)
             setRoleModalErrorMessage(['Please enter a new role'])
             return
-        } else {
+        }
+        else {
             const checkRole = await getRoleValidation(roleModal, session.data?.user.merchantId)
             if (checkRole.status == false) {
                 setRoleError(false)
@@ -233,18 +234,28 @@ export default function AddUser() {
         const mechantUserInviteNewUserParam = {
             "loginId": username,
             "role": roleModal != null && roleModal != undefined && roleModal != '' ? roleModal : selectedRole.role,
-            "hasNewRole": false,
             "permissionList": permissionListToSubmit,
         };
 
         const addNewUser = mechantUserInviteNewUser(mechantUserInviteNewUserParam)
 
-        addNewUser.then(() => {
-            toast({
-                title: "Success",
-                description: "New User has been added successfully!",
-            });
-            router.refresh()
+        addNewUser.then((res) => {
+            if (res.status === true) {
+                toast({
+                    title: "Success",
+                    description: "New User has been added successfully!",
+                });
+                router.refresh()
+            } else {
+                setRoleError(false)
+                setRoleErrorMessage(res.error.errorMap.role)
+                toast({
+                    variant: 'destructive',
+                    title: "Error",
+                    description: res.error.errorMap.role
+                });
+            }
+
         })
 
     };
@@ -266,15 +277,15 @@ export default function AddUser() {
         } else {
             setUsernameError(true)
 
-            const loginIdCheck = await getLoginIdValidation(username)
+            // const loginIdCheck = await getLoginIdValidation(username)
 
-            if (loginIdCheck.status == false) {
-                setUsernameError(false)
-                setUsernameErrorMessage(loginIdCheck.error.errorMap.username)
-                return
-            } else {
-                setUsernameError(true)
-            }
+            // if (loginIdCheck.status == false) {
+            //     setUsernameError(false)
+            //     setUsernameErrorMessage(loginIdCheck.error.errorMap.username)
+            //     return
+            // } else {
+            //     setUsernameError(true)
+            // }
         }
 
         const { check, tempPermissionList } = checkChange();
@@ -326,7 +337,9 @@ export default function AddUser() {
                                     ))}
                                 </SelectContent>
                             </Select>
-
+                            {
+                                roleError == false && <p className='text-red-500'>{roleErrorMessage}</p>
+                            }
                         </div>
                     </div>
                 </div>
@@ -342,7 +355,7 @@ export default function AddUser() {
                     </div>
                 </div>
                 <div className='gird grid-rows-4 pt-[30px] lg:text-base md:text-base sm:text-xs text-xs'>
-                    <div className='grid grid-cols-4 bg-gray-200 w-full rounded-t-lg  border-x border-t '>
+                    <div className='grid grid-cols-4 bg-gray-200 w-full rounded-t-lg  border-x border-t dark:text-black'>
                         <div className='flex items-center justify-center border-r '>
                             <p className=' my-2'>
                                 {t('TAG_MODULE')}

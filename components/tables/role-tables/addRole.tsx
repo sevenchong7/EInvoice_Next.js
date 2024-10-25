@@ -261,7 +261,8 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
 
     return (
         <>
-            <SheetContent className='md:min-w-[500px]'>
+
+            <SheetContent className='md:min-w-[500px] max-[600px]:w-full'>
                 <ScrollArea className='h-full '>
                     <div className='pr-5'>
                         <SheetHeader>
