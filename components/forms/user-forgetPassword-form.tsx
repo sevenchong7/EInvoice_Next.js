@@ -40,8 +40,8 @@ export default function UserForgetPassword() {
         {
             id: 'Step 1',
             name: 'Reset Password',
-            content: "Enter your email address and we will send you instructions to reset your password",
-            button: 'Send Password Reset Email',
+            content: "Enter your uesrname and we will send you instructions to reset your password",
+            button: 'Send Email',
             fields: ['email']
         },
         {
@@ -121,7 +121,7 @@ export default function UserForgetPassword() {
                                                                     // type="email"
                                                                     disabled={loading}
                                                                     {...field}
-                                                                    placeholder='Email Address*'
+                                                                    placeholder='Username*'
                                                                 />
                                                             </FormControl>
                                                             <FormMessage />

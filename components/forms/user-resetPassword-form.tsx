@@ -14,6 +14,7 @@ import React from 'react';
 import { getVerifyLoginId, putActiveAccount, putPasswordReset } from '@/lib/services/userService';
 import { useToast } from '../ui/use-toast';
 import NotFound from '@/app/not-found';
+import { PasswordInput } from '../ui/passwordInput';
 
 export default function UserResetPassword() {
     // const { id } = useParams();
@@ -26,6 +27,7 @@ export default function UserResetPassword() {
     const id = param.get('encryptStr')
     const [error, setError] = useState(false)
     const [errorMsg, setErrorMsg] = useState<string[]>()
+    const [pwSee, setPwSee] = useState(false)
 
     useEffect(() => {
         const verifyLoginId = getVerifyLoginId(paramVar + id)
@@ -77,7 +79,7 @@ export default function UserResetPassword() {
         if (verifyLoginId.status === false) {
             router.replace('/not-found')
         } else {
-            return
+            // return
         }
 
         const fields = steps[currentStep].fields;
@@ -88,6 +90,7 @@ export default function UserResetPassword() {
         if (!output) return;
 
         if (currentStep == 0) {
+            console.log('test')
             setError(false)
             const passwordResetParam = {
                 "password": form.getValues('password'),
@@ -163,11 +166,15 @@ export default function UserResetPassword() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <Input
+
+                                                                <PasswordInput
+                                                                    type={pwSee ? 'password' : 'string'}
                                                                     disabled={loading}
                                                                     {...field}
                                                                     placeholder='Password*'
                                                                 />
+
+
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -181,7 +188,8 @@ export default function UserResetPassword() {
                                                         render={({ field }) => (
                                                             <FormItem>
                                                                 <FormControl>
-                                                                    <Input
+                                                                    <PasswordInput
+                                                                        type={pwSee ? 'password' : 'string'}
                                                                         disabled={loading}
                                                                         {...field}
                                                                         placeholder='Confirm Password*'
