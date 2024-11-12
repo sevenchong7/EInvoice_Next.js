@@ -14,6 +14,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSession } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from "react";
 // import { useTranslations } from 'next-intl';
@@ -21,6 +22,7 @@ import React, { useEffect } from "react";
 
 export default function DashboardContent() {
     const { data: session } = useSession()
+    const { setTheme } = useTheme();
 
     useEffect(() => {
         const checkRmbMe = localStorage.getItem('rmbMe')
@@ -29,6 +31,15 @@ export default function DashboardContent() {
             localStorage.setItem('session', JSON.stringify(session))
         }
     }, [session])
+
+    useEffect(() => {
+        const checkRmbMe = localStorage.getItem('rmbMe')
+        if (checkRmbMe) {
+            const themeData = localStorage.getItem('theme') ?? 'light'
+            console.log('[DashboardContent] themeData =', themeData)
+            setTheme(themeData)
+        }
+    }, [])
 
 
     return (

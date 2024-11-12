@@ -18,7 +18,7 @@ export default function MerchantListContent(data: any) {
 
 
     const breadcrumbItems = [
-        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_USER'), link: '' },
         { title: t('TAG_MERCHANT_LISTING'), link: '/dashboard/user/merchantListing' }
     ];
 

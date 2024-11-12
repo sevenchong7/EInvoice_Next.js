@@ -14,6 +14,19 @@ export const postRegenerateToken = async (body: any) => {
     return response.data
 }
 
+export const getpaymentMethod = async () => {
+    const response = await get('/v1/payment-methods');
+
+    return response.data;
+}
+
+export const getSubscriptionDuration = async () => {
+    const response = await get('/v1/subscriptions');
+
+    return response.data;
+}
+
+
 // const getHeaders = async () => {
 //     const session = await auth(); // Your authentication function
 //     console.log('[getHeaders] session =', session)

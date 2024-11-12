@@ -1,22 +1,43 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import bgImg from '@/public/bgImg.png'
 import resetPwImage from '@/public/resetPassword.png'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forgetPasswordSchema, ForgetPasswordValues, resetPasswordSchema, ResetPasswordValues } from '@/lib/form-schema';
 import { Input } from '../ui/input';
-import { useRouter } from 'next/navigation';
+import { notFound, useParams, useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
+import { getVerifyLoginId, putActiveAccount, putPasswordReset } from '@/lib/services/userService';
+import { useToast } from '../ui/use-toast';
+import NotFound from '@/app/not-found';
 
 export default function UserResetPassword() {
+    // const { id } = useParams();
+    const param = useSearchParams()
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { toast } = useToast()
+    const paramVar = 'encryptStr='
+    const id = param.get('encryptStr')
+    const [error, setError] = useState(false)
+    const [errorMsg, setErrorMsg] = useState<string[]>()
+
+    useEffect(() => {
+        const verifyLoginId = getVerifyLoginId(paramVar + id)
+        verifyLoginId.then((res) => {
+            if (res.status === false) {
+                router.replace('/not-found')
+            } else {
+                return
+            }
+        })
+        console.log('id = ', id)
+    }, [])
 
     const defaultValues = {
         password: '',
@@ -52,6 +73,13 @@ export default function UserResetPassword() {
     type FieldName = keyof ResetPasswordValues;
 
     const HandleButton = async () => {
+        const verifyLoginId = await getVerifyLoginId(paramVar + id)
+        if (verifyLoginId.status === false) {
+            router.replace('/not-found')
+        } else {
+            return
+        }
+
         const fields = steps[currentStep].fields;
         const output = await form.trigger(fields as FieldName[], {
             shouldFocus: true
@@ -60,7 +88,24 @@ export default function UserResetPassword() {
         if (!output) return;
 
         if (currentStep == 0) {
-            setCurrentStep(currentStep + 1)
+            setError(false)
+            const passwordResetParam = {
+                "password": form.getValues('password'),
+                "confirmationPassword": form.getValues('confirmPw')
+            }
+            const passwordReset = await putPasswordReset(id, passwordResetParam)
+
+            if (passwordReset.status) {
+                setCurrentStep(currentStep + 1)
+            } else {
+                setError(true)
+                setErrorMsg(passwordReset.error.errorMap.confirmPassword)
+                // toast({
+                //     variant: 'destructive',
+                //     title: "Error",
+                //     description: "Something went wrong when download Please conatact the developer !"
+                // })
+            }
         } else if (currentStep == 1) {
             router.replace("/")
         }
@@ -73,9 +118,13 @@ export default function UserResetPassword() {
                     <Image
                         src={bgImg}
                         alt='bg-img'
-                        layout="fill"
-                        objectFit="fill"
-                        objectPosition="center" />
+                        fill
+                        // layout="fill"
+                        // objectFit="fill"
+                        sizes='100%'
+                        priority={true}
+                    // objectPosition="center" 
+                    />
                 </div>
             </div>
 
@@ -85,13 +134,16 @@ export default function UserResetPassword() {
                         <Image
                             src={resetPwImage}
                             alt='bg-img'
-                            layout="cover"
-                            objectFit="cover"
-                            objectPosition="center" />
+                            // layout="cover"
+                            // objectFit="cover"
+                            sizes='100%'
+                            priority={true}
+                        // objectPosition="center" 
+                        />
 
                         {steps.map((step, index) => (
-                            <>
-                                <h1 className="text-2xl font-semibold tracking-wide">
+                            <div key={index} className='w-full'>
+                                <h1 className="text-2xl font-semibold tracking-wide text-center">
                                     {currentStep == index && step.name}
                                 </h1>
 
@@ -144,7 +196,13 @@ export default function UserResetPassword() {
                                         </Form>
                                     </div>
                                 }
+                                {currentStep == index && error &&
+                                    <div className='space-y-2'>
+                                        {errorMsg?.map((res) =>
+                                            <p className='text-red-500'>{res}</p>)}
+                                    </div>
 
+                                }
                                 {
                                     currentStep == index &&
                                     <div className='pt-[20px] w-full'>
@@ -153,7 +211,7 @@ export default function UserResetPassword() {
                                         </Button>
                                     </div>
                                 }
-                            </>
+                            </div>
                         ))}
                     </div>
                 </div>

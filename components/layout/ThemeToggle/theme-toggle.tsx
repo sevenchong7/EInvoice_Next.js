@@ -12,8 +12,16 @@ import {
 import { useTranslations } from 'next-intl';
 type CompProps = {};
 export default function ThemeToggle({ }: CompProps) {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const t = useTranslations()
+
+  const HandleTheme = (selectTheme: string) => {
+    setTheme(selectTheme)
+    localStorage.setItem('theme', selectTheme)
+
+    console.log('[ThemeToggle] HandleTheme = ', selectTheme)
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,13 +32,13 @@ export default function ThemeToggle({ }: CompProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+        <DropdownMenuItem onClick={() => HandleTheme('light')}>
           {t('TAG_LIGHT')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem onClick={() => HandleTheme('dark')}>
           {t('TAG_DARK')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem onClick={() => HandleTheme('system')}>
           {t('TAG_SYSTEM')}
         </DropdownMenuItem>
       </DropdownMenuContent>

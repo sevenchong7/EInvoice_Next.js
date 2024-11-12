@@ -9,7 +9,7 @@ import { RoleClient } from "../tables/role-tables/client";
 export default function RoleContent({ roleData }: { roleData: any }) {
     const t = useTranslations()
     const breadcrumbItems = [
-        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_USER'), link: '' },
         { title: t('TAG_ROLE_LISTING'), link: '/dashboard/user/roleListing' }
     ];
     const [roleList, setRoleList] = useState<Role[]>([])

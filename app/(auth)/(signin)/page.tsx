@@ -17,9 +17,13 @@ export default function AuthenticationPage() {
           <Image
             src={img}
             alt='bg-img'
-            layout="fill"
-            objectFit="fill"
-            objectPosition="center" />
+            fill
+            sizes='100%'
+            priority={true}
+          // layout="fill"
+          // objectFit="fill"
+          // objectPosition="center"
+          />
         </div>
       </div>
 

@@ -44,13 +44,17 @@ import { useToast } from '@/components/ui/use-toast';
 interface ProfileFormType {
   initialData: any | null;
   categories: any;
-  packageData: any
+  packageData: any;
+  paymentMethodData: any;
+  subscribeDurationData: any;
 }
 
 export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   initialData,
   categories,
-  packageData
+  packageData,
+  paymentMethodData,
+  subscribeDurationData
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -63,7 +67,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   const toastMessage = initialData ? 'Product updated.' : 'Product created.';
   const action = initialData ? 'Save changes' : 'Create';
   const [previousStep, setPreviousStep] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(3);
   const [data, setData] = useState({});
   const [skip, setSkip] = useState(false);
   const delta = currentStep - previousStep;
@@ -160,7 +164,9 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       "contactPrefix": data.contactPrefix,
       "contact": data.contactNo,
       "email": data.email,
-      "systemPackageId": data.package
+      "systemPackageId": data.package,
+      "subscriptionPeriod": data.subscribeDuration,
+
     }
     const registerData = register(createNewMerchantParam)
 
@@ -201,8 +207,6 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       const imageData = await uploadImages(imgUrlData)
 
     }
-
-
 
     // const imgUrlData = form.getValues('payment')
     //   .map((payData, payIndex) => {
@@ -287,8 +291,6 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       return;
     }
 
-
-
     const fields = steps[currentStep].fields;
 
     const output = await form.trigger(fields as FieldName[], {
@@ -312,13 +314,15 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       return
     }
 
-    if (currentStep === steps.length - 2) {
-      await form.handleSubmit(processForm)();
-    }
 
-    if (currentStep < steps.length - 2) {
+
+    if (currentStep < steps.length - 1) {
 
       setPreviousStep(currentStep);
+      if (currentStep === steps.length - 2) {
+        await form.handleSubmit(processForm)();
+        return
+      }
       setCurrentStep((step) => step + 1);
     }
 
@@ -411,12 +415,12 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
                 }
                 {
                   currentStep === 2 && (
-                    <RegisterUserStep3Admin form={form} packageData={packageData} />
+                    <RegisterUserStep3Admin form={form} packageData={packageData} subscribeDurationData={subscribeDurationData} />
                   )
                 }
                 {
                   currentStep === 3 && (
-                    <RegisterUserStep4Admin form={form} />
+                    <RegisterUserStep4Admin form={form} paymentMethodData={paymentMethodData} />
                   )
                 }
                 {

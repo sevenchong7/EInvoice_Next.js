@@ -34,6 +34,8 @@ export const addRole = async (body: any) => {
 export const register = async (body: any) => {
     const response = await post("/v1/user/register", body);
 
+    console.log('response data = ', response.data)
+
     return response;
 }
 
@@ -130,6 +132,8 @@ export const getSubscription = async () => {
 export const getRegisterPackage = async () => {
     const response = await get('/v1/role/reg/subscriptions');
 
+    console.log('getRegisterPackage = ', response.data)
+
     return response.data;
 }
 
@@ -198,11 +202,66 @@ export const getLanguage = async () => {
 
 export const putPackageUpdate = async (body: any) => {
     const headers = await getHeaders();
-    const response = await put('/v1/role/package', headers, body);
+    const response = await put('/v1/role/package', body, headers);
+
+    console.log('response', response)
+
+    return response;
+}
+
+export const putUnsubscribe = async (body?: any) => {
+    const headers = await getHeaders();
+    const response = await put('/v1/role/unsubscribe', body, headers);
+
+    return response;
+}
+
+export const putPasswordReset = async (id: any, body: any) => {
+    const response = await put(`/v1/user/forget-password/${id}`, body);
+
+    return response;
+}
+
+export const getVerifyLoginId = async (id: any) => {
+    const response = await get(`/v1/user/verify-loginId?${id}`);
+
+    console.log('getVerifyLoginId = ', response)
+
+    return response;
+}
+
+export const getPayment = async (id: any) => {
+    const response = await get(`/v1/payments/${id}`)
+
+    return response;
+}
+
+export const putActiveAccount = async (id: any, body?: any) => {
+    const response = await put(`/v1/user/active-account/${id}`, body);
+
+    return response;
+}
+
+export const getMultiPayment = async () => {
+    const headers = await getHeaders();
+    const response = await get('/v1/payments/multiPayment', headers);
+
+    return response;
+}
+
+export const getEwalletBalance = async (id: any) => {
+    const headers = await getHeaders();
+    const response = await get(`/v1/ewallet/balance/${id}`, headers);
 
     return response.data;
 }
 
+export const getPackageInfo = async (packageId: any) => {
+    const headers = await getHeaders();
+    const response = await get(`/v1/role/package/info/${packageId}`, headers);
+
+    return response.data;
+}
 
 const getHeaders = async () => {
     const session = await auth();

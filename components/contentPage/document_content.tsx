@@ -7,7 +7,7 @@ import { DocumentForm } from "../forms/document-form/document-form";
 export default function DocumentContent() {
     const t = useTranslations()
     const breadcrumbItems = [
-        { title: t('TAG_DOCUMENT'), link: '/dashboard/document' },
+        { title: t('TAG_DOCUMENT'), link: '' },
         { title: t('TAG_CREATE_DOCUMENT'), link: '/dashboard/document/createDocument' }
     ];
     return (

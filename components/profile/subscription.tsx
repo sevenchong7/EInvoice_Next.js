@@ -1,6 +1,6 @@
 'use client';
 import { useStore } from "@/action/action";
-import { companys, MerchantInfo, SubscriptionInfo } from "@/constants/data";
+import { SubscriptionInfo } from "@/constants/data";
 import { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
 import { Heading } from "../ui/heading";
@@ -11,8 +11,10 @@ import { useRouter } from "next/navigation";
 import { CustomeModal } from "../modal/custome-modal";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
+import { getMerchantInfo, getSubscription, putUnsubscribe } from "@/lib/services/userService";
 import { ConfirmButton } from "../ui/confirmButton";
+import { useToast } from "../ui/use-toast";
+import { useTaskStore } from "@/lib/store";
 
 export default function Subscriptions() {
     const router = useRouter()
@@ -24,6 +26,8 @@ export default function Subscriptions() {
     const [selectSubscription, setSelectSubscription] = useState<number>();
     // const [merchantInfo, setMerchantInfo] = useState<MerchantInfo>()
     const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>();
+    const { toast } = useToast()
+    const setSelectedPackage = useTaskStore((state) => state.setPackage)
 
     // const GetMerchantInfo = () => {
     //     return getMerchantInfo()
@@ -42,9 +46,19 @@ export default function Subscriptions() {
     //     setCompany(companys)
     // }, [])
 
-    const HandleUnsubscribe = () => {
-        updateSubscription(undefined)
-        router.push('/dashboard/profile/subscription/information')
+    const HandleUnsubscribe = async () => {
+        putUnsubscribe().then((res) => {
+            if (res.status) {
+                updateSubscription(undefined)
+                router.push('/dashboard/profile/subscription/information')
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: 'Error',
+                    description: 'Please contact the developer.'
+                })
+            }
+        })
     }
 
     const HandleSubscribe = (sub: number) => {
@@ -57,7 +71,8 @@ export default function Subscriptions() {
     }
 
     const HandleSubscriptionMadal = () => {
-        router.push(`/dashboard/profile/subscription/payment?sub=${selectSubscription}`)
+        setSelectedPackage(selectSubscription!)
+        router.push(`/dashboard/profile/subscription/payment`)
     }
 
     return (
@@ -200,7 +215,10 @@ export default function Subscriptions() {
                                         }
                                     </div>
                                     <div className="flex justify-end py-2">
-                                        <Button className="bg-blue-900 hover:bg-blue-700 dark:text-white" onClick={() => HandleSubscribe(res.PackageIdentifier)}>{t('TAG_SUBSCRIBE')}</Button>
+                                        {
+                                            res.PackageIdentifier > subscriptionInfo.currentPackageId &&
+                                            <Button className="bg-blue-900 hover:bg-blue-700 dark:text-white" onClick={() => HandleSubscribe(res.PackageIdentifier)}>{t('TAG_SUBSCRIBE')}</Button>
+                                        }
                                     </div>
                                 </div>
                             </div>

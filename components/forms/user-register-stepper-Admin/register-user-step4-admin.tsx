@@ -42,13 +42,17 @@ import React from "react";
 export default function RegisterUserStep4Admin(
     {
         form,
+        paymentMethodData
     }: {
+        paymentMethodData: any
         form: UseFormReturn<RegisterUserAdminFormValues>;
     }) {
 
     const [loading, setLoading] = useState(false);
     const t = useTranslations()
     const [selectedImage, setSelectedImage] = useState<File[][] | undefined>([]);
+
+
 
     // const handleImageUpload = async (event) => {
     //     const file = event.target.files[0];

@@ -67,7 +67,7 @@ export async function get(url: string, headers?: {}) {
     const response = await fetch(API_BASE_URL + url, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
+            'Accept': 'application/json',
             ...headers,
         },
     });
@@ -84,7 +84,6 @@ export async function get(url: string, headers?: {}) {
     const rawResponse = decryptAES(encryptredResponse, secretkey);
     // console.log("rawResponse ", rawResponse)
     console.log("[API response] " + url, JSON.parse(rawResponse));
-
 
     return JSON.parse(rawResponse);
 }
@@ -127,7 +126,7 @@ export async function post(url: string, body: any, headers?: {}) {
 // Helper for PUT requests (with body)
 export async function put(url: string, body: any, headers?: {}) {
     // console.log("access_token ", access_token)
-    console.log("headers ", headers)
+    console.log("put headers ", headers)
 
 
     console.log(`[API PUT] ${API_BASE_URL + url} ${JSON.stringify(body)}`)
@@ -156,6 +155,14 @@ export async function put(url: string, body: any, headers?: {}) {
 
     return JSON.parse(rawResponse);
 }
+
+
+
+
+
+
+
+
 
 // Helper for POST requests (with body)
 export async function upload(url: string, body: any, headers?: {}) {

@@ -6,6 +6,7 @@ import unSubImage from '@/public/unSubInfobg.png';
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { ConfirmButton } from "../ui/confirmButton";
 
 export default function UnsubscribeInformation() {
     const router = useRouter();
@@ -26,7 +27,7 @@ export default function UnsubscribeInformation() {
                         <p className="whitespace-pre-wrap">
                             {t('TAG_SUCCESSFULLY_UNSUBSCRIBE_DESC')}
                         </p>
-                        <Button onClick={() => router.push('/dashboard')} className="bg-blue-900 hover:bg-blue-700">{t('TAG_BACK_TO_HOME')}</Button>
+                        <ConfirmButton onClick={() => router.push('/dashboard')} className="bg-blue-900 hover:bg-blue-700">{t('TAG_BACK_TO_HOME')}</ConfirmButton>
                     </div>
                 </div>
             </div>

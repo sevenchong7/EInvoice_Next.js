@@ -297,5 +297,7 @@
     "TAG_CONTACT_PREFIX": "Contact Prefix",
     "TAG_SUBSCRIPTION_LIST": "Subscription List",
     "TAG_MANAGE_SUBSCRIPTION_LIST": "Manage Subscription List",
+    "TAG_PAYMENT_FAIL": "Payment Fail",
+    "TAG_PAYMENT_FAIL_DESC": "Payment Fail",
     "": ""
 }

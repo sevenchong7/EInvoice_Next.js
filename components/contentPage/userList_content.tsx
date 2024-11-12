@@ -15,7 +15,7 @@ export default function UserListContent(data: any) {
     }, [data])
 
     const breadcrumbItems = [
-        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_USER'), link: '' },
         { title: t('TAG_USER_LISTING'), link: '/dashboard/user/userListing' }
     ];
 

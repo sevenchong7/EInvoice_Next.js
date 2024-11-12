@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl';
 export default function AddNewUserContent() {
     const t = useTranslations()
     const breadcrumbItems = [
-        { title: t('TAG_USER'), link: '/dashboard/user' },
+        { title: t('TAG_USER'), link: '' },
         { title: t('TAG_USER_LISTING'), link: '/dashboard/user/userListing' },
         { title: t('TAG_ADD_USER'), link: '/dashboard/user/userListing/addUser' }
     ];

@@ -8,15 +8,23 @@ import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
 
-export default function RegisterUserStep3({ form, packageData }: { form: UseFormReturn<RegisterFormValues>, packageData: any }) {
+export default function RegisterUserStep3({ form, packageData, selectDuration, subscriptionDurationLisstData }: { form: UseFormReturn<RegisterFormValues>, packageData: any, selectDuration: any, subscriptionDurationLisstData: any }) {
     const [packageListData, setPackageListData] = useState<any>()
+    // const [subscriptionDurationListData, setSubscriptionDurationListData] = useState<any>()
     const [selectPackage, setSelectPackage] = useState<number>();
+
     useEffect(() => {
-        setSelectPackage(form.getValues('package'));
+        if (form.getValues('package') !== null && form.getValues('package') !== undefined) {
+            setSelectPackage(form.getValues('package'));
+        }
     }, [])
 
     useEffect(() => {
         setPackageListData(packageData)
+        // setSubscriptionDurationListData(subscriptionDurationData)
+        console.log('packageData = ', packageData)
+        // console.log('subscriptionDurationData = ', subscriptionDurationData)
+
     }, [packageData])
 
     const HandlePackageSelect = (selection: number) => {
@@ -24,19 +32,19 @@ export default function RegisterUserStep3({ form, packageData }: { form: UseForm
         form.setValue("package", selection)
     }
 
-    const PackageSelection = ({ id, title, price, content, onClick }: { id: number, title: string, price: string, content: any, onClick: () => void }) => {
+    const PackageSelection = ({ data, selectDuration, onClick }: { data: any, selectDuration: any, onClick: () => void }) => {
         return (
             <>
-                <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${id == selectPackage && "ring-2 ring-blue-800"} `}>
+                <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${data.PackageIdentifier == selectPackage && "ring-2 ring-blue-800"} `}>
                     <div className="min-h-[480px] w-[250px] flex-auto flex flex-col justify-between">
                         <div className="p-[10px]">
                             <div className="flex flex-col items-center justify-center pt-[10px]">
-                                <h1 className="text-2xl">{title}</h1>
-                                <h1 className="text-2xl font-medium pt-[20px]">RM {price}</h1>
-                                <p className="mt-[5px]">per package/month</p>
+                                <h1 className="text-2xl">{data.PackageName}</h1>
+                                <h1 className="text-2xl font-medium pt-[20px]">RM {data.pricingList[selectDuration] ?? 0}</h1>
+                                <p className="mt-[5px]">per package/{subscriptionDurationLisstData.map((res: any) => (res.subscriptionPeriodCode === selectDuration && res.durationInMonths))} month</p>
                             </div>
                             <div className="grid grid-cols-3">
-                                {content.map((data: any, index: number) => (
+                                {data.Descriptions.map((data: any, index: number) => (
                                     <div key={index} className="flex items-center col-span-3 pt-[20px]">
                                         <div className="mr-[5px] min-w-[30px]">
                                             <Image src={tick} alt="tick" height={30} width={30} />
@@ -49,7 +57,7 @@ export default function RegisterUserStep3({ form, packageData }: { form: UseForm
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center pb-[20px]">
-                            <Button className={`rounded-lg bg-gray-400 hover:bg-blue-900 px-[20px] py-[5px] text-white ${id == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
+                            <Button className={`rounded-lg bg-gray-400 hover:bg-blue-900 px-[20px] py-[5px] text-white ${data.PackageIdentifier == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
                         </div>
                     </div>
                 </div>
@@ -59,18 +67,18 @@ export default function RegisterUserStep3({ form, packageData }: { form: UseForm
     }
 
     return (
-        <>
+        <div className="flex flex-col h-full overscroll-y-auto">
             <FormField
                 name='package'
                 control={form.control}
                 render={({ field }) => (
                     <FormItem>
                         <FormControl>
-                            <div className="flex flex-row justify-evenly w-full grid-col-none ">
+                            <div className="lg:flex lg:flex-row lg:justify-evenly lg:w-full grid-col-none">
                                 {
                                     packageListData?.packageList.map((res: any, index: number) => {
                                         return <div key={index}>
-                                            <PackageSelection id={res.PackageIdentifier} title={res.PackageName} price={res.PackagePrice} content={res.Descriptions} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                            <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
                                         </div>
                                     })
                                 }
@@ -90,6 +98,6 @@ export default function RegisterUserStep3({ form, packageData }: { form: UseForm
                     </FormItem>
                 )}
             />
-        </>
+        </div>
     )
 }

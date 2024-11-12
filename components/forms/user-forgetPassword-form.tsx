@@ -118,7 +118,7 @@ export default function UserForgetPassword() {
                                                         <FormItem>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="email"
+                                                                    // type="email"
                                                                     disabled={loading}
                                                                     {...field}
                                                                     placeholder='Email Address*'

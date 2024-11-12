@@ -56,7 +56,7 @@ export default auth(async (req) => {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|auth/|access-denied|permission-denied|register|forgetPassword|resetPassword|not-found|$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|auth/|access-denied|permission-denied|register|forgetPassword|resetPassword|activeAccount|close|not-found|$).*)",
   ]
 };
 

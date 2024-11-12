@@ -56,8 +56,9 @@ export const registerSchema = z.object({
   country: z.string().trim().optional(),
   contactPrefix: z.string().trim().optional(),
   contactNo: z.string().trim().optional(),
-  package: z.coerce.number().min(1, { message: 'Please select one Package!' }),
-  paymentMethod: z.string().optional()
+  package: z.coerce.number().gt(0, { message: 'Please select one Package!' }),
+  paymentMethod: z.coerce.number().optional(),
+  subscribeDuration: z.string().trim().optional(),
 }).refine((data) => {
   return data.password === data.confirmPw;
 }, {
@@ -78,7 +79,8 @@ export const registerSchema = z.object({
 export type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export const forgetPasswordSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address !' })
+  email: z.string()
+  // .email({ message: 'Please enter a valid email address !' })
 })
 
 export type ForgetPasswordValues = z.infer<typeof forgetPasswordSchema>;
@@ -130,6 +132,7 @@ export const registerUserAdminSchema = z.object({
   contactPrefix: z.string().trim().optional(),
   contactNo: z.string().trim().optional(),
   package: z.coerce.number().min(1, { message: "Please Select a package !" }),
+  subscribeDuration: z.string().trim().optional(),
   payment: z.array(
     z.object({
       paymentMethod: z.string().optional(),

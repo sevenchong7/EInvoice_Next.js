@@ -7,12 +7,16 @@ import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-sche
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 
-export default function RegisterUserStep3Admin({ form, packageData }: { form: UseFormReturn<RegisterUserAdminFormValues>, packageData: any }) {
+
+export default function RegisterUserStep3Admin({ form, packageData, subscribeDurationData }: { form: UseFormReturn<RegisterUserAdminFormValues>, packageData: any, subscribeDurationData: any }) {
     const t = useTranslations()
 
     const [selectPackage, setSelectPackage] = useState<number>();
     const [packageListData, setPackageListData] = useState<any>()
+    const [subscribeDurationListData, setSubscribeDurationListData] = useState<any>()
+    const [selectDuration, setSelectDuration] = useState<any>('M3')
 
 
     useEffect(() => {
@@ -21,11 +25,27 @@ export default function RegisterUserStep3Admin({ form, packageData }: { form: Us
 
     useEffect(() => {
         setPackageListData(packageData)
-    }, [packageData])
+        setSubscribeDurationListData(subscribeDurationData)
+    }, [packageData, subscribeDurationData])
+
+    useEffect(() => {
+        if (form.getValues('subscribeDuration') !== null && form.getValues('subscribeDuration') !== undefined) {
+            setSelectDuration(form.getValues('subscribeDuration'))
+        }
+    }, [])
+
+    useEffect(() => {
+        form.setValue('subscribeDuration', selectDuration)
+    }, [selectDuration])
 
     const HandlePackageSelect = (selection: number) => {
         setSelectPackage(selection)
         form.setValue("package", selection)
+    }
+
+    const HandleSelectSubDuration = (data: any) => {
+        form.setValue('subscribeDuration', data)
+        setSelectDuration(data)
     }
 
     const PackageSelection = ({ id, title, price, content, onClick }: { id: number, title: string, price: string, content: any, onClick: () => void }) => {
@@ -64,6 +84,20 @@ export default function RegisterUserStep3Admin({ form, packageData }: { form: Us
 
     return (
         <>
+            <div>
+                <h1>Package Duration</h1>
+                {
+                    <Tabs value={selectDuration} onValueChange={(value) => { HandleSelectSubDuration(value) }}>
+                        <TabsList>
+                            {
+                                subscribeDurationListData?.map((res: any, index: number) => (
+                                    <TabsTrigger key={index} value={res.subscriptionPeriodCode}>{res.subscriptionPeriodMsgTag}</TabsTrigger>
+                                ))
+                            }
+                        </TabsList>
+                    </Tabs>
+                }
+            </div>
             <FormField
                 name='package'
                 control={form.control}
@@ -78,15 +112,6 @@ export default function RegisterUserStep3Admin({ form, packageData }: { form: Us
                                         </div>
                                     })
                                 }
-                                {/* <div className='col-span-1 mr-[20px]'>
-                                    <PackageSelection id='1' title='test' price='test' content={['test', 'test', 'test', 'test', 'test']} onClick={() => HandlePackageSelect("1")} selectPackage={selectPackage} />
-                                </div>
-                                <div className='col-span-1 mr-[20px]'>
-                                    <PackageSelection id='2' title='test' price='test' content={['test test test test test test test test']} onClick={() => HandlePackageSelect("2")} selectPackage={selectPackage} />
-                                </div>
-                                <div className='col-span-1 mr-[20px]'>
-                                    <PackageSelection id='3' title='test' price='test' content={['test']} onClick={() => HandlePackageSelect("3")} selectPackage={selectPackage} />
-                                </div> */}
                             </div>
                         </FormControl>
                         <div className='flex item-center justify-center pt-[20px]'>

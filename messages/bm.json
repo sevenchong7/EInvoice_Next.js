@@ -297,5 +297,7 @@
     "TAG_CONTACT_PREFIX": "Awalan Kenalan",
     "TAG_SUBSCRIPTION_LIST": "Senarai Langganan",
     "TAG_MANAGE_SUBSCRIPTION_LIST": "Urus Senarai Langganan",
+    "TAG_PAYMENT_FAIL": "Tidak Berjaya Melanggan",
+    "TAG_PAYMENT_FAIL_DESC": "Tidak Berjaya Melanggan",
     "": ""
 }

@@ -22,6 +22,7 @@ import { PasswordInput } from '../ui/passwordInput';
 import { useToast } from '../ui/use-toast';
 import { login } from '@/action/auth';
 import React from 'react';
+import { useTheme } from 'next-themes';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Please enter the Username' }),
@@ -37,6 +38,7 @@ export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const { toast } = useToast();
+  const { setTheme } = useTheme();
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     username: '',
@@ -51,7 +53,6 @@ export default function UserAuthForm() {
     const storedRmbMe = localStorage.getItem('rmbMe');
     const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null;
     console.log('[checkRemeberMe] rememberMe= ', rememberMe)
-    // if (session != undefined || session != null) {
     if (rememberMe === true) {
       const storeSession = localStorage.getItem('session')
       const sessionData = storeSession ? JSON.parse(storeSession) : null
@@ -65,7 +66,8 @@ export default function UserAuthForm() {
           localStorage.removeItem('username')
           localStorage.removeItem('rmbMe')
           localStorage.removeItem('session')
-          // router.replace('/')
+          localStorage.removeItem('theme')
+          setTheme('light')
         } else if (currentDate < compareDate) {
           const sessionUpdate = update({
             loginId: username,
@@ -87,18 +89,16 @@ export default function UserAuthForm() {
         localStorage.removeItem('username')
         localStorage.removeItem('rmbMe')
         localStorage.removeItem('session')
+        localStorage.removeItem('theme')
+        setTheme('light')
       }
     } else {
       localStorage.removeItem('username')
       localStorage.removeItem('rmbMe')
       localStorage.removeItem('session')
-      // router.replace('/')
+      localStorage.removeItem('theme')
+      setTheme('light')
     }
-    // } else {
-    //   localStorage.removeItem('username')
-    //   localStorage.removeItem('rmbMe')
-    //   localStorage.removeItem('session')
-    // }
   }
 
   useEffect(() => {
@@ -131,20 +131,10 @@ export default function UserAuthForm() {
 
         localStorage.setItem('rmbMe', JSON.stringify(rememberMe))
         localStorage.setItem('username', username)
-        // localStorage.setItem('session', JSON.stringify(session))
       }
-      //  else {
-      //   localStorage.removeItem('username')
-      //   localStorage.removeItem('rmbMe')
-      //   localStorage.removeItem('session')
-      // }
-      // window.history.pushState(null, '', window.location.href);
-      // window.history.replaceState(null, '', '/dashboard');
-
       router.replace('/dashboard');
 
     }
-
 
     // toast({
     //   variant: 'destructive',
@@ -152,8 +142,6 @@ export default function UserAuthForm() {
     //   description: 'There was a problem with your request.'
     // });
   };
-
-
 
   return (
     <>
