@@ -13,6 +13,7 @@ import Image from 'next/image';
 import Required from "../ui/required";
 import { useTranslations } from "next-intl";
 import { updatePassword } from "@/lib/services/userService";
+import { PasswordInput } from "../ui/passwordInput";
 
 export default function UpdatePassword() {
     const [data, setData] = useState({});
@@ -89,7 +90,7 @@ export default function UpdatePassword() {
                                                     <FormItem>
                                                         <FormLabel>{t('TAG_CURRENT_PASSWORD')} <Required /></FormLabel>
                                                         <FormControl>
-                                                            <Input
+                                                            <PasswordInput
                                                                 // disabled={loading}
                                                                 // placeholder="johndoe@gmail.com"
                                                                 {...field}
@@ -106,7 +107,7 @@ export default function UpdatePassword() {
                                                     <FormItem>
                                                         <FormLabel>{t('TAG_NEW_PASSWORD')} </FormLabel>
                                                         <FormControl>
-                                                            <Input
+                                                            <PasswordInput
                                                                 // disabled={loading}
                                                                 // placeholder="johndoe@gmail.com"
                                                                 {...field}
@@ -123,7 +124,7 @@ export default function UpdatePassword() {
                                                     <FormItem>
                                                         <FormLabel>{t('TAG_CONFIRM_PASSWORD')} </FormLabel>
                                                         <FormControl>
-                                                            <Input
+                                                            <PasswordInput
                                                                 // disabled={loading}
                                                                 // placeholder="johndoe@gmail.com"
                                                                 {...field}

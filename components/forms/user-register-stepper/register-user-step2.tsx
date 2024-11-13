@@ -46,7 +46,7 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                                 <Input
                                     disabled={loading}
                                     {...field}
-                                    placeholder='Street Address*'
+                                    placeholder='Street Address'
                                 />
                             </FormControl>
                             <FormMessage />
@@ -86,7 +86,7 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                                     <Input
                                         disabled={loading}
                                         {...field}
-                                        placeholder='Zip Code *'
+                                        placeholder='Zip Code'
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -105,7 +105,7 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                                     <Input
                                         disabled={loading}
                                         {...field}
-                                        placeholder='Town / City *'
+                                        placeholder='Town / City'
                                     />
                                 </FormControl>
                                 <FormMessage />

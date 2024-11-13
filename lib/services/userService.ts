@@ -105,6 +105,8 @@ export const getMerchantList = async () => {
     const headers = await getHeaders();
     const response = await get("/v1/merchant/list", headers);
 
+    console.log('getMerchantList  = ', response)
+
     return response.data;
 }
 
@@ -190,6 +192,7 @@ export const postUploadAdmin = async (body: any) => {
     const response = await upload('/v1/upload/admin', body, headers);
 
     console.log('postUploadAdmin body = ', body)
+    console.log('response = ', response)
     return response;
 }
 
@@ -263,18 +266,32 @@ export const getPackageInfo = async (packageId: any) => {
     return response.data;
 }
 
+export const getPaymentMethodType = async () => {
+    const headers = await getHeaders();
+    const response = await get('/v1/payment-methods/reg', headers);
+
+    return response.data
+}
+
+export const postCreateMerchant = async (body: any) => {
+    const headers = await getHeaders();
+    const response = await post('/v1/user/register/merchant', body, headers)
+
+    return response
+}
+
 const getHeaders = async () => {
     const session = await auth();
 
-    if (!session) {
-        redirect('/')
-    }
-    const currentDate = new Date()
-    const refreshDate = new Date(session.user.refreshTokenExpiry)
+    // if (!session) {
+    //     redirect('/')
+    // }
+    // const currentDate = new Date()
+    // const refreshDate = new Date(session.user.refreshTokenExpiry)
 
-    if (currentDate > refreshDate) {
-        redirect('/')
-    }
+    // if (currentDate > refreshDate) {
+    //     redirect('/')
+    // }
 
     const headers = {
         'Authorization': session?.user.accessToken ? "Bearer " + session.user.accessToken : "",

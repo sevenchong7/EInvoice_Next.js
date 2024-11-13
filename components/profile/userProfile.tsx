@@ -22,11 +22,12 @@ import { useRouter } from "next/navigation";
 import Required from "../ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
+import { editMerchantInfo, getMerchantInfo, getSubscription } from "@/lib/services/userService";
 import { CountryList, MerchantInfo, StateList, SubscriptionInfo } from "@/constants/data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from "../ui/scroll-area";
 import { ConfirmButton } from "../ui/confirmButton";
+import { useSession } from "next-auth/react";
 
 export default function UserProfile({ subscriptionData, merchantInfoData, countryData }: { subscriptionData: any, merchantInfoData: any, countryData: any }) {
     const t = useTranslations()
@@ -322,6 +323,8 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
     const [contact, setContact] = useState(merchantInfoData?.contact);
     const [contactPrefix, setContactPrefix] = useState(merchantInfoData?.contactPrefix)
     const [stateList, setStateList] = useState<StateList[]>()
+    const session = useSession()
+    const router = useRouter()
 
     const t = useTranslations();
 
@@ -354,7 +357,7 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
         }
     }, [openSheet])
 
-    const HandleEditProfile = () => {
+    const HandleEditProfile = async () => {
         const editProfileParam = {
             "companyName": companyName,
             "companyEmail": email,
@@ -369,6 +372,10 @@ const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInf
             "country": country,
             "contactPrefix": '',
             "contact": contact
+        }
+        const editInfo = await editMerchantInfo(session.data?.user.merchantId, editProfileParam)
+        if (editInfo.status) {
+            router.refresh()
         }
     }
 

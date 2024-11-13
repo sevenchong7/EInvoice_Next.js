@@ -10,7 +10,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['52.187.55.33']
+    domains: ['52.187.55.33', 'webipdisk.blob.core.windows.net'],
   }
 };
 

@@ -1,5 +1,6 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/passwordInput";
 import { RegisterFormValues, RegisterUserAdminFormValues } from "@/lib/form-schema";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -115,7 +116,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                         <FormItem>
                             <FormLabel>{t('TAG_PASSWORD')}</FormLabel>
                             <FormControl>
-                                <Input
+                                <PasswordInput
                                     disabled={loading}
                                     {...field}
                                 />
@@ -133,7 +134,7 @@ export default function RegisterUserStep1Admin({ form }: { form: UseFormReturn<R
                         <FormItem>
                             <FormLabel>{t('TAG_CONFIRMATION_PASSWORD')}</FormLabel>
                             <FormControl>
-                                <Input
+                                <PasswordInput
                                     disabled={loading}
                                     {...field}
                                 />

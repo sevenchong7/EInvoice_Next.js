@@ -9,7 +9,7 @@
     "TAG_SITE_LANGUAGE": "Site Language",
     "TAG_OVERVIEW": "Overview",
     "TAG_PROFILE": "Profile",
-    "TAG_UPDATE_PASSWORD": "Update Password",
+    "TAG_UPDATE_PASSWORD": "Change Password",
     "TAG_SETTINGS": "Settings",
     "TAG_LOGOUT": "Log out",
     "TAG_DASHBOARD": "Dashboard",
@@ -106,7 +106,7 @@
     "TAG_CONFIRMATION": "Confirmation",
     "TAG_CONFIRMATION_MODAL_DESC": "You are about to update your account setting.\n Please review the changes carefully.\n Would you like to confirm this update.",
     "TAG_ROLE_INFORMATION": "Role Information",
-    "TAG_CREATE_NEW_PASSWORD": "Create a New Password",
+    "TAG_CREATE_NEW_PASSWORD": "Change Password",
     "TAG_CURRENT_PASSWORD": "Current Password",
     "TAG_NEW_PASSWORD": "New Password",
     "TAG_CONFIRM_PASSWORD": "Confirm Password",
@@ -299,5 +299,6 @@
     "TAG_MANAGE_SUBSCRIPTION_LIST": "Manage Subscription List",
     "TAG_PAYMENT_FAIL": "Payment Fail",
     "TAG_PAYMENT_FAIL_DESC": "Payment Fail",
+    "TAG_PDF": "PDF",
     "": ""
 }

@@ -85,7 +85,7 @@ export default function DocumentDownload() {
                                     {/* Button */}
                                     <div className="w-full flex flex-col justify-start">
                                         <ConfirmButton onClick={() => HandleDownload()} className="w-full bg-blue-800 hover:bg-blue-600">
-                                            {t('TAG_CONFIRM')}
+                                            {t('TAG_PDF')}
                                         </ConfirmButton>
                                     </div>
                                 </div>

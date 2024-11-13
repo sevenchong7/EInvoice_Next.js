@@ -35,7 +35,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
     const [data, setData] = useState({});
     const router = useRouter();
     const { toast } = useToast();
-    const [subscriptionDurationLisstData, setSubscriptionDurationListData] = useState<any>()
+    const [subscriptionDurationListData, setSubscriptionDurationListData] = useState<any>()
     const [selectDuration, setSelectDuration] = useState<any>('M3')
     const [loading, setLoading] = useState(false);
     const [subId, setSubId] = useState<any>()
@@ -151,24 +151,28 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
 
         const registerData = await register(registerParam)
         if (registerData.status === true) {
-            const lastIndex = registerData.data[registerData.data.length - 1]
-            console.log('last Index = ', lastIndex)
-            setLoading(true);
-            const paymentGatewayResponse = lastIndex.urlOrFormHtmlResult;
-            const resSubId = lastIndex.subscriptionId
-            console.log('registerData = ', registerData)
-            console.log('url =', paymentGatewayResponse)
-            console.log('subId =', lastIndex.subscriptionId)
-            // Check if the response contains the expected data
-            if (paymentGatewayResponse) {
-                const url = paymentGatewayResponse;// Access the URL in the first item of the array
-                console.log('URL to open:', url);
-                window.open(url, '_blank'); // Opens the URL in a new tab
-                setSubId(resSubId)
-
-                setCheckPaymentLoading(true)
+            if (form.getValues('package') == 1) {
+                setCurrentStep(currentStep + 1)
             } else {
-                console.error('URL not found in the response');
+                const lastIndex = registerData.data[registerData.data.length - 1]
+                console.log('last Index = ', lastIndex)
+                setLoading(true);
+                const paymentGatewayResponse = lastIndex.urlOrFormHtmlResult;
+                const resSubId = lastIndex.subscriptionId
+                console.log('registerData = ', registerData)
+                console.log('url =', paymentGatewayResponse)
+                console.log('subId =', lastIndex.subscriptionId)
+                // Check if the response contains the expected data
+                if (paymentGatewayResponse) {
+                    const url = paymentGatewayResponse;// Access the URL in the first item of the array
+                    console.log('URL to open:', url);
+                    window.open(url, '_blank'); // Opens the URL in a new tab
+                    setSubId(resSubId)
+
+                    setCheckPaymentLoading(true)
+                } else {
+                    console.error('URL not found in the response');
+                }
             }
         } else {
             toast({
@@ -307,7 +311,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                                 <h1 className='text-2xl'>
                                                     {currentStep == index && step.name}
                                                 </h1>
-                                                <p className='text-base font-light '>{currentStep == index && "Required field *"}</p>
+                                                {/* <p className='text-base font-light '>{currentStep == index && "Required field *"}</p> */}
                                             </div>
                                             {/* <div>
                                             {currentStep == index &&
@@ -329,7 +333,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                                         <Tabs value={selectDuration} onValueChange={(value) => { HandleSelectSubDuration(value) }}>
                                                             <TabsList>
                                                                 {
-                                                                    subscriptionDurationLisstData?.map((res: any, index: number) => (
+                                                                    subscriptionDurationListData?.map((res: any, index: number) => (
                                                                         <TabsTrigger key={index} value={res.subscriptionPeriodCode}>{res.subscriptionPeriodMsgTag}</TabsTrigger>
                                                                     ))
                                                                 }
@@ -366,11 +370,11 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                         }
                                         {
                                             currentStep == 2 &&
-                                            <RegisterUserStep3 form={form} packageData={packageData} selectDuration={selectDuration} subscriptionDurationLisstData={subscriptionDurationLisstData} />
+                                            <RegisterUserStep3 form={form} packageData={packageData} selectDuration={selectDuration} subscriptionDurationListData={subscriptionDurationListData} />
                                         }
                                         {
                                             currentStep == 3 &&
-                                            <RegisterUserStep4 form={form} paymentMethodData={paymentMethodData} packageData={packageData} subscriptionDurationLisstData={subscriptionDurationLisstData} />
+                                            <RegisterUserStep4 form={form} paymentMethodData={paymentMethodData} packageData={packageData} subscriptionDurationLisstData={subscriptionDurationListData} />
                                         }
                                         {
                                             currentStep == 4 &&

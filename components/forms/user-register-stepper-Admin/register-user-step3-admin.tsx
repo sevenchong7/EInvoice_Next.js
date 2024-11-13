@@ -48,19 +48,19 @@ export default function RegisterUserStep3Admin({ form, packageData, subscribeDur
         setSelectDuration(data)
     }
 
-    const PackageSelection = ({ id, title, price, content, onClick }: { id: number, title: string, price: string, content: any, onClick: () => void }) => {
+    const PackageSelection = ({ data, selectDuration, onClick }: { data: any, selectDuration: any, onClick: () => void }) => {
         return (
             <>
-                <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${id == selectPackage && "ring-2 ring-blue-800"} `}>
+                <div className={`flex border rounded-md justify-center items-center w-full shadow-lg ${data.PackageIdentifier == selectPackage && "ring-2 ring-blue-800"} `}>
                     <div className="min-h-[480px] w-[250px] flex-auto flex flex-col justify-between">
                         <div className="p-[10px]">
                             <div className="flex flex-col items-center justify-center pt-[10px]">
-                                <h1 className="text-2xl">{title}</h1>
-                                <h1 className="text-2xl font-medium pt-[20px]">RM {price}</h1>
-                                <p className="mt-[5px]">per package/month</p>
+                                <h1 className="text-2xl">{data.PackageName}</h1>
+                                <h1 className="text-2xl font-medium pt-[20px]">RM {data.pricingList[selectDuration] ?? 0}</h1>
+                                <p className="mt-[5px]">per package/{subscribeDurationListData.map((res: any) => (res.subscriptionPeriodCode === selectDuration && res.durationInMonths))} month</p>
                             </div>
                             <div className="grid grid-cols-3">
-                                {content.map((data: any, index: number) => (
+                                {data.Descriptions.map((data: any, index: number) => (
                                     <div key={index} className="flex items-center col-span-3 pt-[20px]">
                                         <div className="mr-[5px] min-w-[30px]">
                                             <Image src={tick} alt="tick" height={30} width={30} />
@@ -73,7 +73,7 @@ export default function RegisterUserStep3Admin({ form, packageData, subscribeDur
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center pb-[20px]">
-                            <Button className={`rounded-lg bg-gray-400 hover:bg-blue-900 px-[20px] py-[5px] text-white ${id == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
+                            <Button className={`rounded-lg bg-gray-400 hover:bg-blue-900 px-[20px] py-[5px] text-white ${data.PackageIdentifier == selectPackage && "bg-blue-800"}`} onClick={onClick}>Subscribe</Button>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ export default function RegisterUserStep3Admin({ form, packageData, subscribeDur
 
     return (
         <>
-            <div>
+            <div className="flex justify-between items-center space-x-4 mb-4">
                 <h1>Package Duration</h1>
                 {
                     <Tabs value={selectDuration} onValueChange={(value) => { HandleSelectSubDuration(value) }}>
@@ -108,7 +108,7 @@ export default function RegisterUserStep3Admin({ form, packageData, subscribeDur
                                 {
                                     packageListData?.packageList.map((res: any, index: number) => {
                                         return <div key={index}>
-                                            <PackageSelection id={res.PackageIdentifier} title={res.PackageName} price={res.PackagePrice} content={res.Descriptions} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                            <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
                                         </div>
                                     })
                                 }

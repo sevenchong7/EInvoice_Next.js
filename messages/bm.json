@@ -9,7 +9,7 @@
     "TAG_SITE_LANGUAGE": "Bahasa Laman",
     "TAG_OVERVIEW": "Gambaran keseluruhan",
     "TAG_PROFILE": "Profil",
-    "TAG_UPDATE_PASSWORD": "Perbarui Kata Sandi",
+    "TAG_UPDATE_PASSWORD": "Tukar kata laluan",
     "TAG_SETTINGS": "Tetapan",
     "TAG_LOGOUT": "Log keluar",
     "TAG_DASHBOARD": "Papan pemuka",
@@ -299,5 +299,6 @@
     "TAG_MANAGE_SUBSCRIPTION_LIST": "Urus Senarai Langganan",
     "TAG_PAYMENT_FAIL": "Tidak Berjaya Melanggan",
     "TAG_PAYMENT_FAIL_DESC": "Tidak Berjaya Melanggan",
+    "TAG_PDF": "PDF",
     "": ""
 }

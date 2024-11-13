@@ -42,10 +42,14 @@ import React from "react";
 export default function RegisterUserStep4Admin(
     {
         form,
-        paymentMethodData
+        paymentMethodData,
+        paymentTypeData,
+        subscriptionDurationLisstData
     }: {
         paymentMethodData: any
+        paymentTypeData: any
         form: UseFormReturn<RegisterUserAdminFormValues>;
+        subscriptionDurationLisstData: any
     }) {
 
     const [loading, setLoading] = useState(false);
@@ -141,7 +145,7 @@ export default function RegisterUserStep4Admin(
     return (
         <>
             <div className="flex flex-col w-3/4 items-center justify-center mx-auto">
-                <Summary />
+                <Summary form={form} packageData={form.getValues('package')} subscriptionDurationLisstData={subscriptionDurationLisstData} />
                 {
                     form.getValues('package') !== 1 &&
                     <div className="w-full pt-[20px]">
@@ -195,13 +199,32 @@ export default function RegisterUserStep4Admin(
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>{t('TAG_PAYMENT_METHOD')} *</FormLabel>
-                                                        <FormControl>
-                                                            <Input
+                                                        <Select
+                                                            value={field.value}
+                                                            onValueChange={field.onChange}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue
+                                                                        // defaultValue={field.value}
+                                                                        placeholder="Select a Payment Type"
+                                                                    />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent className='max-h-[300px] overflow-y-scroll'>
+                                                                {paymentTypeData?.map((res: any, index: number) => (
+                                                                    <SelectItem key={index} value={res.paymentMethodCode}>
+                                                                        {res.paymentMethodDisplayName}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+
+                                                        </Select>
+                                                        {/* <Input
                                                                 type="text"
                                                                 disabled={loading}
                                                                 {...field}
-                                                            />
-                                                        </FormControl>
+                                                            /> */}
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -254,7 +277,7 @@ export default function RegisterUserStep4Admin(
                                                                 <Input
                                                                     type="file"
                                                                     disabled={loading}
-                                                                    multiple
+                                                                    // multiple
                                                                     onChange={(e) => HandleUploadImage(e, index)}
                                                                     style={{ display: 'none' }}
                                                                     className="hidden-file-input"
@@ -312,32 +335,41 @@ export default function RegisterUserStep4Admin(
     )
 }
 
-const Summary = ({ }) => {
-    const t = useTranslations()
+const Summary = ({ form, packageData, subscriptionDurationLisstData }: { form: UseFormReturn<RegisterUserAdminFormValues>, packageData: any, subscriptionDurationLisstData: any }) => {
+    console.log('subscriptionDurationLisstData = ', subscriptionDurationLisstData)
+    console.log('packageData = ', packageData)
+    console.log('subscribeDuration = ', form.getValues('subscribeDuration'))
+    console.log('package = ', form.getValues('package'))
+
+
+    const formpackage = form.getValues('package')
+    const subDuration = form.getValues('subscribeDuration')
+
     return (
         <>
+            {/* packageList */}
             <div className='border rounded-lg w-full shadow-xl'>
                 <div className='p-[20px]'>
                     <div className=' flex flex-col items-center justify-center'>
-                        <h1 className='text-2xl font-semibold'>{t('TAG_SUMMARY')}</h1>
+                        <h1 className='text-2xl font-semibold'>Summary</h1>
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
                     </div>
 
                     <div className='grid grid-cols-4 pt-[10px]'>
                         <div className='col-span-3 flex flex-col '>
-                            <h2 className='text-base'>Standard Package</h2>
-                            <p className='text-gray-400'>test</p>
+                            <h2 className='text-base'>{packageData.packageList.map((res: any) => (formpackage == res.PackageIdentifier && res.PackageName))} Package</h2>
+                            <p className='text-gray-400'>{subscriptionDurationLisstData?.map((res: any) => (res.subscriptionPeriodCode === subDuration && res.subscriptionPeriodMsgTag))}</p>
                         </div>
                         <div className='flex items-center justify-end col-span-1'>
-                            <h1>RM 100</h1>
+                            <h1>RM {packageData.packageList.map((res: any) => (formpackage == res.PackageIdentifier && res.pricingList[subDuration!]))} </h1>
                         </div>
                     </div>
 
-                    <div className=' flex flex-col items-center justify-center'>
+                    {/* <div className=' flex flex-col items-center justify-center'>
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
-                    </div>
+                    </div> */}
 
-                    <div className='grid grid-cols-4 pt-[10px]'>
+                    {/* <div className='grid grid-cols-4 pt-[10px]'>
                         <div className='col-span-3 flex flex-col '>
                             <h2 className='text-base'>Sub Total</h2>
                         </div>
@@ -350,7 +382,7 @@ const Summary = ({ }) => {
                         <div className='flex items-center justify-end col-span-1'>
                             <h1>RM 100</h1>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className=' flex flex-col items-center justify-center'>
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
@@ -361,7 +393,7 @@ const Summary = ({ }) => {
                             <h2 className='text-base'>Total</h2>
                         </div>
                         <div className='flex items-center justify-end col-span-1'>
-                            <h1>RM 100</h1>
+                            <h1>RM {packageData.packageList.map((res: any) => (formpackage == res.PackageIdentifier && res.pricingList[subDuration!]))}</h1>
                         </div>
                     </div>
 

@@ -23,6 +23,7 @@ import { useToast } from '../ui/use-toast';
 import { login } from '@/action/auth';
 import React from 'react';
 import { useTheme } from 'next-themes';
+import LoadingOverlay from '../loading';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Please enter the Username' }),
@@ -51,9 +52,15 @@ export default function UserAuthForm() {
 
   const checkRemeberMe = () => {
     const storedRmbMe = localStorage.getItem('rmbMe');
-    const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null;
+    const sessionExpiry = localStorage.getItem('sessionExpiry');
+    const accessExpiry = sessionExpiry ? JSON.parse(sessionExpiry) : null
+
+    const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null
     console.log('[checkRemeberMe] rememberMe= ', rememberMe)
+    console.log('[checkRemeberMe] sessionExpiry= ', sessionExpiry)
+
     if (rememberMe === true) {
+      setLoading(true)
       const storeSession = localStorage.getItem('session')
       const sessionData = storeSession ? JSON.parse(storeSession) : null
       const username = localStorage.getItem('username')
@@ -86,37 +93,47 @@ export default function UserAuthForm() {
           })
         }
       } else {
+        setLoading(false)
         localStorage.removeItem('username')
         localStorage.removeItem('rmbMe')
         localStorage.removeItem('session')
         localStorage.removeItem('theme')
         setTheme('light')
       }
-    } else {
+    }
+    else if (sessionExpiry != null) {
+      setLoading(true)
+      const currentDate = new Date;
+      const compareDate = new Date(accessExpiry);
+
+      if (compareDate > currentDate) {
+        setLoading(false)
+        router.replace('/dashboard')
+      } else {
+        localStorage.removeItem('sessionExpiry')
+      }
+    }
+    else {
+      setLoading(false)
       localStorage.removeItem('username')
       localStorage.removeItem('rmbMe')
       localStorage.removeItem('session')
       localStorage.removeItem('theme')
+      localStorage.removeItem('sessionExpiry')
       setTheme('light')
     }
   }
 
   useEffect(() => {
+    setLoading(true)
     checkRemeberMe()
   }, [])
 
-
   const onSubmit = async (data: UserFormValue) => {
-
-    // const signInStatus = await signIn('credentials', {
-    //   email: data.email,
-    //   password: data.password,
-    //   callbackUrl: callbackUrl ?? '/dashboard',
-    //   redirect: false
-    // })
+    setLoading(true)
     const signInStatus = await login(data.username, data.password);
-
     if (signInStatus?.error) {
+      setLoading(false)
       toast({
         title: 'Invalid Credentials',
         variant: 'destructive',
@@ -128,23 +145,18 @@ export default function UserAuthForm() {
         const rememberMe = form.getValues('rmbMe')
         const username = form.getValues('username')
 
-
         localStorage.setItem('rmbMe', JSON.stringify(rememberMe))
         localStorage.setItem('username', username)
       }
       router.replace('/dashboard');
+      router.refresh()
 
     }
-
-    // toast({
-    //   variant: 'destructive',
-    //   title: signInStatus?.error,
-    //   description: 'There was a problem with your request.'
-    // });
   };
 
   return (
     <>
+      {loading && <LoadingOverlay />}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -234,9 +246,9 @@ export default function UserAuthForm() {
         </div>
       </div>
 
-      <div className='pt-[50px]'>
+      {/* <div className='pt-[50px]'>
         <GoogleSignInButton />
-      </div>
+      </div> */}
     </>
   );
 }

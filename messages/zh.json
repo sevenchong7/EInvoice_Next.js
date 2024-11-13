@@ -299,5 +299,6 @@
     "TAG_MANAGE_SUBSCRIPTION_LIST": "管理订购列表",
     "TAG_PAYMENT_FAIL": "订阅失败",
     "TAG_PAYMENT_FAIL_DESC": "订阅失败",
+    "TAG_PDF": "PDF",
     "": ""
 }

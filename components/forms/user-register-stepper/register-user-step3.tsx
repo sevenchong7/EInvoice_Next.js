@@ -8,7 +8,7 @@ import { RegisterFormValues } from "@/lib/form-schema";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
 
-export default function RegisterUserStep3({ form, packageData, selectDuration, subscriptionDurationLisstData }: { form: UseFormReturn<RegisterFormValues>, packageData: any, selectDuration: any, subscriptionDurationLisstData: any }) {
+export default function RegisterUserStep3({ form, packageData, selectDuration, subscriptionDurationListData }: { form: UseFormReturn<RegisterFormValues>, packageData: any, selectDuration: any, subscriptionDurationListData: any }) {
     const [packageListData, setPackageListData] = useState<any>()
     // const [subscriptionDurationListData, setSubscriptionDurationListData] = useState<any>()
     const [selectPackage, setSelectPackage] = useState<number>();
@@ -41,7 +41,7 @@ export default function RegisterUserStep3({ form, packageData, selectDuration, s
                             <div className="flex flex-col items-center justify-center pt-[10px]">
                                 <h1 className="text-2xl">{data.PackageName}</h1>
                                 <h1 className="text-2xl font-medium pt-[20px]">RM {data.pricingList[selectDuration] ?? 0}</h1>
-                                <p className="mt-[5px]">per package/{subscriptionDurationLisstData.map((res: any) => (res.subscriptionPeriodCode === selectDuration && res.durationInMonths))} month</p>
+                                <p className="mt-[5px]">per package/{subscriptionDurationListData.map((res: any) => (res.subscriptionPeriodCode === selectDuration && res.durationInMonths))} month</p>
                             </div>
                             <div className="grid grid-cols-3">
                                 {data.Descriptions.map((data: any, index: number) => (

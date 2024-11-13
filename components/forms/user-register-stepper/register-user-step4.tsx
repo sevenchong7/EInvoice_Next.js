@@ -40,12 +40,13 @@ export default function RegisterUserStep4(
                         <h1 className='text-3xl font-semibold'>Payment Method:</h1>
                     </div>
                     {paymentmethod?.map((res: any, index: number) => {
-                        return <>
+                        console.log('imagePath = ', res.imagePath)
+                        return <div key={index}>
                             {
                                 res.paymentMethodDisplayName != 'E-WALLET' &&
                                 <PaymentButton key={index} id={res.id} payment={payment} src={res.imagePath} name={res.paymentMethodDisplayName} onClick={() => HandlePayment(res.id)} />
                             }
-                        </>
+                        </div>
                     })}
                     {/* <PaymentButton id={"eghl"} payment={payment} src={eghl} name={"EGHL"} onClick={() => HandlePayment('eghl')} />
                     <PaymentButton id={"rm"} payment={payment} src={rm} name={"Revenue Monster"} onClick={() => HandlePayment('rm')} /> */}
@@ -99,7 +100,7 @@ const PaymentButton = ({ id, payment, src, name, onClick, }: { id: string, payme
         <>
             <button className={`w-full border rounded-lg shadow-lg ${payment == id && "ring-2 ring-blue-800"}`} onClick={onClick}>
                 <div className='pl-[20px] flex py-1'>
-                    <Image src={src} alt={`${src}`} height={80} width={80} className='pr-[20px]' />
+                    <Image src={src} alt={`${src}`} height={80} width={80} className='pr-[20px]' priority={true} />
                     <div className='flex flex-col item-center justify-center'>
                         <h1 className='text-2xl font-semibold'>{name}</h1>
                     </div>

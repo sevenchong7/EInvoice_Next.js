@@ -123,6 +123,38 @@ export async function post(url: string, body: any, headers?: {}) {
 
 
 
+// Helper for GET requests (no body required)
+export async function getNoHeader(url: string, headers?: {}) {
+
+    console.log("[API] headers =", headers)
+
+    console.log("[API GET] ", API_BASE_URL + url)
+    const response = await fetch(API_BASE_URL + url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            // ...headers,
+        },
+    });
+
+    console.log("status ", response.status)
+    if (!response.ok) {
+        console.error(`[API Error] ${url} ${response.status}`);
+        // throw new Error(`Error: ${response.status}`);
+        return
+    }
+
+    const encryptredResponse = await response.json();
+
+    const rawResponse = decryptAES(encryptredResponse, secretkey);
+    // console.log("rawResponse ", rawResponse)
+    console.log("[API response] " + url, JSON.parse(rawResponse));
+
+    return JSON.parse(rawResponse);
+}
+
+
+
 // Helper for PUT requests (with body)
 export async function put(url: string, body: any, headers?: {}) {
     // console.log("access_token ", access_token)
@@ -170,11 +202,6 @@ export async function upload(url: string, body: any, headers?: {}) {
     console.log("headers ", headers)
     console.log("body ", body)
 
-
-    console.log(`[API POST] ${API_BASE_URL + url} ${JSON.stringify(body)}`)
-
-    // const encryptedBody = encryptAES(JSON.stringify(body), secretkey)
-
     const response = await fetch(API_BASE_URL + url, {
         method: 'POST',
         headers: {
@@ -185,16 +212,15 @@ export async function upload(url: string, body: any, headers?: {}) {
         body: body,
     });
 
-
     const uploadResponse = await response.json();
 
-    // const rawResponse = decryptAES(encryptredResponse, secretkey);
-    // console.log("[API response] " + url, JSON.parse(rawResponse));
+    const rawResponse = decryptAES(uploadResponse, secretkey);
+    console.log("[API response] " + url, JSON.parse(rawResponse));
 
     if (!response.ok) {
         // throw new Error(`Error: ${response.status}`);
-        return JSON.parse(uploadResponse);
+        return JSON.parse(rawResponse);
     }
 
-    return JSON.parse(uploadResponse);
+    return JSON.parse(rawResponse);
 }

@@ -29,6 +29,9 @@ export default function DashboardContent() {
         if (checkRmbMe) {
             // console.log('[DashboardContent] session = ', session)
             localStorage.setItem('session', JSON.stringify(session))
+        } else {
+            localStorage.setItem('sessionExpiry', JSON.stringify(session?.user.accessTokenExpiry))
+            console.log('sessionExpiry = ', session?.user.accessTokenExpiry)
         }
     }, [session])
 

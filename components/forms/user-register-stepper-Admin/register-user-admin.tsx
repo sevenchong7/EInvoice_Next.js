@@ -38,8 +38,9 @@ import RegisterUserStep4Admin from './register-user-step4-admin';
 import RegisterUserStep5Admin from './register-user-step5-admin';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { getLoginIdValidation, getValidateEmail, postUploadAdmin, register } from '@/lib/services/userService';
+import { getLoginIdValidation, getValidateEmail, postCreateMerchant, postUploadAdmin, register } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
+import { upload } from '@/lib/api';
 
 interface ProfileFormType {
   initialData: any | null;
@@ -47,6 +48,8 @@ interface ProfileFormType {
   packageData: any;
   paymentMethodData: any;
   subscribeDurationData: any;
+  paymentTypeData: any;
+  subscriptionDurationLisstData: any
 }
 
 export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
@@ -54,7 +57,9 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   categories,
   packageData,
   paymentMethodData,
-  subscribeDurationData
+  subscribeDurationData,
+  paymentTypeData,
+  subscriptionDurationLisstData
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -71,6 +76,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   const [data, setData] = useState({});
   const [skip, setSkip] = useState(false);
   const delta = currentStep - previousStep;
+  const [imageIdData, setImageIdData] = useState<any[]>()
   const { toast } = useToast()
 
   const defaultValues = {
@@ -148,43 +154,6 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   const processForm: SubmitHandler<RegisterUserAdminFormValues> = async (data) => {
     console.log('data ==>', data);
 
-
-    const createNewMerchantParam = {
-      "loginId": data.username,
-      "password": data.password,
-      "companyName": data.companyName,
-      "registrationNo": data.businessRegisterNo,
-      "busTinNo": data.businessTinNo,
-      "skipCompanyInfo": skip,
-      "streetAddress": data.streetAddress,
-      "postCode": data.zipCode,
-      "city": data.townCity,
-      "state": data.state,
-      "country": data.country,
-      "contactPrefix": data.contactPrefix,
-      "contact": data.contactNo,
-      "email": data.email,
-      "systemPackageId": data.package,
-      "subscriptionPeriod": data.subscribeDuration,
-
-    }
-    const registerData = register(createNewMerchantParam)
-
-    registerData.then((res) => {
-      if (res.status === true) {
-        toast({
-          title: "Success",
-          description: "The new Merchant has been create sucessfully !"
-        })
-      } else {
-        toast({
-          variant: 'destructive',
-          title: "Error",
-          description: "Something went wrong!"
-        })
-      }
-    })
-
     if (form.getValues('package') !== 1) {
       const imgUrlData = form.getValues('payment')
         .map((payData, payIndex) => {
@@ -200,41 +169,71 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
           imgData.append('files', file);
         });
 
+
+
         const imageData = await postUploadAdmin(imgData);
 
+        console.log('image data client =', imageData)
+
+
+        return imageData?.data.uploadedFileId
       };
 
-      const imageData = await uploadImages(imgUrlData)
+      const dataImage = await uploadImages(imgUrlData)
+      setImageIdData(dataImage)
+
+
+      console.log('image data =', imageIdData)
+
+      const createNewMerchantParam = {
+        "loginId": data.username,
+        "password": data.password,
+        "companyName": data.companyName,
+        "registrationNo": data.businessRegisterNo,
+        "busTinNo": data.businessTinNo,
+        "skipCompanyInfo": skip,
+        "streetAddress": data.streetAddress,
+        "postCode": data.zipCode,
+        "city": data.townCity,
+        "state": data.state,
+        "country": data.country,
+        "contactPrefix": data.contactPrefix,
+        "contact": data.contactNo,
+        "email": data.email,
+        "systemPackageId": data.package,
+        "subscriptionPeriod": data.subscribeDuration,
+        "registerPayment": data.payment.map((res, index) => ({
+          "regPaymentMethods": res.paymentMethod,
+          "paymentUploadId": imageIdData![index],
+          "paymentAmount": res.paymentAmount
+        }))
+
+      }
+
+      console.log('createNewMerchantParam =', createNewMerchantParam)
+      const registerData = postCreateMerchant(createNewMerchantParam)
+
+      registerData.then((res) => {
+        if (res.status === true) {
+          toast({
+            title: "Success",
+            description: "The new Merchant has been create sucessfully !"
+          })
+          setCurrentStep(currentStep + 1)
+        } else {
+          toast({
+            variant: 'destructive',
+            title: "Error",
+            description: "Something went wrong!"
+          })
+        }
+      })
+
 
     }
 
-    // const imgUrlData = form.getValues('payment')
-    //   .map((payData, payIndex) => {
-    //     const imgUrlParam = form.getValues(`payment.${payIndex}.imgUrl`); // Get imgUrl array
-    //     return imgUrlParam.map(url => url); // Ensure it's an array of File objects
-    //   })
-    //   .flat();
 
-    // // Function to upload images one at a time
-    // const uploadImages = async (imgUrlData: File[]) => {
-    //   for (const file of imgUrlData) {
-    //     const formData = new FormData();
-    //     formData.append('files', file); // Append one file at a time
 
-    //     // Log the current file being uploaded
-    //     console.log('Uploading file:', Array.from(formData.entries()));
-
-    //     try {
-    //       const imageData = await postUploadAdmin(formData); // Upload one file at a time
-    //       console.log('Response for file:', file.name, imageData);
-    //     } catch (error) {
-    //       console.error('Error uploading file:', file.name, error);
-    //     }
-    //   }
-    // };
-
-    // Call the function to upload the images
-    // await uploadImages(imgUrlData);
 
   }
 
@@ -420,7 +419,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
                 }
                 {
                   currentStep === 3 && (
-                    <RegisterUserStep4Admin form={form} paymentMethodData={paymentMethodData} />
+                    <RegisterUserStep4Admin form={form} paymentMethodData={paymentMethodData} paymentTypeData={paymentTypeData} subscriptionDurationLisstData={subscriptionDurationLisstData} />
                   )
                 }
                 {

@@ -1,6 +1,6 @@
 
 'use server';
-import { get, post } from '@/lib/api';
+import { get, getNoHeader, post } from '@/lib/api';
 
 export const getCountry = async () => {
     const response = await get("/v1/country");
@@ -15,7 +15,9 @@ export const postRegenerateToken = async (body: any) => {
 }
 
 export const getpaymentMethod = async () => {
-    const response = await get('/v1/payment-methods');
+    const response = await getNoHeader('/v1/payment-methods');
+
+    console.log('getpaymentMethod = ', response.data)
 
     return response.data;
 }

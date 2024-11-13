@@ -30,7 +30,7 @@ import Required from "@/components/ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { getMerchantInfo } from "@/lib/services/userService";
-import { CountryList, merchants, StateList } from "@/constants/data";
+import { CountryList, StateList } from "@/constants/data";
 import { getCountry } from "@/lib/services/generalService";
 import { ConfirmButton } from "@/components/ui/confirmButton";
 
