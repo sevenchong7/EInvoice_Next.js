@@ -149,7 +149,7 @@ export default function UserAuthForm() {
         localStorage.setItem('username', username)
       }
       router.replace('/dashboard');
-      router.refresh()
+      // router.refresh()
 
     }
   };

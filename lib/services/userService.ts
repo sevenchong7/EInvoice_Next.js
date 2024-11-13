@@ -283,15 +283,15 @@ export const postCreateMerchant = async (body: any) => {
 const getHeaders = async () => {
     const session = await auth();
 
-    // if (!session) {
-    //     redirect('/')
-    // }
-    // const currentDate = new Date()
-    // const refreshDate = new Date(session.user.refreshTokenExpiry)
+    if (!session) {
+        redirect('/')
+    }
+    const currentDate = new Date()
+    const refreshDate = new Date(session.user.refreshTokenExpiry)
 
-    // if (currentDate > refreshDate) {
-    //     redirect('/')
-    // }
+    if (currentDate > refreshDate) {
+        redirect('/')
+    }
 
     const headers = {
         'Authorization': session?.user.accessToken ? "Bearer " + session.user.accessToken : "",
