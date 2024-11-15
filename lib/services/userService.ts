@@ -17,56 +17,54 @@ export const getRoleInfo = async (body: any) => {
     return response.data;
 }
 
-export const editRole = async (body: any) => {
+export const putEditRole = async (body: any) => {
     const headers = await getHeaders();
     const response = await put('/v1/role', body, headers);
 
     return response
 }
 
-export const addRole = async (body: any) => {
+export const postAddRole = async (body: any) => {
     const headers = await getHeaders();
     const response = await post('/v1/role', body, headers);
 
     return response;
 }
 
-export const register = async (body: any) => {
+export const postRegister = async (body: any) => {
     const response = await post("/v1/user/register", body);
-
-    console.log('response data = ', response.data)
 
     return response;
 }
 
-export const forgetPassword = async (body: any) => {
+export const postForgetPassword = async (body: any) => {
     const response = await post("/v1/user/forget-password", body);
 
     return response.data;
 }
 
-export const updatePassword = async (body: any) => {
+export const putUpdatePassword = async (body: any) => {
     const headers = await getHeaders();
     const response = await put("/v1/user/password", body, headers);
 
     return response;
 }
 
-export const roleSelectionList = async () => {
+export const getRoleSelectionList = async () => {
     const headers = await getHeaders();
     const response = await get('/v1/role/selection', headers);
 
     return response.data;
 }
 
-export const roleSelectionPermission = async (body: any) => {
+export const getRoleSelectionPermission = async (body: any) => {
     const headers = await getHeaders();
     const response = await get(`/v1/role/selection/permission/${body}`, headers);
 
     return response;
 }
 
-export const mechantUserInviteNewUser = async (body: any) => {
+export const postMechantUserInviteNewUser = async (body: any) => {
     const headers = await getHeaders();
     const response = await post('/v1/user/user-list', body, headers);
 
@@ -80,7 +78,7 @@ export const getUserList = async () => {
     return response.data;
 }
 
-export const merchantUserUpdateStatus = async (id: any, body: any) => {
+export const putMerchantUserUpdateStatus = async (id: any, body: any) => {
     const headers = await getHeaders();
     const response = await put(`/v1/user/user-list/status/${id}`, body, headers);
 
@@ -94,7 +92,7 @@ export const getMerchantUserInfo = async (body: any) => {
     return response.data;
 }
 
-export const merchantUserInfoUpdate = async (id: any, body: any) => {
+export const putMerchantUserInfoUpdate = async (id: any, body: any) => {
     const headers = await getHeaders();
     const response = await put(`/v1/user/user-list/${id}`, body, headers);
 
@@ -104,8 +102,6 @@ export const merchantUserInfoUpdate = async (id: any, body: any) => {
 export const getMerchantList = async () => {
     const headers = await getHeaders();
     const response = await get("/v1/merchant/list", headers);
-
-    console.log('getMerchantList  = ', response)
 
     return response.data;
 }
@@ -117,7 +113,7 @@ export const getMerchantInfo = async () => {
     return response.data;
 }
 
-export const editMerchantInfo = async (id: any, body: any) => {
+export const putEditMerchantInfo = async (id: any, body: any) => {
     const headers = await getHeaders();
     const response = await put(`/v1/merchant/info/${id}`, body, headers);
 
@@ -133,8 +129,6 @@ export const getSubscription = async () => {
 
 export const getRegisterPackage = async () => {
     const response = await get('/v1/role/reg/subscriptions');
-
-    console.log('getRegisterPackage = ', response.data)
 
     return response.data;
 }
@@ -158,12 +152,6 @@ export const getDefaultPermission = async (body: any) => {
     const response = await get(`/v1/role/all/permission/${body}`, headers);
 
     return response.data;
-}
-export const updatePackage = async (body: any) => {
-    const headers = await getHeaders();
-    const response = await put('/v1/role/package', body, headers);
-
-    return response;
 }
 
 export const getSwitchRoleList = async () => {
@@ -191,8 +179,6 @@ export const postUploadAdmin = async (body: any) => {
     const headers = await getHeaders();
     const response = await upload('/v1/upload/admin', body, headers);
 
-    console.log('postUploadAdmin body = ', body)
-    console.log('response = ', response)
     return response;
 }
 
@@ -206,8 +192,6 @@ export const getLanguage = async () => {
 export const putPackageUpdate = async (body: any) => {
     const headers = await getHeaders();
     const response = await put('/v1/role/package', body, headers);
-
-    console.log('response', response)
 
     return response;
 }
@@ -227,8 +211,6 @@ export const putPasswordReset = async (id: any, body: any) => {
 
 export const getVerifyLoginId = async (id: any) => {
     const response = await get(`/v1/user/verify-loginId?${id}`);
-
-    console.log('getVerifyLoginId = ', response)
 
     return response;
 }

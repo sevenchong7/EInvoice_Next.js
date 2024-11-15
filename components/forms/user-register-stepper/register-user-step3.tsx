@@ -22,7 +22,7 @@ export default function RegisterUserStep3({ form, packageData, selectDuration, s
     useEffect(() => {
         setPackageListData(packageData)
         // setSubscriptionDurationListData(subscriptionDurationData)
-        console.log('packageData = ', packageData)
+        // console.log('packageData = ', packageData)
         // console.log('subscriptionDurationData = ', subscriptionDurationData)
 
     }, [packageData])

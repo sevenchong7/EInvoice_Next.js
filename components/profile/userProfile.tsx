@@ -22,37 +22,26 @@ import { useRouter } from "next/navigation";
 import Required from "../ui/required";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { editMerchantInfo, getMerchantInfo, getSubscription } from "@/lib/services/userService";
+import { getMerchantInfo, getSubscription, putEditMerchantInfo } from "@/lib/services/userService";
 import { CountryList, MerchantInfo, StateList, SubscriptionInfo } from "@/constants/data";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from "../ui/scroll-area";
 import { ConfirmButton } from "../ui/confirmButton";
 import { useSession } from "next-auth/react";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { GetCountryParam } from "@/lib/interface/generalInterface";
+import { useUserTaskStore } from "@/lib/store/userStore";
+import { EditProfile } from "./editUserProfile";
 
-export default function UserProfile({ subscriptionData, merchantInfoData, countryData }: { subscriptionData: any, merchantInfoData: any, countryData: any }) {
+export default function UserProfile() {
     const t = useTranslations()
     const router = useRouter()
-    // const { setCompany, company } = useStore();
     const [incomplete, setIncomplete] = useState(false);
     const [open, setOpen] = useState(false);
-    const [merchantInfo, setMerchantInfo] = useState<MerchantInfo>()
-    const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>();
     const [openSheet, setOpenSheet] = useState(false)
 
-    // const GetMerchantInfo = () => {
-    //     return getMerchantInfo()
-    // }
-
-    // const GetSubscription = () => {
-    //     return getSubscription()
-    // }
-
-    useEffect(() => {
-        setMerchantInfo(merchantInfoData)
-        setSubscriptionInfo(subscriptionData)
-        // GetMerchantInfo().then((data) => setMerchantInfo(data))
-        // GetSubscription().then((subData) => setSubscriptionInfo(subData))
-    }, [subscriptionData, merchantInfoData])
+    const subscriptionInfo = useUserTaskStore((state) => state.subscriptionList)
+    const merchantInfo = useUserTaskStore((state) => state.merchantInfoList)
 
     useEffect(() => {
         if (merchantInfo?.address == '' || merchantInfo?.address == undefined || merchantInfo?.address == null) {
@@ -142,7 +131,9 @@ export default function UserProfile({ subscriptionData, merchantInfoData, countr
                                 <SheetTrigger asChild>
                                     <Button>{t('TAG_EDIT')}</Button>
                                 </SheetTrigger>
-                                <EditProfile merchantInfoData={merchantInfo} countryData={countryData} openSheet={openSheet} />
+                                <SheetContent aria-describedby={undefined} className="md:min-w-[500px] lg:min-w-[500px]  max-[600px]:min-w-full  space-y-2">
+                                    <EditProfile openSheet={openSheet} />
+                                </SheetContent>
                             </Sheet>
                         </div>
                     </div>
@@ -309,224 +300,3 @@ const Incomplete = () => {
     )
 }
 
-
-const EditProfile = ({ merchantInfoData, countryData, openSheet }: { merchantInfoData: MerchantInfo | undefined, countryData: CountryList[], openSheet: boolean }) => {
-    const [companyName, setCompanyName] = useState(merchantInfoData?.companyName);
-    const [regNo, setRegNo] = useState(merchantInfoData?.registrationNo);
-    const [email, setEmail] = useState(merchantInfoData?.email);
-    const [businessTinNo, setBusinessTinNo] = useState(merchantInfoData?.businessTinNo);
-    const [address, setAddress] = useState(merchantInfoData?.address);
-    const [zipCode, setZipCode] = useState(merchantInfoData?.postcode);
-    const [town, setTown] = useState(merchantInfoData?.city);
-    const [state, setState] = useState(merchantInfoData?.stateId);
-    const [country, setCountry] = useState(merchantInfoData?.country);
-    const [contact, setContact] = useState(merchantInfoData?.contact);
-    const [contactPrefix, setContactPrefix] = useState(merchantInfoData?.contactPrefix)
-    const [stateList, setStateList] = useState<StateList[]>()
-    const session = useSession()
-    const router = useRouter()
-
-    const t = useTranslations();
-
-    useEffect(() => {
-        if (openSheet) {
-            countryData?.map((value) => {
-                if (value.countryCode === merchantInfoData?.country) {
-                    setStateList(value.stateList)
-                    setContactPrefix(value.contactPrefix)
-                }
-            })
-        }
-    }, [openSheet, countryData])
-
-    useEffect(() => {
-        if (openSheet) {
-            countryData?.map((value) => {
-                if (value.countryCode === country) {
-                    setStateList(value.stateList)
-                    setContactPrefix(value.contactPrefix)
-                }
-            })
-        }
-    }, [openSheet, country])
-
-    useEffect(() => {
-        if (openSheet) {
-            setCountry(merchantInfoData?.country)
-            setState(merchantInfoData?.stateId)
-        }
-    }, [openSheet])
-
-    const HandleEditProfile = async () => {
-        const editProfileParam = {
-            "companyName": companyName,
-            "companyEmail": email,
-            "registrationNo": regNo,
-            "busTinNo": businessTinNo,
-            "sstRegNo": merchantInfoData?.sstRegNo,
-            "tourRegNo": merchantInfoData?.tourRegNo,
-            "streetAddress": address,
-            "postCode": zipCode,
-            "city": town,
-            "state": state,
-            "country": country,
-            "contactPrefix": '',
-            "contact": contact
-        }
-        const editInfo = await editMerchantInfo(session.data?.user.merchantId, editProfileParam)
-        if (editInfo.status) {
-            router.refresh()
-        }
-    }
-
-    return (
-        <ScrollArea onWheel={(e) => {
-            e.stopPropagation();
-        }}>
-            <SheetContent className="md:min-w-[500px] lg:min-w-[500px]  max-[600px]:min-w-full  space-y-2">
-
-                <SheetHeader>
-                    <SheetTitle className='text-2xl'>{t('TAG_PERSONAL_INFROMATION')}</SheetTitle>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-5 items-center gap-8">
-                        <Label htmlFor="name" className="col-span-2">
-                            {t('TAG_COMPANY_NAME')}
-                        </Label>
-                        <Input id="name" value={companyName} placeholder={merchantInfoData?.companyName} onChange={(e) => setCompanyName(e.target.value)} className="col-span-3" />
-                    </div>
-                    <div className="grid grid-cols-5 items-center gap-8">
-                        <Label htmlFor="email" className="col-span-2">
-                            {t('TAG_EMAIL')}
-                        </Label>
-                        <Input id="email" value={email} placeholder={merchantInfoData?.email} type='email' onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
-                    </div>
-                    <div className="grid grid-cols-5 items-center gap-8">
-                        <Label htmlFor="role" className="col-span-2">
-                            {t('TAG_REGISTRATION_NO')}
-                        </Label>
-                        <Input id="role" type='text' value={regNo} placeholder={merchantInfoData?.registrationNo} onChange={(e) => setRegNo(e.target.value)} className="col-span-3" disabled={true} />
-                    </div>
-                    <div className="grid grid-cols-5 items-center gap-8">
-                        <Label htmlFor="businessTinNo" className="col-span-2">
-                            {t('TAG_BUSINESS_TIN_NO')}
-                        </Label>
-                        <Input id="businessTinNo" value={businessTinNo} placeholder={merchantInfoData?.businessTinNo} type='text' onChange={(e) => setBusinessTinNo(e.target.value)} className="col-span-3" disabled={true} />
-                    </div>
-
-                </div>
-                <div>
-                    <SheetHeader>
-                        <SheetTitle className='text-2xl'>{t('TAG_COMPANY_INFORMATION')}</SheetTitle>
-                    </SheetHeader>
-                    <div className="grid gap-4 py-4">
-                        <h1 className="text-2xl font-medium">{t('TAG_ADDRESS')}</h1>
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="address" className="text-nowrap">
-                                {t('TAG_STREET_ADDRESS')} <Required />
-                            </Label>
-                            <Input id="address" value={address} placeholder={merchantInfoData?.address} onChange={(e) => setAddress(e.target.value)} />
-                        </div>
-                        {/* <div className="grid grid-cols-2 items-center gap-4">
-                    <Label htmlFor="apt" >
-                        {t('TAG_APT_SUITE_BUILDING')}
-                    </Label>
-                    <Input id="apt" type='text' value={apt_suite_building} placeholder={company.apt_suite_building} onChange={(e) => setApt_suite_building(e.target.value)} />
-                </div> */}
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="zipCode" className="text-nowrap">
-                                {t('TAG_ZIPCODE')} <Required />
-                            </Label>
-                            <Input id="zipCode" value={zipCode} placeholder={merchantInfoData?.postcode} type='email' onChange={(e) => setZipCode(e.target.value)} />
-                        </div>
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="town" className="text-nowrap">
-                                {t('TAG_TOWN_CITY')} <Required />
-                            </Label>
-                            <Input id="town" value={town} placeholder={merchantInfoData?.city} type='text' onChange={(e) => setTown(e.target.value)} />
-                        </div>
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="state" className="text-nowrap">
-                                {t('TAG_STATE')} <Required />
-                            </Label>
-                            <Select
-                                // disabled={editable}
-                                value={state}
-                                onValueChange={(value) => setState(value)}
-                            // defaultValue={field.value}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue
-                                        // defaultValue={field.value}
-                                        placeholder="Select a State"
-                                    />
-                                </SelectTrigger>
-                                <SelectContent className='max-h-[300px] overflow-y-scroll'>
-                                    {/* @ts-ignore  */}
-                                    <SelectGroup>
-                                        {stateList?.map((state, index) => (
-                                            <SelectItem key={index} value={state.stateCode}>
-                                                {state.stateName}
-                                            </SelectItem>
-
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="country" className="text-nowrap">
-                                {t('TAG_COUNTRY')} <Required />
-                            </Label>
-                            <Select
-                                // disabled={editable}
-                                value={country}
-                                onValueChange={(value) => setCountry(value)}
-                            // defaultValue={field.value}
-                            >
-                                {/* <FormControl> */}
-                                <SelectTrigger>
-                                    <SelectValue
-                                        placeholder="Select a Country"
-                                    />
-                                </SelectTrigger>
-                                {/* </FormControl> */}
-                                <SelectContent >
-                                    {/* @ts-ignore  */}
-                                    <SelectGroup className='max-h-[300px]'>
-                                        {countryData?.map((country, index) => (
-                                            <SelectItem key={index} value={country.countryCode}>
-                                                {country.countryName}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                    </div>
-
-                    <div className="grid gap-4 py-4">
-                        <h1 className="text-2xl font-medium">{t('TAG_CONTACT')}</h1>
-                        <div className="grid grid-cols-2 items-center gap-4">
-                            <Label htmlFor="contact" className="text-nowrap">
-                                {t('TAG_CONTACT_NO')}.<Required />
-                            </Label>
-                            <div className="flex space-x-2">
-                                <Input id="contactPrefix" value={contactPrefix} placeholder={merchantInfoData?.contactPrefix} onChange={(e) => setContactPrefix(e.target.value)} disabled={true} className="max-w-[70px]" />
-                                <Input id="contact" value={contact} placeholder={merchantInfoData?.contact} onChange={(e) => setContact(e.target.value)} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <SheetFooter>
-                    <SheetClose asChild>
-                        <ConfirmButton type="submit" onClick={() => HandleEditProfile()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</ConfirmButton>
-                    </SheetClose>
-                </SheetFooter>
-            </SheetContent>
-        </ScrollArea>
-
-
-    )
-}

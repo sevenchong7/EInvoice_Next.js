@@ -8,22 +8,14 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCountry } from "@/lib/services/generalService";
 import { CountryList, StateList } from "@/constants/data";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { StateListParam } from "@/lib/interface/generalInterface";
 
 
 export default function RegisterUserStep2({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);
-    const [countries, setCountries] = useState<CountryList[]>()
-    const [states, setStates] = useState<StateList[]>();
-
-    const GetCountryInfo = async () => {
-        return await getCountry();
-    }
-
-    useEffect(() => {
-        GetCountryInfo().then((value) => {
-            setCountries(value)
-        })
-    }, [])
+    const countries = useGeneralTaskStore((state) => state.countryList)
+    const [states, setStates] = useState<StateListParam[]>();
 
     useEffect(() => {
         countries?.map((value) => {

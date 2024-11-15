@@ -21,10 +21,12 @@ import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useUserTaskStore } from '@/lib/store/userStore';
+import { useDataTaskStore } from '@/lib/store/dataStore';
 
 type Props = {
     defaultValue: string;
-    items: Array<{ languageName: string; languageFlag: string }> | undefined;
+    // items: Array<{ languageName: string; languageFlag: string }> | undefined;
     label: string;
     // open: boolean;
     // setOpen: any
@@ -32,7 +34,7 @@ type Props = {
 
 export default function LocaleSwitcherSelect({
     defaultValue,
-    items,
+    // items,
     label,
     // open,
     // setOpen
@@ -45,6 +47,9 @@ export default function LocaleSwitcherSelect({
     const [localeData, setLoacalData] = useState('en')
     const [selectedLanguage, setSelectedLanguage] = useState('')
     const { data: session, update } = useSession();
+    const languageData = useUserTaskStore((state) => state.getLanguageList)
+    const setLocal = useDataTaskStore((state) => state.setLocal)
+    const loaclLanguage = useDataTaskStore((state) => state.language)
 
     useEffect(() => {
         if (initialLocale == 'en') {
@@ -59,30 +64,33 @@ export default function LocaleSwitcherSelect({
     async function onChange(value: string) {
         if (value == 'English') {
             setSelectedLanguage('English')
+            setLocal('en')
             setLoacalData('en')
             await update({ xAcceptLanguage: "en" })
-            // router.refresh()
         } else if (value == 'Melayu') {
             setSelectedLanguage('Melayu')
             setLoacalData('bm')
+            setLocal('bm')
             await update({ xAcceptLanguage: "bm" })
         } else {
             setSelectedLanguage('中文')
             setLoacalData('zh')
+            setLocal('zh')
             await update({ xAcceptLanguage: "zh" })
-            // router.refresh()
         }
         // const locale = value as Locale;
 
 
-        if (session) router.refresh()
+        if (session)
+            window.location.reload()
     }
 
     useEffect(() => {
         startTransition(() => {
-            setUserLocale(localeData as Locale);
+            setUserLocale(loaclLanguage as Locale);
         });
-    }, [localeData])
+        router.refresh()
+    }, [localeData, loaclLanguage])
 
     return (
 
@@ -103,7 +111,7 @@ export default function LocaleSwitcherSelect({
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup >
                     {
-                        items?.map((item) => (
+                        languageData?.map((item) => (
                             <DropdownMenuItem key={item.languageName} onClick={() => onChange(item.languageName)}>
                                 <div className='flex  items-center gap-4'>
                                     <Image src={item.languageFlag} alt={item.languageName} height={24} width={24} />

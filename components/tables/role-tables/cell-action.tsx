@@ -33,8 +33,7 @@ import { RoleUserClient } from './role-user-tables/client';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { editRole, getRoleInfo } from '@/lib/services/userService';
-import roleMerchantData from '@/constants/role_merchant.json';
+import { getRoleInfo, putEditRole } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
 
@@ -57,7 +56,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
-          <EditUser data={data} open={open} setOpen={setOpen} />
+          <SheetContent aria-describedby={undefined} className='md:min-w-[500px] max-[600px]:w-full'>
+            <EditUser data={data} open={open} setOpen={setOpen} />
+          </SheetContent>
         </Sheet>
       </div>
     </>
@@ -252,7 +253,7 @@ const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen:
       permission: permissionList
     }
 
-    const roleEdit = editRole(editRoleParam)
+    const roleEdit = putEditRole(editRoleParam)
 
     roleEdit.then(() => {
       setOpen(false)
@@ -294,82 +295,80 @@ const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen:
         title={t('TAG_CONFIRMATION')}
         content={t('TAG_CONFIRMATION_MODAL_DESC')}
       />
-      <SheetContent className='md:min-w-[500px] max-[600px]:w-full'>
-        <ScrollArea className='h-full'>
-          <div className='pr-5'>
-            <SheetHeader>
-              <SheetTitle className='text-2xl'>{t('TAG_ROLE_INFORMATION')}:</SheetTitle>
-              <SheetTitle className='text-2xl'>{data.role}</SheetTitle>
-            </SheetHeader>
-            <div className="">
-              <div className="w-full px-1">
-                {roleInfo && roleInfo.merchantUserList ? (
-                  <RoleUserClient data={roleInfo.merchantUserList} />
-                ) : (
-                  <p>No user data available</p> // Fallback content if undefined
-                )}
-              </div>
-
-              <div className="">
-                <Label htmlFor="status">
-                  {t('TAG_ACCESS_CONTROL')}:
-                </Label>
-                <Separator />
-                <section>
-                  {/* <Suspense fallback={<p>Loading Access Control...</p>}> */}
-                  <Accordion type='multiple' defaultValue={[]}>
-                    {
-                      roleInfo?.permissionList.map((roleInfoRes, roleInfoIndex) => {
-                        return <AccordionItem value={roleInfoRes.Route} key={roleInfoIndex}>
-                          <div className='flex flex-row items-center space-x-2'>
-                            <AccordionTrigger className='justify-start '></AccordionTrigger>
-                            <Checkbox id={roleInfoRes.Route} checked={permissionListCheckboxState?.[roleInfoIndex]} onCheckedChange={(check: boolean) => handlePermissionListCheckboxState(roleInfoIndex, check)} />
-                            <label htmlFor={roleInfoRes.Route}>{roleInfoRes.Route}</label>
-                          </div>
-                          <div className='pl-[50px] pt-2'>
-                            {
-                              roleInfoRes.Function.map((funcRes, funcIndex) => {
-                                return <AccordionContent key={funcIndex}>
-                                  <AccordionItem value={funcRes.FunctionName} >
-                                    <div className='flex flex-row items-center space-x-2'>
-                                      <AccordionTrigger className='justify-start '></AccordionTrigger>
-                                      <Checkbox id={funcRes.FunctionName} checked={functionCheckboxState?.[roleInfoIndex]?.[funcIndex]} onCheckedChange={(check: boolean) => handleFunctionCheckboxState(roleInfoIndex, funcIndex, check)} />
-                                      <label htmlFor={funcRes.FunctionName}>{funcRes.FunctionName}</label>
-                                    </div>
-                                    <div className='pl-[50px] pt-2'>
-                                      {
-                                        funcRes.subFunctions.map((subFuncRes, subFuncIndex) => {
-                                          return <AccordionContent key={subFuncIndex}>
-                                            <div className='flex flex-row space-x-2 items-center'>
-                                              <Checkbox id={subFuncRes.FunctionName} checked={subFunctionCheckboxStates?.[roleInfoIndex]?.[funcIndex]?.[subFuncIndex]} onCheckedChange={(check: boolean) => handleSubFunctionCheckboxStates(roleInfoIndex, funcIndex, subFuncIndex, check)} />
-                                              <label htmlFor={subFuncRes.FunctionName}>{subFuncRes.FunctionName}</label>
-                                            </div>
-                                          </AccordionContent>
-                                        })
-                                      }
-                                    </div>
-                                  </AccordionItem>
-                                </AccordionContent>
-                              })
-                            }
-                          </div>
-                        </AccordionItem>
-                      })
-                    }
-                  </Accordion>
-                  {/* </Suspense> */}
-                </section>
-              </div>
+      <ScrollArea className='h-full'>
+        <div className='pr-5'>
+          <SheetHeader>
+            <SheetTitle className='text-2xl'>{t('TAG_ROLE_INFORMATION')}:</SheetTitle>
+            <SheetTitle className='text-2xl'>{data.role}</SheetTitle>
+          </SheetHeader>
+          <div className="">
+            <div className="w-full px-1">
+              {roleInfo && roleInfo.merchantUserList ? (
+                <RoleUserClient data={roleInfo.merchantUserList} />
+              ) : (
+                <p>No user data available</p> // Fallback content if undefined
+              )}
             </div>
-            <SheetFooter>
-              {/* <SheetClose asChild> */}
-              <ConfirmButton type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { HandleConfirm() }}>{t('TAG_CONFIRM')}</ConfirmButton>
-              {/* </SheetClose> */}
-            </SheetFooter>
+
+            <div className="">
+              <Label htmlFor="status">
+                {t('TAG_ACCESS_CONTROL')}:
+              </Label>
+              <Separator />
+              <section>
+                {/* <Suspense fallback={<p>Loading Access Control...</p>}> */}
+                <Accordion type='multiple' defaultValue={[]}>
+                  {
+                    roleInfo?.permissionList.map((roleInfoRes, roleInfoIndex) => {
+                      return <AccordionItem value={roleInfoRes.Route} key={roleInfoIndex}>
+                        <div className='flex flex-row items-center space-x-2'>
+                          <AccordionTrigger className='justify-start '></AccordionTrigger>
+                          <Checkbox id={roleInfoRes.Route} checked={permissionListCheckboxState?.[roleInfoIndex]} onCheckedChange={(check: boolean) => handlePermissionListCheckboxState(roleInfoIndex, check)} />
+                          <label htmlFor={roleInfoRes.Route}>{roleInfoRes.Route}</label>
+                        </div>
+                        <div className='pl-[50px] pt-2'>
+                          {
+                            roleInfoRes.Function.map((funcRes, funcIndex) => {
+                              return <AccordionContent key={funcIndex}>
+                                <AccordionItem value={funcRes.FunctionName} >
+                                  <div className='flex flex-row items-center space-x-2'>
+                                    <AccordionTrigger className='justify-start '></AccordionTrigger>
+                                    <Checkbox id={funcRes.FunctionName} checked={functionCheckboxState?.[roleInfoIndex]?.[funcIndex]} onCheckedChange={(check: boolean) => handleFunctionCheckboxState(roleInfoIndex, funcIndex, check)} />
+                                    <label htmlFor={funcRes.FunctionName}>{funcRes.FunctionName}</label>
+                                  </div>
+                                  <div className='pl-[50px] pt-2'>
+                                    {
+                                      funcRes.subFunctions.map((subFuncRes, subFuncIndex) => {
+                                        return <AccordionContent key={subFuncIndex}>
+                                          <div className='flex flex-row space-x-2 items-center'>
+                                            <Checkbox id={subFuncRes.FunctionName} checked={subFunctionCheckboxStates?.[roleInfoIndex]?.[funcIndex]?.[subFuncIndex]} onCheckedChange={(check: boolean) => handleSubFunctionCheckboxStates(roleInfoIndex, funcIndex, subFuncIndex, check)} />
+                                            <label htmlFor={subFuncRes.FunctionName}>{subFuncRes.FunctionName}</label>
+                                          </div>
+                                        </AccordionContent>
+                                      })
+                                    }
+                                  </div>
+                                </AccordionItem>
+                              </AccordionContent>
+                            })
+                          }
+                        </div>
+                      </AccordionItem>
+                    })
+                  }
+                </Accordion>
+                {/* </Suspense> */}
+              </section>
+            </div>
           </div>
-          <ScrollBar />
-        </ScrollArea>
-      </SheetContent>
+          <SheetFooter>
+            {/* <SheetClose asChild> */}
+            <ConfirmButton type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { HandleConfirm() }}>{t('TAG_CONFIRM')}</ConfirmButton>
+            {/* </SheetClose> */}
+          </SheetFooter>
+        </div>
+        <ScrollBar />
+      </ScrollArea>
     </>
   )
 }

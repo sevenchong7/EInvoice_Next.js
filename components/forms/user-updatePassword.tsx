@@ -12,7 +12,7 @@ import approve from '@/public/Approval.png';
 import Image from 'next/image';
 import Required from "../ui/required";
 import { useTranslations } from "next-intl";
-import { updatePassword } from "@/lib/services/userService";
+import { putUpdatePassword } from "@/lib/services/userService";
 import { PasswordInput } from "../ui/passwordInput";
 
 export default function UpdatePassword() {
@@ -38,7 +38,7 @@ export default function UpdatePassword() {
     } = form;
 
     const processForm: SubmitHandler<UpdateFormValues> = (data) => {
-        console.log('data ==>', data);
+        // console.log('data ==>', data);
         setData(data);
         // api call and reset
         // form.reset();
@@ -57,7 +57,7 @@ export default function UpdatePassword() {
                 'confirmationPassword': form.getValues('confirmPassword')
             }
 
-            updatePassword(updatePasswordParam).then(
+            putUpdatePassword(updatePasswordParam).then(
                 () => {
                     setPwUpdated(true)
                 }

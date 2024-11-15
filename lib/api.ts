@@ -132,7 +132,7 @@ export async function getNoHeader(url: string, headers?: {}) {
     const response = await fetch(API_BASE_URL + url, {
         method: 'GET',
         headers: {
-            'Accept': 'application/json',
+            // 'Accept': 'application/json',
             // ...headers,
         },
     });

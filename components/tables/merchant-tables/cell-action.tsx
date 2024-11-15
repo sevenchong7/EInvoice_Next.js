@@ -34,12 +34,13 @@ import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCountry } from '@/lib/services/generalService';
-import { editMerchantInfo } from '@/lib/services/userService';
+import { putEditMerchantInfo } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
+import { GetMerchantListContentParam } from '@/lib/interface/userInterface';
 
 interface CellActionProps {
-  data: MerchantContent;
+  data: GetMerchantListContentParam;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -72,7 +73,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
-          <EditUser data={data} open={open} setOpen={setOpen} />
+          <SheetContent aria-describedby={undefined}>
+            <SheetTitle></SheetTitle>
+            <EditUser data={data} open={open} setOpen={setOpen} />
+          </SheetContent>
         </Sheet>
 
         {/* <button onClick={() => setOpenAlert(true)} className='border-2 border-black dark:border-white rounded-lg p-1 hover:bg-gray-200 dark:hover:bg-gray-500'>
@@ -84,7 +88,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 };
 
 
-const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolean, setOpen: any }) => {
+const EditUser = ({ data, open, setOpen }: { data: GetMerchantListContentParam, open: boolean, setOpen: any }) => {
   const t = useTranslations();
   const { toast } = useToast();
   const router = useRouter();
@@ -187,7 +191,7 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
       "contact": contactNo
     }
 
-    const control = editMerchantInfo(data.merchantId, editMerchantParam)
+    const control = putEditMerchantInfo(data.merchantId, editMerchantParam)
 
     control.then(() => {
       setOpen(false)
@@ -200,7 +204,7 @@ const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolea
   }
 
   return (
-    <SheetContent className='md:min-w-[500px] max-[600px]:w-full'>
+    <SheetContent aria-describedby={undefined} className='md:min-w-[500px] max-[600px]:w-full'>
       <ScrollArea className='h-full ' onWheel={(e) => {
         e.stopPropagation();
       }}>

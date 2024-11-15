@@ -8,9 +8,10 @@ import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { DataTable } from './merchant-data-table';
 import { useTranslations } from 'next-intl';
+import { GetMerchantListContentParam } from '@/lib/interface/userInterface';
 
 interface ProductsClientProps {
-  data: MerchantContent[];
+  data: GetMerchantListContentParam[];
 }
 
 export const MerchantClient: React.FC<ProductsClientProps> = ({ data }) => {

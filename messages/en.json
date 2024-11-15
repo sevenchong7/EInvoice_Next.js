@@ -300,5 +300,9 @@
     "TAG_PAYMENT_FAIL": "Payment Fail",
     "TAG_PAYMENT_FAIL_DESC": "Payment Fail",
     "TAG_PDF": "PDF",
+    "TAG_DISCOUNT": "Discount",
+    "TAG_TOTAL": "Total",
+    "TAG_PACKAGE": "Package",
+    "TAG_EWALLET": "Adjust Remaining Amount into E-Wallet",
     "": ""
 }

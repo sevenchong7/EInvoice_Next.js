@@ -2,7 +2,7 @@ import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirmButton";
 import { contents, User } from "@/constants/data";
-import { merchantUserUpdateStatus } from "@/lib/services/userService";
+import { putMerchantUserUpdateStatus } from "@/lib/services/userService";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -31,7 +31,7 @@ export default function StatusAction({ data }: StatusActionProps) {
             status = 'Y'
         }
 
-        merchantUserUpdateStatus(data.muId, status)
+        putMerchantUserUpdateStatus(data.muId, status)
     }
 
     return (

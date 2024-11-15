@@ -14,7 +14,8 @@ import React from "react";
 import { getMerchantInfo, getSubscription, putUnsubscribe } from "@/lib/services/userService";
 import { ConfirmButton } from "../ui/confirmButton";
 import { useToast } from "../ui/use-toast";
-import { useTaskStore } from "@/lib/store";
+import { useUserTaskStore } from "@/lib/store/userStore";
+import { useDataTaskStore } from "@/lib/store/dataStore";
 
 export default function Subscriptions() {
     const router = useRouter()
@@ -27,7 +28,7 @@ export default function Subscriptions() {
     // const [merchantInfo, setMerchantInfo] = useState<MerchantInfo>()
     const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo>();
     const { toast } = useToast()
-    const setSelectedPackage = useTaskStore((state) => state.setPackage)
+    const setSelectedPackage = useDataTaskStore((state) => state.setPackage)
 
     // const GetMerchantInfo = () => {
     //     return getMerchantInfo()
@@ -41,10 +42,6 @@ export default function Subscriptions() {
         // GetMerchantInfo().then((data) => setMerchantInfo(data))
         GetSubscription().then((subData) => setSubscriptionInfo(subData))
     }, [])
-
-    // useEffect(() => {
-    //     setCompany(companys)
-    // }, [])
 
     const HandleUnsubscribe = async () => {
         putUnsubscribe().then((res) => {

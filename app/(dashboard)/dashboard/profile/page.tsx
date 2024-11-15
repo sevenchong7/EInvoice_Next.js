@@ -9,6 +9,7 @@ export default async function page() {
 
   const [subscriptionData, merchantInfoData, countryData] = await Promise.all([getSubscriptionData, getMerchantInfoData, getCountryData])
 
+
   return (
     <ProfileContent subscriptionData={subscriptionData} merchantInfoData={merchantInfoData} countryData={countryData} />
   );

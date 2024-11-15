@@ -3,8 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import StatusAction from './status-action';
 import { CellAction } from './cell-action';
 import { MerchantContent } from '@/constants/data';
+import { GetMerchantListContentParam } from '@/lib/interface/userInterface';
 
-export const columns: ColumnDef<MerchantContent>[] = [
+export const columns: ColumnDef<GetMerchantListContentParam>[] = [
   {
     accessorKey: 'merchantId',
     header: 'TAG_NO',

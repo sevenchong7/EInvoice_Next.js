@@ -16,75 +16,50 @@ import { useSession } from "next-auth/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingOverlay from "../loading";
 import { useToast } from "../ui/use-toast";
-import { useTaskStore } from "@/lib/store";
+import { PaymentButton } from "../paymentButton";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { useUserTaskStore } from "@/lib/store/userStore";
+import { useDataTaskStore } from "@/lib/store/dataStore";
 
 
-export default function SubscriptionPayment(
-    {
-        subPackage,
-        paymentMethodData,
-        multipaymentData,
-        eWalletBalanceData,
-        packageInfoData,
-        packageListData
-    }: {
-        subPackage: number | null,
-        paymentMethodData: any,
-        multipaymentData: any,
-        eWalletBalanceData: any,
-        packageInfoData: any,
-        packageListData: any
-    }) {
+export default function SubscriptionPayment() {
     const session = useSession()
     const router = useRouter();
     const t = useTranslations()
     const { toast } = useToast();
-    const [payment, setPayment] = useState<any>();
-    const [multiPayment, setMultiPayment] = useState<any>()
+    const [payment, setPayment] = useState<any>('');
     const [ewallet, setEwallet] = useState<any>(null);
     const [error, setError] = useState(false)
-    const [balance, setBalance] = useState(0);
     const [ewalletAmount, setEwalletAmount] = useState(0);
     const [ewalletSelected, setEwalletSelected] = useState(false)
     const [ewalletAmountError, setEwalletAmountError] = useState(false)
-    const [paymentMethod, setPaymentMethod] = useState<any>()
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>()
-    const [packageInfo, setPackageInfo] = useState<any>()
     const [subPeriod, setSubPeriod] = useState<any>('M3')
     const [summeryPackage, setSummeryPackage] = useState<any>()
     const [packageDurationPriceSummery, setPackageDurationPriceSummery] = useState<any>()
     const [loading, setLoading] = useState(false);
     const [checkPaymentLoading, setCheckPaymentLoading] = useState(false)
     const [subId, setSubId] = useState<any>()
-    const setPackageSubStatus = useTaskStore((state) => state.setPackageSubStatus)
+    const setPackageSubStatus = useDataTaskStore((state) => state.setPackageSubStatus)
+
+    const paymentMethod = useGeneralTaskStore((state) => state.paymentMethodList)
+    const subPackage = useDataTaskStore((state) => state.packageId)
+    const currentPackageInfo = useUserTaskStore((state) => state.packageInfoList)
+    const packageInfo = useUserTaskStore((state) => state.packageInfoList.summeryList)
+    const multiPayment = useUserTaskStore((state) => state.multiPaymentList.data.multiPaymentFlag)
+    const balance = useUserTaskStore((state) => state.eWalletBalanceList.ewalletBalance)
+    const packageListData = useUserTaskStore((state) => state.registerPackageList)
 
     useEffect(() => {
-        setPaymentMethod(paymentMethodData.content)
-        setMultiPayment(multipaymentData?.data?.multiPaymentFlag)
-        setBalance(eWalletBalanceData.ewalletBalance)
-        if (packageInfoData != undefined) {
-            setPackageInfo(packageInfoData.summeryList)
-        }
         packageListData.packageList.map((res: any, index: number) => {
             if (subPackage === res.PackageIdentifier) {
                 setSummeryPackage(res)
             }
         })
-        console.log('packageInfoData = ', packageInfoData)
-        console.log('multipaymentData = ', multipaymentData)
-        console.log('eWalletBalanceData = ', eWalletBalanceData)
-        console.log('packageListData = ', packageListData)
-
-    }, [paymentMethodData, multipaymentData, eWalletBalanceData, packageInfoData, packageListData])
-
-    const HandlePackageSelect = (selection: number) => {
-        setSelectedPaymentMethod(selection)
-        // form.setValue("package", selection)
-    }
+    }, [packageListData])
 
     const HandlePayment = async () => {
         if (subPackage !== 1) {
-            if (payment == '') {
+            if (payment == '' && packageDurationPriceSummery?.totalPaymentAmount !== 0) {
                 setError(true);
                 return
             } else {
@@ -92,13 +67,18 @@ export default function SubscriptionPayment(
                     if (balance <= ewalletAmount) {
                         setEwalletAmountError(true)
                         return
-                    } else {
+                    } else if (packageDurationPriceSummery?.totalPaymentAmount !== ewalletAmount) {
+                        setEwalletAmountError(true)
+                        return
+                    }
+                    else {
                         setEwalletAmountError(false)
                     }
                 }
                 setError(false);
             }
         }
+
         const packageUpdateParam = {
             "packageId": subPackage,
             "subscriptionPeriod": subPeriod,
@@ -109,19 +89,23 @@ export default function SubscriptionPayment(
                 : [payment],
             "ewalletAmount": ewalletAmount
         }
-        console.log('packageUpdateParam = ', packageUpdateParam)
+
         const resPackageUpdate = await putPackageUpdate(packageUpdateParam)
-        console.log('resPackageUpdate = ', resPackageUpdate)
         if (resPackageUpdate.status) {
-            const lastIndex = resPackageUpdate.data[resPackageUpdate.data.length - 1]
-            setLoading(true);
-            const paymentGatewayResponse = lastIndex.urlOrFormHtmlResult;
-            const resSubId = lastIndex.subscriptionId
-            if (paymentGatewayResponse) {
-                const url = paymentGatewayResponse;
-                window.open(url, '_blank');
-                setSubId(resSubId)
-                setCheckPaymentLoading(true)
+            if (packageDurationPriceSummery?.totalPaymentAmount !== 0) {
+                const lastIndex = resPackageUpdate.data[resPackageUpdate.data.length - 1]
+                setLoading(true);
+                const paymentGatewayResponse = lastIndex.urlOrFormHtmlResult;
+                const resSubId = lastIndex.subscriptionId
+                if (paymentGatewayResponse) {
+                    const url = paymentGatewayResponse;
+                    window.open(url, '_blank');
+                    setSubId(resSubId)
+                    setCheckPaymentLoading(true)
+                }
+            } else {
+                setPackageSubStatus(resPackageUpdate.status)
+                router.push('/dashboard/profile/subscription/payment/information')
             }
         } else {
             toast({
@@ -144,13 +128,11 @@ export default function SubscriptionPayment(
                 setLoading(false);
                 setCheckPaymentLoading(false)
                 router.push('/dashboard/profile/subscription/payment/information')
-                // setCurrentStep((prevStep) => prevStep + 1);
 
             } else if (Date.now() >= endTime) {
                 setLoading(false);
                 setCheckPaymentLoading(false)
                 router.push('/dashboard/profile/subscription/payment/information')
-                // setCurrentStep((prevStep) => prevStep + 1);
             }
         };
         const interval = setInterval(checkPaymentStatus, POLL_INTERVAL);
@@ -162,23 +144,35 @@ export default function SubscriptionPayment(
         setEwalletSelected(true)
         if (multiPayment) {
             setEwallet(wallet)
+            if (ewalletSelected) {
+                setEwallet('')
+                setEwalletSelected(false)
+            }
+
         } else {
             setPayment(wallet)
             setEwallet('')
         }
     }
 
-    const HandleOnlinePayment = (payment: any) => {
-        setEwalletSelected(false)
-        setPayment(payment)
+    const HandleOnlinePayment = (paymentSelected: any) => {
+        if (!multiPayment) {
+            setEwalletSelected(false)
+            setPayment(paymentSelected)
+        } else {
+            if (payment != paymentSelected) {
+                setPayment(paymentSelected)
+            } else {
+                setPayment('')
+            }
+        }
     }
 
     useEffect(() => {
-        console.log('period = ', subPeriod)
         if (packageInfo != undefined)
             packageInfo.map((res: any) => {
-                console.log('subPeriod === res.subscriptionPeriodCode ', subPeriod === res.subscriptionPeriodCode)
-                if (subPeriod === res.subscriptionPeriodCode) {
+                console.log('res = ', res)
+                if (subPeriod === res.selectedSubscriptionPeriodCode) {
                     setPackageDurationPriceSummery(res)
                 }
             })
@@ -187,12 +181,11 @@ export default function SubscriptionPayment(
     const HandleSubPeriod = (value: any) => {
         setSubPeriod(value)
         packageInfo.map((res: any) => {
-            if (value === res.subscriptionPeriodCode) {
+            if (value === res.selectedSubscriptionPeriodCode) {
                 setPackageDurationPriceSummery(res)
             }
         })
 
-        console.log('packageInfo = ', packageInfo)
         // packageInfo.summeryList.map((res: any) => {
         //     if (value === res.subscriptionPeriodCode) {
         //         console.log('summeryList = ', res)
@@ -209,7 +202,7 @@ export default function SubscriptionPayment(
                         <h1 className='text-3xl font-semibold'>{t('TAG_PAYMENT_METHOD')}:</h1>
                     </div>
                     {
-                        paymentMethod?.map((res: any, index: number) => {
+                        paymentMethod?.content?.map((res: any, index: number) => {
                             return (
                                 <div key={index}>
                                     {
@@ -222,7 +215,7 @@ export default function SubscriptionPayment(
                                         res.paymentMethodDisplayName == 'E-WALLET' && ewalletSelected && <div className="flex space-x-10 pt-4">
                                             <div className="flex-1">
                                                 <p>Balance : </p>
-                                                <Input id="balance" disabled={true} value={balance} placeholder={''} type="number" onChange={(e) => setBalance(Number(e.target.value))} className="col-span-2" />
+                                                <Input id="balance" disabled={true} value={balance} placeholder={''} type="number" className="col-span-2" />
 
                                             </div>
                                             <div className="flex-1">
@@ -260,19 +253,19 @@ export default function SubscriptionPayment(
                                 <TabsTrigger
                                     className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
                                     key={index}
-                                    value={res.subscriptionPeriodCode}
+                                    value={res.selectedSubscriptionPeriodCode}
                                 >
-                                    {res.subscriptionPeriod}
+                                    {res.selectedSubscriptionPeriod}
                                 </TabsTrigger>
                             ))
                         }
                     </TabsList>
                 </Tabs>
                 <div className="mt-4">
-                    <SubscriptionSummery summeryPackage={summeryPackage} packageDurationPriceSummery={packageDurationPriceSummery} />
+                    <SubscriptionSummery summeryPackage={summeryPackage} packageDurationPriceSummery={packageDurationPriceSummery} currentPackageInfo={currentPackageInfo} />
                 </div>
                 {
-                    subPackage !== 1 &&
+                    packageDurationPriceSummery?.totalPaymentAmount !== 0 &&
                     <PaymentMethod />
                 }
             </div>
@@ -288,21 +281,7 @@ export default function SubscriptionPayment(
     )
 }
 
-const PaymentButton = ({ id, payment, src, name, onClick }: { id: string, payment: string, src: any, name: string, onClick: () => void }) => {
-    return (
-        <button className={`w-full border rounded-lg shadow-lg ${payment == id && "ring-2 ring-blue-800"}`} onClick={onClick}>
-            <div className='pl-[20px] flex py-1'>
-                <Image src={src} alt={`${src}`} height={80} width={80} className='pr-[20px]' />
-                <div className='flex flex-col item-center justify-center'>
-                    <h1 className='text-2xl font-semibold'>{name}</h1>
-                </div>
-            </div>
-        </button>
-    )
-}
-
-
-const SubscriptionSummery = ({ summeryPackage, packageDurationPriceSummery }: { summeryPackage: any, packageDurationPriceSummery: any }) => {
+const SubscriptionSummery = ({ summeryPackage, packageDurationPriceSummery, currentPackageInfo }: { summeryPackage: any, packageDurationPriceSummery: any, currentPackageInfo: any }) => {
     const t = useTranslations()
     return (
         <>
@@ -313,31 +292,20 @@ const SubscriptionSummery = ({ summeryPackage, packageDurationPriceSummery }: { 
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
                     </div>
 
-                    <div className='grid grid-cols-4 pt-[10px]'>
+                    <div className='grid grid-cols-4 max-[600px]:grid-cols-5 pt-[10px]'>
                         <div className='col-span-3 flex flex-col '>
-                            <h2 className='text-base'>{summeryPackage?.PackageName} Package</h2>
-                            <p className='text-gray-400'>{packageDurationPriceSummery?.subscriptionPeriod}</p>
+                            <h2 className='text-base'>Selected  {summeryPackage?.PackageName} {t('TAG_PACKAGE')}</h2>
+                            <p className='text-gray-400'>{packageDurationPriceSummery?.selectedSubscriptionPeriod}</p>
                         </div>
-                        <div className='flex items-center justify-end col-span-1'>
+                        <div className='flex items-center justify-end col-span-1 max-[600px]:col-span-2'>
                             <h1>RM {packageDurationPriceSummery?.currentPackagePrice}</h1>
                         </div>
-                    </div>
 
-                    <div className=' flex flex-col items-center justify-center'>
-                        <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
-                    </div>
-
-                    <div className='grid grid-cols-4 pt-[10px]'>
-                        {/* <div className='col-span-3 flex flex-col '>
-                            <h2 className='text-base'>Sub Total</h2>
-                        </div>
-                        <div className='flex items-center justify-end col-span-1'>
-                            <h1>RM 100</h1>
-                        </div> */}
                         <div className='col-span-3 flex flex-col '>
-                            <h2 className='text-base'>Discount</h2>
+                            <h2 className='text-base'>Remaining Amount from {summeryPackage?.PackageName} {t('TAG_PACKAGE')}</h2>
+                            <p className='text-gray-400'>{currentPackageInfo?.currentSubscriptionPeriod}</p>
                         </div>
-                        <div className='flex items-center justify-end col-span-1'>
+                        <div className='flex items-center justify-end  col-span-1 max-[600px]:col-span-2'>
                             <h1>RM {packageDurationPriceSummery?.remainingAmountFromPreviousPackage}</h1>
                         </div>
                     </div>
@@ -346,11 +314,37 @@ const SubscriptionSummery = ({ summeryPackage, packageDurationPriceSummery }: { 
                         <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
                     </div>
 
-                    <div className='grid grid-cols-4 pt-[10px]'>
+                    <div className='grid grid-cols-4 max-[600px]:grid-cols-5 pt-[10px]'>
                         <div className='col-span-3 flex flex-col '>
-                            <h2 className='text-base'>Total</h2>
+                            <h2 className='text-base'>{t('TAG_DISCOUNT')}</h2>
+                        </div>
+                        <div className='flex items-center justify-end col-span-1 max-[600px]:col-span-2'>
+                            <h1>RM {packageDurationPriceSummery?.discountPrice}</h1>
+                        </div>
+
+                        <div className='col-span-3 flex flex-col '>
+                            <h2 className='text-base'>{t('TAG_EWALLET')}</h2>
+                        </div>
+                        <div className='flex items-center justify-end col-span-1 max-[600px]:col-span-2'>
+                            <h1>RM {packageDurationPriceSummery?.ewalletAdjustmentAmount}</h1>
+                        </div>
+                        {/* <div className='col-span-3 flex flex-col '>
+                            <h2 className='text-base'>{t('TAG_DISCOUNT')}</h2>
                         </div>
                         <div className='flex items-center justify-end col-span-1'>
+                            <h1>RM {packageDurationPriceSummery?.remainingAmountFromPreviousPackage}</h1>
+                        </div> */}
+                    </div>
+
+                    <div className=' flex flex-col items-center justify-center'>
+                        <div className='w-full h-[1px] mt-2 bg-gray-300'></div>
+                    </div>
+
+                    <div className='grid grid-cols-5 pt-[10px]'>
+                        <div className='col-span-3 flex flex-col '>
+                            <h2 className='text-base'>{t('TAG_TOTAL')}</h2>
+                        </div>
+                        <div className='flex items-center justify-end col-span-2'>
                             <h1>RM {packageDurationPriceSummery?.totalPaymentAmount}</h1>
                         </div>
                     </div>

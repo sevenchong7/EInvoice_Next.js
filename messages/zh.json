@@ -300,5 +300,9 @@
     "TAG_PAYMENT_FAIL": "订阅失败",
     "TAG_PAYMENT_FAIL_DESC": "订阅失败",
     "TAG_PDF": "PDF",
+    "TAG_DISCOUNT": "折扣",
+    "TAG_TOTAL": "总额",
+    "TAG_PACKAGE": "配套",
+    "TAG_EWALLET": "调整电子钱包剩余金额",
     "": ""
 }

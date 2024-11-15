@@ -9,22 +9,14 @@ import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { StateListParam } from "@/lib/interface/generalInterface";
 
 export default function RegisterUserStep2Admin({ form }: { form: UseFormReturn<RegisterUserAdminFormValues> }) {
     const [loading, setLoading] = useState(false);
     const t = useTranslations()
-    const [countries, setCountries] = useState<CountryList[]>()
-    const [states, setStates] = useState<StateList[]>();
-
-    const GetCountryInfo = async () => {
-        return await getCountry();
-    }
-
-    useEffect(() => {
-        GetCountryInfo().then((value) => {
-            setCountries(value)
-        })
-    }, [])
+    const countries = useGeneralTaskStore((state) => state.countryList)
+    const [states, setStates] = useState<StateListParam[]>();
 
     useEffect(() => {
         countries?.map((value) => {

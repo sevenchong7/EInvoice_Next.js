@@ -48,7 +48,6 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Paginator from './user-table-paging';
 import PermissionCheck from '@/components/permission-check';
-import { merchants } from '@/constants/data';
 import { boolean } from 'zod';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useTranslations } from 'next-intl';
@@ -71,9 +70,12 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 6,
   });
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    merchant: false
+    //using the accessKey in column
+    merchantName: false
   });
+
   const [checkboxStates, setCheckboxStates] = useState<any>({
     name: true,
     role: true
@@ -195,7 +197,8 @@ export function DataTable<TData, TValue>({
   const handlePermissionGranted = useCallback(() => {
     setColumnVisibility(prev => ({
       ...prev,
-      merchant: true,
+      //using the accessKey in column
+      merchantName: true,
     }));
   }, []);
 
@@ -205,9 +208,7 @@ export function DataTable<TData, TValue>({
       <PermissionCheck
         permission="userList.su.read"
         onPermissionGranted={handlePermissionGranted}
-      >
-        <></>
-      </PermissionCheck>
+      />
       <div className='grid lg:grid-cols-5 gap-4 '>
 
         <div className='lg:hidden'>

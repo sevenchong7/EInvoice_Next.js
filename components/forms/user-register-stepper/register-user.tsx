@@ -23,13 +23,14 @@ import RegisterUserStep4 from './register-user-step4';
 import RegisterUserStep5 from './register-user-step5';
 import approve from '@/public/Approval.png'
 import React from 'react';
-import { getLoginIdValidation, getPayment, getValidateEmail, register } from '@/lib/services/userService';
+import { getLoginIdValidation, getPayment, getValidateEmail, postRegister } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import LoadingOverlay from '@/components/loading';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useGeneralTaskStore } from '@/lib/store/generalStore';
 
-export default function RegisterUserForm({ packageData, paymentMethodData, subscriptionDurationData }: { packageData: any, paymentMethodData: any, subscriptionDurationData: any }) {
+export default function RegisterUserForm({ packageData, paymentMethodData, subscriptionDurationData, getCountryData }: { packageData: any, paymentMethodData: any, subscriptionDurationData: any, getCountryData: any }) {
     const [previousStep, setPreviousStep] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
     const [data, setData] = useState({});
@@ -40,9 +41,13 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
     const [loading, setLoading] = useState(false);
     const [subId, setSubId] = useState<any>()
     const [checkPaymentLoading, setCheckPaymentLoading] = useState(false)
+    const setCountryList = useGeneralTaskStore((state) => state.setCountryList)
+    const setPaymentMethod = useGeneralTaskStore((state) => state.setPaymentMethodList)
     // const {subId} = useParams()
 
     useEffect(() => {
+        setCountryList(getCountryData)
+        setPaymentMethod(paymentMethodData)
         if (form.getValues('subscribeDuration') !== null && form.getValues('subscribeDuration') !== undefined) {
             setSelectDuration(form.getValues('subscribeDuration'))
         }
@@ -121,7 +126,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
             return;
         }
 
-        console.log('data ==>', data);
+        // console.log('data ==>', data);
         setData(data);
         // api call and reset
         // if (form.getValues('streetAddress') != null || undefined) {
@@ -149,23 +154,23 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
             "paymentMethods": [form.getValues('paymentMethod')],
         }
 
-        const registerData = await register(registerParam)
+        const registerData = await postRegister(registerParam)
         if (registerData.status === true) {
             if (form.getValues('package') == 1) {
                 setCurrentStep(currentStep + 1)
             } else {
                 const lastIndex = registerData.data[registerData.data.length - 1]
-                console.log('last Index = ', lastIndex)
+                // console.log('last Index = ', lastIndex)
                 setLoading(true);
                 const paymentGatewayResponse = lastIndex.urlOrFormHtmlResult;
                 const resSubId = lastIndex.subscriptionId
-                console.log('registerData = ', registerData)
-                console.log('url =', paymentGatewayResponse)
-                console.log('subId =', lastIndex.subscriptionId)
+                // console.log('registerData = ', registerData)
+                // console.log('url =', paymentGatewayResponse)
+                // console.log('subId =', lastIndex.subscriptionId)
                 // Check if the response contains the expected data
                 if (paymentGatewayResponse) {
                     const url = paymentGatewayResponse;// Access the URL in the first item of the array
-                    console.log('URL to open:', url);
+                    // console.log('URL to open:', url);
                     window.open(url, '_blank'); // Opens the URL in a new tab
                     setSubId(resSubId)
 
@@ -374,7 +379,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                         }
                                         {
                                             currentStep == 3 &&
-                                            <RegisterUserStep4 form={form} paymentMethodData={paymentMethodData} packageData={packageData} subscriptionDurationLisstData={subscriptionDurationListData} />
+                                            <RegisterUserStep4 form={form} packageData={packageData} subscriptionDurationLisstData={subscriptionDurationListData} />
                                         }
                                         {
                                             currentStep == 4 &&

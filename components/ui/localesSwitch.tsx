@@ -3,17 +3,20 @@ import { useLocale, useTranslations } from 'next-intl';
 import LocaleSwitcherSelect from './LocaleSwitcherSelect';
 import { useEffect, useState } from 'react';
 import { getLanguage } from '@/lib/services/userService';
+import { useUserTaskStore } from '@/lib/store/userStore';
 
 export default function LocaleSwitcher() {
     const t = useTranslations('TAG_LOCALE_SWITCHER');
     const locale = useLocale();
-    const [languageData, setLanguageData] = useState()
+    const setLanguage = useUserTaskStore((state) => state.setGetLanguageList)
+    // const [languageData, setLanguageData] = useState()
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const GetLanguage = async () => {
             const lanData = await getLanguage()
-            setLanguageData(lanData)
+            setLanguage(lanData)
+            // setLanguageData(lanData)
         }
         GetLanguage()
 
@@ -22,7 +25,6 @@ export default function LocaleSwitcher() {
     return (
         <LocaleSwitcherSelect
             defaultValue={locale}
-            items={languageData}
             label={t('TAG_LABLE')}
         />
     );

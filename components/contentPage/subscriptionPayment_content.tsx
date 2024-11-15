@@ -2,7 +2,9 @@
 import BreadCrumb from "@/components/breadcrumb";
 import SubscriptionPayment from "@/components/profile/subscription-payment";
 import { getPackageInfo } from "@/lib/services/userService";
-import { useTaskStore } from "@/lib/store";
+import { useDataTaskStore } from "@/lib/store/dataStore";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { useUserTaskStore } from "@/lib/store/userStore";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,15 +23,23 @@ export default function SubscriptionPaymentContent(
         packageListData: any
     }) {
     const t = useTranslations()
-    const subPackage = useTaskStore((state) => state.packageId)
-    const [packageInfoData, setPackageInfoData] = useState<any>()
+    const subPackage = useDataTaskStore((state) => state.packageId)
+    const setPaymentMethod = useGeneralTaskStore((state) => state.setPaymentMethodList)
+    const setPackageInfo = useUserTaskStore((state) => state.setPackageInfoList)
+    const setMultiPayment = useUserTaskStore((state) => state.setMultiPaymentList)
+    const setEwalletBalance = useUserTaskStore((state) => state.setEWalletBalanceList)
+    const setPackageList = useUserTaskStore((state) => state.setRegisterPackageList)
 
     useEffect(() => {
+        setPaymentMethod(paymentMethodData)
+        setMultiPayment(multipaymentData)
+        setEwalletBalance(eWalletBalanceData)
+        setPackageList(packageListData)
+
         const packageInfo = async () => {
             const res = await getPackageInfo(subPackage)
             if (res != undefined) {
-                console.log('getPackageInfo = ', res)
-                setPackageInfoData(res)
+                setPackageInfo(res)
             }
         }
 
@@ -45,14 +55,7 @@ export default function SubscriptionPaymentContent(
     return (
         <div className="h-full space-y-4 p-4 pt-6 md:p-8">
             <BreadCrumb items={breadcrumbItems} />
-            <SubscriptionPayment
-                subPackage={Number(subPackage)}
-                paymentMethodData={paymentMethodData}
-                multipaymentData={multipaymentData}
-                eWalletBalanceData={eWalletBalanceData}
-                packageInfoData={packageInfoData}
-                packageListData={packageListData}
-            />
+            <SubscriptionPayment />
         </div>
     )
 }

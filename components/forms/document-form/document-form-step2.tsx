@@ -31,8 +31,9 @@ import { useTranslations } from "next-intl";
 import React from "react";
 import { getMerchantInfo } from "@/lib/services/userService";
 import { CountryList, StateList } from "@/constants/data";
-import { getCountry } from "@/lib/services/generalService";
 import { ConfirmButton } from "@/components/ui/confirmButton";
+import { useGeneralTaskStore } from "@/lib/store/generalStore";
+import { GetCountryParam, StateListParam } from "@/lib/interface/generalInterface";
 
 interface MerchantParam {
     address: string;
@@ -67,27 +68,23 @@ export default function DocumentFormStep2(
     const [buyerError, setBuyerError] = useState(false);
 
     const [merchantInfo, setMerchantInfo] = useState<MerchantParam>()
-    const [supplierCountries, setSupplierCountries] = useState<CountryList[]>()
-    const [supplierStates, setSupplierStates] = useState<StateList[]>();
-    const [buyerCountries, setBuyerCountries] = useState<CountryList[]>()
-    const [buyerStates, setBuyerStates] = useState<StateList[]>();
-    const [deliveryCountries, setDeliveryCountries] = useState<CountryList[]>()
-    const [deliveryStates, setDeliveryStates] = useState<StateList[]>();
+    const [supplierCountries, setSupplierCountries] = useState<GetCountryParam[]>()
+    const [supplierStates, setSupplierStates] = useState<StateListParam[]>();
+    const [buyerCountries, setBuyerCountries] = useState<GetCountryParam[]>()
+    const [buyerStates, setBuyerStates] = useState<StateListParam[]>();
+    const [deliveryCountries, setDeliveryCountries] = useState<GetCountryParam[]>()
+    const [deliveryStates, setDeliveryStates] = useState<StateListParam[]>();
+
+    const countryList = useGeneralTaskStore((state) => state.countryList)
 
     async function getMerchant() {
         return await getMerchantInfo();
     };
 
-    const GetCountryInfo = async () => {
-        return await getCountry();
-    }
-
     useEffect(() => {
-        GetCountryInfo().then((value) => {
-            setSupplierCountries(value)
-            setBuyerCountries(value)
-            setDeliveryCountries(value)
-        })
+        setSupplierCountries(countryList)
+        setBuyerCountries(countryList)
+        setDeliveryCountries(countryList)
 
         getMerchant().then((res) => {
             setMerchantInfo(res)

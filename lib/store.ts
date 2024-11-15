@@ -26,8 +26,6 @@ export type State = {
   tasks: Task[];
   columns: Column[];
   draggedTask: string | null;
-  packageId: number;
-  packageSubStatus: boolean,
 };
 
 export type Actions = {
@@ -39,8 +37,6 @@ export type Actions = {
   setTasks: (updatedTask: Task[]) => void;
   setCols: (cols: Column[]) => void;
   updateCol: (id: UniqueIdentifier, newName: string) => void;
-  setPackage: (packageId: number) => void;
-  setPackageSubStatus: (packageSubStatus: boolean) => void;
 
 };
 
@@ -80,8 +76,7 @@ export const useTaskStore = create<State & Actions>()(
         })),
       setTasks: (newTasks: Task[]) => set({ tasks: newTasks }),
       setCols: (newCols: Column[]) => set({ columns: newCols }),
-      setPackage: (newPackageId: number) => set({ packageId: newPackageId }),
-      setPackageSubStatus: (newPackageSubStatus: boolean) => set({ packageSubStatus: newPackageSubStatus }),
+
     }),
     { name: 'task-store', skipHydration: true }
   )

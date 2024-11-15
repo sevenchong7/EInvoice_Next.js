@@ -17,8 +17,6 @@ export const postRegenerateToken = async (body: any) => {
 export const getpaymentMethod = async () => {
     const response = await getNoHeader('/v1/payment-methods');
 
-    console.log('getpaymentMethod = ', response.data)
-
     return response.data;
 }
 

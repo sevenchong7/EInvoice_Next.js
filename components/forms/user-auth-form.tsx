@@ -56,8 +56,8 @@ export default function UserAuthForm() {
     const accessExpiry = sessionExpiry ? JSON.parse(sessionExpiry) : null
 
     const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null
-    console.log('[checkRemeberMe] rememberMe= ', rememberMe)
-    console.log('[checkRemeberMe] sessionExpiry= ', sessionExpiry)
+    // console.log('[checkRemeberMe] rememberMe= ', rememberMe)
+    // console.log('[checkRemeberMe] sessionExpiry= ', sessionExpiry)
 
     if (rememberMe === true) {
       setLoading(true)
@@ -148,9 +148,12 @@ export default function UserAuthForm() {
         localStorage.setItem('rmbMe', JSON.stringify(rememberMe))
         localStorage.setItem('username', username)
       }
-      router.replace('/dashboard');
-      // router.refresh()
 
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 500); // Delay of 500 milliseconds
+
+      // router.replace('/dashboard');
     }
   };
 
@@ -222,7 +225,7 @@ export default function UserAuthForm() {
                 )}
               />
             </div>
-            <Link href='/forgetPassword' className='text-sm text-blue-800 hover:underline'>Forget Password</Link>
+            <button className='text-sm text-blue-800 hover:underline' onClick={() => { router.push('/forgetPassword') }}>Forget Password</button>
           </div>
 
           <div className='pt-[50px] flex-1'>

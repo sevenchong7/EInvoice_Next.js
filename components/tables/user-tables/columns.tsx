@@ -5,7 +5,7 @@ import StatusAction from './status-action';
 import { CellAction } from './cell-action';
 
 
-export const columns: ColumnDef<contents>[] = [
+export const columns: ColumnDef<any>[] = [
 
   // {
   //   id: 'select',

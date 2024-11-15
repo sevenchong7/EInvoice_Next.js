@@ -34,7 +34,6 @@ import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCountry } from '@/lib/services/generalService';
-import { editMerchantInfo } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
 
@@ -84,320 +83,320 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 };
 
 
-const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolean, setOpen: any }) => {
-  const t = useTranslations();
-  const { toast } = useToast();
-  const router = useRouter();
-  const [username, setUsername] = useState(data.loginId)
-  const [companyEmail, setCompanyEmail] = useState(data.email);
-  const [companyName, setCompanyName] = useState(data.companyName);
-  const [regNo, setRegNo] = useState(data.registrationNo);
-  const [tinNo, setTinNo] = useState(data.businessTinNo);
-  const [sstNo, setSSTNo] = useState(data.sstRegNo);
-  const [tourNo, setTourNo] = useState(data.tourRegNo);
-  const [streetAddress, setStreetAddress] = useState(data.address);
-  const [zipCode, setZipCode] = useState(data.postcode);
-  const [townCity, setTownCity] = useState(data.city);
-  const [state, setState] = useState(data.stateId);
-  const [country, setCountry] = useState(data.country);
-  const [contactNo, setContactNo] = useState(data.contact);
-  const [contactPrefix, setContactPrfix] = useState(data.contactPrefix);
-  const [status, setStatus] = useState(data.status);
-  const [textVisible, setTextVisible] = useState(true);
-  const [disableValidate, setDisableValidate] = useState(true);
-  const [countryList, setCountryList] = useState<CountryList[]>()
-  const [stateList, setStateList] = useState<StateList[]>()
+// const EditUser = ({ data, open, setOpen }: { data: MerchantContent, open: boolean, setOpen: any }) => {
+//   const t = useTranslations();
+//   const { toast } = useToast();
+//   const router = useRouter();
+//   const [username, setUsername] = useState(data.loginId)
+//   const [companyEmail, setCompanyEmail] = useState(data.email);
+//   const [companyName, setCompanyName] = useState(data.companyName);
+//   const [regNo, setRegNo] = useState(data.registrationNo);
+//   const [tinNo, setTinNo] = useState(data.businessTinNo);
+//   const [sstNo, setSSTNo] = useState(data.sstRegNo);
+//   const [tourNo, setTourNo] = useState(data.tourRegNo);
+//   const [streetAddress, setStreetAddress] = useState(data.address);
+//   const [zipCode, setZipCode] = useState(data.postcode);
+//   const [townCity, setTownCity] = useState(data.city);
+//   const [state, setState] = useState(data.stateId);
+//   const [country, setCountry] = useState(data.country);
+//   const [contactNo, setContactNo] = useState(data.contact);
+//   const [contactPrefix, setContactPrfix] = useState(data.contactPrefix);
+//   const [status, setStatus] = useState(data.status);
+//   const [textVisible, setTextVisible] = useState(true);
+//   const [disableValidate, setDisableValidate] = useState(true);
+//   const [countryList, setCountryList] = useState<CountryList[]>()
+//   const [stateList, setStateList] = useState<StateList[]>()
 
 
-  useEffect(() => {
-    if (open) {
-      const GetCountryList = async () => {
-        return await getCountry();
-      }
-      GetCountryList().then((res) => setCountryList(res));
-    }
-  }, [open])
+//   useEffect(() => {
+//     if (open) {
+//       const GetCountryList = async () => {
+//         return await getCountry();
+//       }
+//       GetCountryList().then((res) => setCountryList(res));
+//     }
+//   }, [open])
 
-  useEffect(() => {
-    if (open) {
-      countryList?.map((value) => {
-        if (value.countryCode === data.country) {
-          setStateList(value.stateList)
-          setContactPrfix(value.contactPrefix)
-        }
-      })
-    }
-  }, [open, countryList])
+//   useEffect(() => {
+//     if (open) {
+//       countryList?.map((value) => {
+//         if (value.countryCode === data.country) {
+//           setStateList(value.stateList)
+//           setContactPrfix(value.contactPrefix)
+//         }
+//       })
+//     }
+//   }, [open, countryList])
 
-  useEffect(() => {
-    if (open) {
-      countryList?.map((value) => {
-        if (value.countryCode === country) {
-          setStateList(value.stateList)
-          setContactPrfix(value.contactPrefix)
-        }
-      })
-    }
-  }, [open, country])
+//   useEffect(() => {
+//     if (open) {
+//       countryList?.map((value) => {
+//         if (value.countryCode === country) {
+//           setStateList(value.stateList)
+//           setContactPrfix(value.contactPrefix)
+//         }
+//       })
+//     }
+//   }, [open, country])
 
-  useEffect(() => {
-    if (open) {
-      setStatus(data.status)
-      setCountry(data.country)
-    }
-  }, [open])
+//   useEffect(() => {
+//     if (open) {
+//       setStatus(data.status)
+//       setCountry(data.country)
+//     }
+//   }, [open])
 
-  const HandleStatus = () => {
-    if (status == 'ACTIVE') {
-      setStatus('DISABLE')
-    } else {
-      setStatus('ACTIVE')
-    }
+//   const HandleStatus = () => {
+//     if (status == 'ACTIVE') {
+//       setStatus('DISABLE')
+//     } else {
+//       setStatus('ACTIVE')
+//     }
 
-    setTextVisible(false);
+//     setTextVisible(false);
 
-    setTimeout(() => {
-      setTextVisible(true);
-    }, 300);
+//     setTimeout(() => {
+//       setTextVisible(true);
+//     }, 300);
 
-  }
+//   }
 
-  useEffect(() => {
-    if (open) {
-      if (regNo != data.registrationNo || tinNo != data.businessTinNo) {
-        setDisableValidate(false);
-      }
-    }
-  }, [open, regNo, tinNo])
+//   useEffect(() => {
+//     if (open) {
+//       if (regNo != data.registrationNo || tinNo != data.businessTinNo) {
+//         setDisableValidate(false);
+//       }
+//     }
+//   }, [open, regNo, tinNo])
 
-  const HandleConfirm = () => {
-    const editMerchantParam = {
-      "companyName": companyName,
-      "companyEmail": companyEmail,
-      "registrationNo": regNo,
-      "busTinNo": tinNo,
-      "sstRegNo": sstNo,
-      "tourRegNo": tourNo,
-      "streetAddress": streetAddress,
-      "postCode": zipCode,
-      "city": townCity,
-      "state": state,
-      "country": country,
-      "contactPrefix": contactPrefix,
-      "contact": contactNo
-    }
+//   const HandleConfirm = () => {
+//     const editMerchantParam = {
+//       "companyName": companyName,
+//       "companyEmail": companyEmail,
+//       "registrationNo": regNo,
+//       "busTinNo": tinNo,
+//       "sstRegNo": sstNo,
+//       "tourRegNo": tourNo,
+//       "streetAddress": streetAddress,
+//       "postCode": zipCode,
+//       "city": townCity,
+//       "state": state,
+//       "country": country,
+//       "contactPrefix": contactPrefix,
+//       "contact": contactNo
+//     }
 
-    const control = editMerchantInfo(data.merchantId, editMerchantParam)
+//     const control = editMerchantInfo(data.merchantId, editMerchantParam)
 
-    control.then(() => {
-      setOpen(false)
-      toast({
-        title: "Success",
-        description: "Merchant has been edit successfully!",
-      });
-      router.refresh()
-    })
-  }
+//     control.then(() => {
+//       setOpen(false)
+//       toast({
+//         title: "Success",
+//         description: "Merchant has been edit successfully!",
+//       });
+//       router.refresh()
+//     })
+//   }
 
-  return (
-    <SheetContent className='md:min-w-[500px]'>
-      <ScrollArea className='h-full ' onWheel={(e) => {
-        e.stopPropagation();
-      }}>
-        <div className='pr-5'>
-          <SheetHeader>
-            <SheetTitle className='text-2xl'>{t('TAG_EDIT_USER_INFORMATION')}</SheetTitle>
-          </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-5 items-center gap-4">
-              <Label htmlFor="name" className='col-span-2' >
-                {t('TAG_NAME')}
-              </Label>
-              <Input id="name" value={username} placeholder={''} onChange={(e) => setUsername(e.target.value)} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-5 items-center gap-4">
-              <Label htmlFor="status" className='col-span-3'>
-                {t('TAG_STATUS')}
-              </Label>
-              {status == 'Pending Verification' ? <p className='text-orange-500 text-center text-sm col-span-2'>{status}</p> :
-                <div className='flex justify-end col-span-2'>
-                  <Button
-                    onClick={HandleStatus}
-                    className={cn(
-                      "relative flex items-center transition-all duration-300 min-w-[110px]",
-                      status === "ACTIVE" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
-                      "rounded-lg"
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                        status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
-                      )}
-                    />
-                    <p
-                      className={cn(
-                        textVisible ? "opacity-100 " : "opacity-0"
-                      )}
-                    >
-                      {status}
-                    </p>
-                  </Button>
-                </div>
+//   return (
+//     <SheetContent className='md:min-w-[500px]'>
+//       <ScrollArea className='h-full ' onWheel={(e) => {
+//         e.stopPropagation();
+//       }}>
+//         <div className='pr-5'>
+//           <SheetHeader>
+//             <SheetTitle className='text-2xl'>{t('TAG_EDIT_USER_INFORMATION')}</SheetTitle>
+//           </SheetHeader>
+//           <div className="grid gap-4 py-4">
+//             <div className="grid grid-cols-5 items-center gap-4">
+//               <Label htmlFor="name" className='col-span-2' >
+//                 {t('TAG_NAME')}
+//               </Label>
+//               <Input id="name" value={username} placeholder={''} onChange={(e) => setUsername(e.target.value)} className="col-span-3" />
+//             </div>
+//             <div className="grid grid-cols-5 items-center gap-4">
+//               <Label htmlFor="status" className='col-span-3'>
+//                 {t('TAG_STATUS')}
+//               </Label>
+//               {status == 'Pending Verification' ? <p className='text-orange-500 text-center text-sm col-span-2'>{status}</p> :
+//                 <div className='flex justify-end col-span-2'>
+//                   <Button
+//                     onClick={HandleStatus}
+//                     className={cn(
+//                       "relative flex items-center transition-all duration-300 min-w-[110px]",
+//                       status === "ACTIVE" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
+//                       "rounded-lg"
+//                     )}
+//                   >
+//                     <div
+//                       className={cn(
+//                         "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
+//                         status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
+//                       )}
+//                     />
+//                     <p
+//                       className={cn(
+//                         textVisible ? "opacity-100 " : "opacity-0"
+//                       )}
+//                     >
+//                       {status}
+//                     </p>
+//                   </Button>
+//                 </div>
 
-              }
-            </div>
+//               }
+//             </div>
 
-            <div className='space-y-3'>
-              <h1 className='text-2xl font-semibold'>{t('TAG_COMPANY')} {t('TAG_INFO')}.</h1>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="companyName" className='col-span-2' >
-                  {t('TAG_COMPANY')} {t('TAG_NAME')}
-                </Label>
-                <Input id="companyName" value={companyName} placeholder={data.companyName} onChange={(e) => setCompanyName(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="companyEmail" className='col-span-2' >
-                  {t('TAG_COMPANY')} {t('TAG_EMAIL')}
-                </Label>
-                <Input id="companyEmail" value={companyEmail} placeholder={data.email} onChange={(e) => setCompanyEmail(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="regNo" className='col-span-2' >
-                  {t('TAG_REGISTRATION_NO')}
-                </Label>
-                <Input id="regNo" value={regNo} placeholder={data.registrationNo} onChange={(e) => setRegNo(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="tinNo" className='col-span-2' >
-                  {t('TAG_BUSINESS_TIN_NO')}
-                </Label>
-                <Input id="tinNo" value={tinNo} placeholder={data.businessTinNo} onChange={(e) => setTinNo(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="sst" className='col-span-2' >
-                  {t('TAG_SST_REG_NO')}
-                </Label>
-                <Input id="sst" value={sstNo} placeholder={data.sstRegNo} onChange={(e) => setSSTNo(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="tourNo" className='col-span-2' >
-                  {t('TAG_TOUR_REG_NO')}
-                </Label>
-                <Input id="tourNo" value={tourNo} placeholder={data.tourRegNo} onChange={(e) => setTourNo(e.target.value)} className="col-span-3" />
-              </div>
-              <div className='flex justify-end items-center'>
-                <ConfirmButton className='bg-blue-900 hover:bg-blue-800' disabled={disableValidate}>{t('TAG_VALIDATE')}</ConfirmButton>
-              </div>
-            </div>
+//             <div className='space-y-3'>
+//               <h1 className='text-2xl font-semibold'>{t('TAG_COMPANY')} {t('TAG_INFO')}.</h1>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="companyName" className='col-span-2' >
+//                   {t('TAG_COMPANY')} {t('TAG_NAME')}
+//                 </Label>
+//                 <Input id="companyName" value={companyName} placeholder={data.companyName} onChange={(e) => setCompanyName(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="companyEmail" className='col-span-2' >
+//                   {t('TAG_COMPANY')} {t('TAG_EMAIL')}
+//                 </Label>
+//                 <Input id="companyEmail" value={companyEmail} placeholder={data.email} onChange={(e) => setCompanyEmail(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="regNo" className='col-span-2' >
+//                   {t('TAG_REGISTRATION_NO')}
+//                 </Label>
+//                 <Input id="regNo" value={regNo} placeholder={data.registrationNo} onChange={(e) => setRegNo(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="tinNo" className='col-span-2' >
+//                   {t('TAG_BUSINESS_TIN_NO')}
+//                 </Label>
+//                 <Input id="tinNo" value={tinNo} placeholder={data.businessTinNo} onChange={(e) => setTinNo(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="sst" className='col-span-2' >
+//                   {t('TAG_SST_REG_NO')}
+//                 </Label>
+//                 <Input id="sst" value={sstNo} placeholder={data.sstRegNo} onChange={(e) => setSSTNo(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="tourNo" className='col-span-2' >
+//                   {t('TAG_TOUR_REG_NO')}
+//                 </Label>
+//                 <Input id="tourNo" value={tourNo} placeholder={data.tourRegNo} onChange={(e) => setTourNo(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className='flex justify-end items-center'>
+//                 <ConfirmButton className='bg-blue-900 hover:bg-blue-800' disabled={disableValidate}>{t('TAG_VALIDATE')}</ConfirmButton>
+//               </div>
+//             </div>
 
-            <div className='space-y-3'>
-              <h1 className='text-2xl font-semibold'>{t('TAG_ADDRESS')}.</h1>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="streetAddress" className='col-span-2' >
-                  {t('TAG_STREET_ADDRESS')} <Required />
-                </Label>
-                <Input id="streetAddress" value={streetAddress} placeholder={''} onChange={(e) => setStreetAddress(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="zipCode" className='col-span-2' >
-                  {t('TAG_ZIPCODE')} <Required />
-                </Label>
-                <Input id="zipCode" value={zipCode} placeholder={''} onChange={(e) => setZipCode(e.target.value)} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="townCity" className='col-span-2' >
-                  {t('TAG_TOWN_CITY')} <Required />
-                </Label>
-                <Input id="townCity" value={townCity} placeholder={''} onChange={(e) => setTownCity(e.target.value)} className="col-span-3" />
-              </div>
+//             <div className='space-y-3'>
+//               <h1 className='text-2xl font-semibold'>{t('TAG_ADDRESS')}.</h1>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="streetAddress" className='col-span-2' >
+//                   {t('TAG_STREET_ADDRESS')} <Required />
+//                 </Label>
+//                 <Input id="streetAddress" value={streetAddress} placeholder={''} onChange={(e) => setStreetAddress(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="zipCode" className='col-span-2' >
+//                   {t('TAG_ZIPCODE')} <Required />
+//                 </Label>
+//                 <Input id="zipCode" value={zipCode} placeholder={''} onChange={(e) => setZipCode(e.target.value)} className="col-span-3" />
+//               </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="townCity" className='col-span-2' >
+//                   {t('TAG_TOWN_CITY')} <Required />
+//                 </Label>
+//                 <Input id="townCity" value={townCity} placeholder={''} onChange={(e) => setTownCity(e.target.value)} className="col-span-3" />
+//               </div>
 
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="state" className='col-span-2' >
-                  {t('TAG_STATE')} <Required />
-                </Label>
-                <div className='col-span-3'>
-                  <Select
-                    // disabled={editable}
-                    value={state}
-                    onValueChange={(value) => setState(value)}
-                  // defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        // defaultValue={field.value}
-                        placeholder="Select a State"
-                      />
-                    </SelectTrigger>
-                    <SelectContent className='max-h-[300px] overflow-y-scroll'>
-                      {/* @ts-ignore  */}
-                      <SelectGroup>
-                        {stateList?.map((state, index) => (
-                          <SelectItem key={index} value={state.stateCode}>
-                            {state.stateName}
-                          </SelectItem>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="state" className='col-span-2' >
+//                   {t('TAG_STATE')} <Required />
+//                 </Label>
+//                 <div className='col-span-3'>
+//                   <Select
+//                     // disabled={editable}
+//                     value={state}
+//                     onValueChange={(value) => setState(value)}
+//                   // defaultValue={field.value}
+//                   >
+//                     <SelectTrigger>
+//                       <SelectValue
+//                         // defaultValue={field.value}
+//                         placeholder="Select a State"
+//                       />
+//                     </SelectTrigger>
+//                     <SelectContent className='max-h-[300px] overflow-y-scroll'>
+//                       {/* @ts-ignore  */}
+//                       <SelectGroup>
+//                         {stateList?.map((state, index) => (
+//                           <SelectItem key={index} value={state.stateCode}>
+//                             {state.stateName}
+//                           </SelectItem>
 
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {/* <Input id="state" value={state} placeholder={''} onChange={(e) => setState(e.target.value)} className="col-span-3" /> */}
-              </div>
+//                         ))}
+//                       </SelectGroup>
+//                     </SelectContent>
+//                   </Select>
+//                 </div>
+//                 {/* <Input id="state" value={state} placeholder={''} onChange={(e) => setState(e.target.value)} className="col-span-3" /> */}
+//               </div>
 
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="country" className='col-span-2' >
-                  {t('TAG_COUNTRY')} <Required />
-                </Label>
-                <div className='w-full col-span-3'>
-                  <Select
-                    // disabled={editable}
-                    value={country}
-                    onValueChange={(value) => setCountry(value)}
-                  // defaultValue={field.value}
-                  >
-                    {/* <FormControl> */}
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder="Select a Country"
-                      />
-                    </SelectTrigger>
-                    {/* </FormControl> */}
-                    <SelectContent >
-                      {/* @ts-ignore  */}
-                      <SelectGroup className='max-h-[300px]'>
-                        {countryList?.map((country, index) => (
-                          <SelectItem key={index} value={country.countryCode}>
-                            {country.countryName}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="country" className='col-span-2' >
+//                   {t('TAG_COUNTRY')} <Required />
+//                 </Label>
+//                 <div className='w-full col-span-3'>
+//                   <Select
+//                     // disabled={editable}
+//                     value={country}
+//                     onValueChange={(value) => setCountry(value)}
+//                   // defaultValue={field.value}
+//                   >
+//                     {/* <FormControl> */}
+//                     <SelectTrigger>
+//                       <SelectValue
+//                         placeholder="Select a Country"
+//                       />
+//                     </SelectTrigger>
+//                     {/* </FormControl> */}
+//                     <SelectContent >
+//                       {/* @ts-ignore  */}
+//                       <SelectGroup className='max-h-[300px]'>
+//                         {countryList?.map((country, index) => (
+//                           <SelectItem key={index} value={country.countryCode}>
+//                             {country.countryName}
+//                           </SelectItem>
+//                         ))}
+//                       </SelectGroup>
+//                     </SelectContent>
+//                   </Select>
+//                 </div>
+//               </div>
+//             </div>
 
-            <div className='space-y-3'>
-              <h1 className='text-2xl font-semibold'>{t('TAG_CONTACT')}</h1>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <Label htmlFor="contactNo" className='col-span-2' >
-                  {t('TAG_CONTACT_NO')}
-                </Label>
-                <Input id="contactNo" disabled={true} value={contactPrefix} placeholder={''} className="" />
-                <Input id="contactNo" value={contactNo} placeholder={''} onChange={(e) => setContactNo(e.target.value)} className="col-span-2" />
-              </div>
-            </div>
-          </div>
-          <SheetFooter>
-            {/* <SheetClose asChild> */}
-            <ConfirmButton type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { HandleConfirm() }}>{t('TAG_CONFIRM')}</ConfirmButton>
-            {/* </SheetClose> */}
-          </SheetFooter>
-        </div>
-        <ScrollBar />
-      </ScrollArea>
-    </SheetContent>
-  )
-}
+//             <div className='space-y-3'>
+//               <h1 className='text-2xl font-semibold'>{t('TAG_CONTACT')}</h1>
+//               <div className="grid grid-cols-5 items-center gap-4">
+//                 <Label htmlFor="contactNo" className='col-span-2' >
+//                   {t('TAG_CONTACT_NO')}
+//                 </Label>
+//                 <Input id="contactNo" disabled={true} value={contactPrefix} placeholder={''} className="" />
+//                 <Input id="contactNo" value={contactNo} placeholder={''} onChange={(e) => setContactNo(e.target.value)} className="col-span-2" />
+//               </div>
+//             </div>
+//           </div>
+//           <SheetFooter>
+//             {/* <SheetClose asChild> */}
+//             <ConfirmButton type="submit" className='bg-blue-800 hover:bg-blue-700' onClick={() => { HandleConfirm() }}>{t('TAG_CONFIRM')}</ConfirmButton>
+//             {/* </SheetClose> */}
+//           </SheetFooter>
+//         </div>
+//         <ScrollBar />
+//       </ScrollArea>
+//     </SheetContent>
+//   )
+// }
 

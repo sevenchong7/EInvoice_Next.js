@@ -300,5 +300,9 @@
     "TAG_PAYMENT_FAIL": "Tidak Berjaya Melanggan",
     "TAG_PAYMENT_FAIL_DESC": "Tidak Berjaya Melanggan",
     "TAG_PDF": "PDF",
+    "TAG_DISCOUNT": "Diskaun",
+    "TAG_TOTAL": "Jumlah",
+    "TAG_PACKAGE": "Pakej",
+    "TAG_EWALLET": "Laraskan Baki Jumlah ke dalam E-Dompet",
     "": ""
 }

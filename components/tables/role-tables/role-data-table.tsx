@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
   })
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    merchant: false
+    merchantName: false
   });
   const [checkboxStates, setCheckboxStates] = useState<any>({
     role: true,
@@ -100,9 +100,9 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     state: {
+      columnVisibility,
       pagination,
       sorting,
-      columnVisibility,
     },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
@@ -156,7 +156,7 @@ export function DataTable<TData, TValue>({
   const handlePermissionGranted = useCallback(() => {
     setColumnVisibility(prev => ({
       ...prev,
-      merchant: true,
+      merchantName: true,
     }));
   }, []);
 
@@ -166,10 +166,7 @@ export function DataTable<TData, TValue>({
       <PermissionCheck
         permission="roleList.su.read"
         onPermissionGranted={handlePermissionGranted}
-      >
-        <></>
-      </PermissionCheck>
-
+      />
       <div className='grid lg:grid-cols-5 gap-4'>
         <div className='lg:hidden'>
           <Accordion type="single" collapsible className="w-full" >

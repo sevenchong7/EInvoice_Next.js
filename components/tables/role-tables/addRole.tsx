@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { addRole, getDefaultPermission, getRoleValidation } from "@/lib/services/userService";
+import { getDefaultPermission, getRoleValidation, postAddRole } from "@/lib/services/userService";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -218,7 +218,7 @@ export default function AddRole({ openSheet, permissionListData, setOpen, setSel
                         "role": role,
                         "permission": tempPermissionList
                     }
-                    const roleAdd = addRole(roleAddParam)
+                    const roleAdd = postAddRole(roleAddParam)
 
                     roleAdd.then(() => {
                         toast({

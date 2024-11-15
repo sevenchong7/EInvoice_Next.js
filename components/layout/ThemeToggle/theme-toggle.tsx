@@ -19,7 +19,7 @@ export default function ThemeToggle({ }: CompProps) {
     setTheme(selectTheme)
     localStorage.setItem('theme', selectTheme)
 
-    console.log('[ThemeToggle] HandleTheme = ', selectTheme)
+    // console.log('[ThemeToggle] HandleTheme = ', selectTheme)
   }
 
   return (

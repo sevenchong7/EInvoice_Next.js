@@ -17,6 +17,7 @@ export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: 'merchantName',
     header: 'TAG_MERCHANT',
+    // enableHiding: true
   },
   {
     accessorKey: 'roleQuantity',

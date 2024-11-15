@@ -21,7 +21,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { getLoginIdValidation, getRoleValidation, mechantUserInviteNewUser, roleSelectionList, roleSelectionPermission } from '@/lib/services/userService';
+import { getLoginIdValidation, getRoleSelectionList, getRoleSelectionPermission, getRoleValidation, postMechantUserInviteNewUser } from '@/lib/services/userService';
 import { cn } from '@/lib/utils';
 import { boolean } from 'zod';
 import { set } from 'date-fns';
@@ -88,11 +88,11 @@ export default function AddUser() {
 
 
     const GetRoleSelectionList = async () => {
-        return await roleSelectionList();
+        return await getRoleSelectionList();
     }
 
     const GetRoleSelectionPermission = async (body: any) => {
-        return await roleSelectionPermission(body)
+        return await getRoleSelectionPermission(body)
     }
 
     useEffect(() => {
@@ -237,7 +237,7 @@ export default function AddUser() {
             "permissionList": permissionListToSubmit,
         };
 
-        const addNewUser = mechantUserInviteNewUser(mechantUserInviteNewUserParam)
+        const addNewUser = postMechantUserInviteNewUser(mechantUserInviteNewUserParam)
 
         addNewUser.then((res) => {
             if (res.status === true) {

@@ -38,7 +38,7 @@ import RegisterUserStep4Admin from './register-user-step4-admin';
 import RegisterUserStep5Admin from './register-user-step5-admin';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { getLoginIdValidation, getValidateEmail, postCreateMerchant, postUploadAdmin, register } from '@/lib/services/userService';
+import { getLoginIdValidation, getValidateEmail, postCreateMerchant, postUploadAdmin } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { upload } from '@/lib/api';
 
@@ -152,7 +152,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
   };
 
   const processForm: SubmitHandler<RegisterUserAdminFormValues> = async (data) => {
-    console.log('data ==>', data);
+    // console.log('data ==>', data);
 
     if (form.getValues('package') !== 1) {
       const imgUrlData = form.getValues('payment')
@@ -173,7 +173,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 
         const imageData = await postUploadAdmin(imgData);
 
-        console.log('image data client =', imageData)
+        // console.log('image data client =', imageData)
 
 
         return imageData?.data.uploadedFileId
@@ -183,7 +183,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
       setImageIdData(dataImage)
 
 
-      console.log('image data =', imageIdData)
+      // console.log('image data =', imageIdData)
 
       const createNewMerchantParam = {
         "loginId": data.username,
@@ -210,7 +210,7 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 
       }
 
-      console.log('createNewMerchantParam =', createNewMerchantParam)
+      // console.log('createNewMerchantParam =', createNewMerchantParam)
       const registerData = postCreateMerchant(createNewMerchantParam)
 
       registerData.then((res) => {

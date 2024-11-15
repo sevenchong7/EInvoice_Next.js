@@ -24,7 +24,6 @@ import DocumentFormStep4 from './document-form-step4';
 import { useStore } from '@/action/action';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { getCountry } from '@/lib/services/generalService';
 
 
 interface ProfileFormType {
@@ -226,6 +225,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
                 'items',
 
                 ...fieldsItems?.map((_, index) => {
+
                     const { fields: fieldsRate } = useFieldArray({
                         control,
                         name: `items.${index}.rate`
@@ -388,7 +388,6 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
     };
 
     const processForm: SubmitHandler<DocumentFormValues> = (data) => {
-        console.log('data ==>', data);
         setData(data);
         setDocData(data)
         router.push("/dashboard/document/createDocument/documentDownload")

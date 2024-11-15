@@ -27,11 +27,9 @@ export default function DashboardContent() {
     useEffect(() => {
         const checkRmbMe = localStorage.getItem('rmbMe')
         if (checkRmbMe) {
-            // console.log('[DashboardContent] session = ', session)
             localStorage.setItem('session', JSON.stringify(session))
         } else {
             localStorage.setItem('sessionExpiry', JSON.stringify(session?.user.accessTokenExpiry))
-            console.log('sessionExpiry = ', session?.user.accessTokenExpiry)
         }
     }, [session])
 
@@ -39,7 +37,6 @@ export default function DashboardContent() {
         const checkRmbMe = localStorage.getItem('rmbMe')
         if (checkRmbMe) {
             const themeData = localStorage.getItem('theme') ?? 'light'
-            console.log('[DashboardContent] themeData =', themeData)
             setTheme(themeData)
         }
     }, [])

@@ -7,12 +7,13 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ConfirmButton } from "../ui/confirmButton";
-import { useTaskStore } from "@/lib/store";
+import { useUserTaskStore } from "@/lib/store/userStore";
+import { useDataTaskStore } from "@/lib/store/dataStore";
 
 export default function SubscribeInformation() {
     const router = useRouter();
     const t = useTranslations()
-    const packageSubStatus = useTaskStore((state) => state.packageSubStatus)
+    const packageSubStatus = useDataTaskStore((state) => state.packageSubStatus)
     return (
         <>
             <div className='flex flex-col h-full space-y-5'>

@@ -1,6 +1,5 @@
 'use client'
 import BreadCrumb from "@/components/breadcrumb";
-import Subscriptions from "@/components/profile/subscription";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslations } from "next-intl";
 import { SubscriptionListClient } from "../tables/subscription-tables/client";

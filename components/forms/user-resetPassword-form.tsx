@@ -38,7 +38,7 @@ export default function UserResetPassword() {
                 return
             }
         })
-        console.log('id = ', id)
+        // console.log('id = ', id)
     }, [])
 
     const defaultValues = {
@@ -90,7 +90,7 @@ export default function UserResetPassword() {
         if (!output) return;
 
         if (currentStep == 0) {
-            console.log('test')
+            // console.log('test')
             setError(false)
             const passwordResetParam = {
                 "password": form.getValues('password'),

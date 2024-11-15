@@ -17,7 +17,7 @@ import { forgetPasswordSchema, ForgetPasswordValues } from '@/lib/form-schema';
 import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { forgetPassword } from '@/lib/services/userService';
+import { postForgetPassword } from '@/lib/services/userService';
 
 export default function UserForgetPassword() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -66,7 +66,7 @@ export default function UserForgetPassword() {
 
             const forgetPasswordParam = { 'loginId': form.getValues('email') }
             setCurrentStep(currentStep + 1)
-            const data = forgetPassword(forgetPasswordParam)
+            const data = postForgetPassword(forgetPasswordParam)
         } else if (currentStep == 1) {
             // router.push("/resetPassword")
             setCurrentStep(0)

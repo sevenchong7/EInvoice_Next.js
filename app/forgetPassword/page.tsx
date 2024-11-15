@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import UserForgetPassword from '@/components/forms/user-forgetPassword-form';
 
-export const metadat: Metadata = {
+export const metadata: Metadata = {
     title: 'ForgetPassword',
     description: 'Forget Password'
 };

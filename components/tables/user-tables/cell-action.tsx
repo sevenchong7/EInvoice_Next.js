@@ -29,7 +29,7 @@ import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { Switch } from '@/components/ui/switch';
 import { useTranslations } from 'next-intl';
-import { getMerchantUserInfo, merchantUserInfoUpdate } from '@/lib/services/userService';
+import { getMerchantUserInfo, putMerchantUserInfoUpdate } from '@/lib/services/userService';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
@@ -66,7 +66,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>
             </button>
           </SheetTrigger>
-          <EditUser data={data} open={openSheet} />
+          <SheetContent aria-describedby={undefined} className='max-[600px]:w-full'>
+            <EditUser data={data} open={openSheet} />
+          </SheetContent>
         </Sheet>
 
         {/* <button onClick={() => setOpenAlertModal(true)} className='border-2 border-black dark:border-white rounded-lg p-1 hover:bg-gray-200 dark:hover:bg-gray-500'>
@@ -321,7 +323,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
       "permission": permissionListToSubmit
     };
 
-    const updateUserInfo = merchantUserInfoUpdate(data.muId, mechantUserEditParam)
+    const updateUserInfo = putMerchantUserInfoUpdate(data.muId, mechantUserEditParam)
 
     updateUserInfo.then(() => {
       toast({
@@ -345,7 +347,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
   }
 
   return (
-    <SheetContent className='max-[600px]:w-full'>
+    <>
       <SheetHeader>
         <SheetTitle className='text-2xl'>{t('TAG_EDIT_USER_INFORMATION')}</SheetTitle>
         {/* <SheetDescription>
@@ -476,7 +478,7 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
         <ConfirmButton type="submit" onClick={() => HandleConfirm()} className='bg-blue-800 hover:bg-blue-700'>{t('TAG_CONFIRM')}</ConfirmButton>
         {/* </SheetClose> */}
       </SheetFooter>
-    </SheetContent>
+    </>
   )
 }
 

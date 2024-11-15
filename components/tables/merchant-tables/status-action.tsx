@@ -2,12 +2,13 @@ import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirmButton";
 import { Merchant, MerchantContent, User } from "@/constants/data";
+import { GetMerchantListContentParam } from "@/lib/interface/userInterface";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface StatusActionProps {
-    data: MerchantContent;
+    data: GetMerchantListContentParam;
 }
 
 export default function StatusAction({ data }: StatusActionProps) {
