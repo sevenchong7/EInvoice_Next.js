@@ -26,18 +26,12 @@ import { useDataTaskStore } from '@/lib/store/dataStore';
 
 type Props = {
     defaultValue: string;
-    // items: Array<{ languageName: string; languageFlag: string }> | undefined;
     label: string;
-    // open: boolean;
-    // setOpen: any
 };
 
 export default function LocaleSwitcherSelect({
     defaultValue,
-    // items,
     label,
-    // open,
-    // setOpen
 
 }: Props) {
     const t = useTranslations()
@@ -47,9 +41,9 @@ export default function LocaleSwitcherSelect({
     const [localeData, setLoacalData] = useState('en')
     const [selectedLanguage, setSelectedLanguage] = useState('')
     const { data: session, update } = useSession();
-    const languageData = useUserTaskStore((state) => state.getLanguageList)
-    const setLocal = useDataTaskStore((state) => state.setLocal)
-    const loaclLanguage = useDataTaskStore((state) => state.language)
+    const loaclLanguage = useDataTaskStore((state) => state.language)// Redux value
+    const languageData = useUserTaskStore((state) => state.getLanguageList) //Redux value 
+    const setLocal = useDataTaskStore((state) => state.setLocal)//Redux setValue
 
     useEffect(() => {
         if (initialLocale == 'en') {
@@ -82,12 +76,12 @@ export default function LocaleSwitcherSelect({
 
 
         if (session)
-            window.location.reload()
+            window.location.reload() //reload the page to call api again to change the data language
     }
 
     useEffect(() => {
         startTransition(() => {
-            setUserLocale(loaclLanguage as Locale);
+            setUserLocale(loaclLanguage as Locale); // set the local 
         });
         router.refresh()
     }, [localeData, loaclLanguage])

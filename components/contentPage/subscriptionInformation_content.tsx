@@ -1,3 +1,4 @@
+'use client'
 import BreadCrumb from "@/components/breadcrumb";
 import UnsubscribeInformation from "@/components/profile/unsubscribe-Information";
 import { ScrollArea } from "@/components/ui/scroll-area";

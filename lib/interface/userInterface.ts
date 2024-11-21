@@ -237,6 +237,7 @@ export interface GetMultiPaymentListParam {
 
 export interface GetEwalletBalanceListParam {
     ewalletBalance: number
+    mid: number
 }
 
 export interface GetPackageInfoListParam {
@@ -262,4 +263,38 @@ export interface GetPaymentMethodTypeListParam {
     id: number
     paymentMethodDisplayName: string
     paymentMethodCode: string
+}
+
+export interface GetSubscriptionListingParam {
+    content: GetSubscriptionListingContentParam[]
+    page: number
+    size: number
+    totalElements: number
+    totalPages: number
+}
+
+export interface GetSubscriptionListingContentParam {
+    durationInMonths: number
+    packageAmount: number
+    packageName: string
+    subEndDate: string
+    subPeriod: string
+    subStartDate: string
+    subStatus: string
+}
+
+export interface GetEwalletListParam {
+    content: GetEwalletListContentParam[]
+    page: number
+    size: number
+    totalElements: number
+    totalPages: number
+}
+
+export interface GetEwalletListContentParam {
+    statementDate: string
+    amountIn: number
+    amountOut: number
+    trxType: string
+    remark: string
 }

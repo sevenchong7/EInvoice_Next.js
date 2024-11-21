@@ -8,6 +8,7 @@ export default async function page() {
 
     const [merchantListData, getCountryListData] = await Promise.all([merchantList, getCountryList])
 
+
     return (
         <MerchantListContent merchantListData={merchantListData} getCountryListData={getCountryListData} />
     )

@@ -9,13 +9,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getCountry } from "@/lib/services/generalService";
 import { CountryList, StateList } from "@/constants/data";
 import { useGeneralTaskStore } from "@/lib/store/generalStore";
-import { StateListParam } from "@/lib/interface/generalInterface";
+import { GetCountryParam, StateListParam } from "@/lib/interface/generalInterface";
 
 
 export default function RegisterUserStep2({ form }: { form: UseFormReturn<RegisterFormValues> }) {
     const [loading, setLoading] = useState(false);
-    const countries = useGeneralTaskStore((state) => state.countryList)
+    const [countries, setCountries] = useState<GetCountryParam[]>()
+    // const countries = useGeneralTaskStore((state) => state.countryList)
     const [states, setStates] = useState<StateListParam[]>();
+
+    useEffect(() => {
+        const GetCountry = async () => {
+            const getCountryData = await getCountry()
+            setCountries(getCountryData)
+        }
+
+        GetCountry()
+    }, [])
 
     useEffect(() => {
         countries?.map((value) => {

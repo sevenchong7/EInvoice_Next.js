@@ -17,7 +17,6 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import GoogleSignInButton from '../github-auth-button';
 import { Checkbox } from '../ui/checkbox';
-import Link from 'next/link';
 import { PasswordInput } from '../ui/passwordInput';
 import { useToast } from '../ui/use-toast';
 import { login } from '@/action/auth';
@@ -25,6 +24,7 @@ import React from 'react';
 import { useTheme } from 'next-themes';
 import LoadingOverlay from '../loading';
 
+//auth zod
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Please enter the Username' }),
   password: z.string().min(1, { message: "Please enter the Password" }),
@@ -41,10 +41,12 @@ export default function UserAuthForm() {
   const { toast } = useToast();
   const { setTheme } = useTheme();
   const [loading, setLoading] = useState(false);
+
   const defaultValues = {
     username: '',
     password: ''
   };
+
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues
@@ -54,28 +56,30 @@ export default function UserAuthForm() {
     const storedRmbMe = localStorage.getItem('rmbMe');
     const sessionExpiry = localStorage.getItem('sessionExpiry');
     const accessExpiry = sessionExpiry ? JSON.parse(sessionExpiry) : null
-
     const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null
-    // console.log('[checkRemeberMe] rememberMe= ', rememberMe)
-    // console.log('[checkRemeberMe] sessionExpiry= ', sessionExpiry)
 
+    //check the rmb me 
     if (rememberMe === true) {
       setLoading(true)
       const storeSession = localStorage.getItem('session')
       const sessionData = storeSession ? JSON.parse(storeSession) : null
       const username = localStorage.getItem('username')
 
+      //if the localStorage 'session' is not null
       if (sessionData != null) {
         const currentDate = new Date;
         const compareDate = new Date(sessionData.user.accessTokenExpiry);
 
         if (currentDate > compareDate) {
+          //if the accessToken is expiry remove all the localStorage and session and reset the theme
           localStorage.removeItem('username')
           localStorage.removeItem('rmbMe')
           localStorage.removeItem('session')
           localStorage.removeItem('theme')
           setTheme('light')
+
         } else if (currentDate < compareDate) {
+          //if the accessToken still valid update the session using the localStorage
           const sessionUpdate = update({
             loginId: username,
             permission: sessionData.user.permissions,
@@ -88,11 +92,13 @@ export default function UserAuthForm() {
             emailDisplay: sessionData.user.emailDisplay
           })
 
+          //then redirect to main page
           sessionUpdate.then(() => {
             router.replace('/dashboard')
           })
         }
       } else {
+        //remove and reset all localStorage and theme
         setLoading(false)
         localStorage.removeItem('username')
         localStorage.removeItem('rmbMe')
@@ -107,11 +113,11 @@ export default function UserAuthForm() {
       const compareDate = new Date(accessExpiry);
 
       if (compareDate > currentDate) {
-        setLoading(false)
         router.replace('/dashboard')
       } else {
         localStorage.removeItem('sessionExpiry')
       }
+      setLoading(false)
     }
     else {
       setLoading(false)
@@ -125,6 +131,11 @@ export default function UserAuthForm() {
   }
 
   useEffect(() => {
+    // localStorage.removeItem('username')
+    // localStorage.removeItem('rmbMe')
+    // localStorage.removeItem('session')
+    // localStorage.removeItem('theme')
+    // setTheme('light')
     setLoading(true)
     checkRemeberMe()
   }, [])
@@ -149,17 +160,22 @@ export default function UserAuthForm() {
         localStorage.setItem('username', username)
       }
 
+      //if no delay redirect the middleware will redirect to /?rsc=*** 
       setTimeout(() => {
-        router.push('/dashboard');
-      }, 500); // Delay of 500 milliseconds
-
-      // router.replace('/dashboard');
+        router.replace('/dashboard');
+      }, 500);
+      // setLoading(false)
+      // Delay of 500 milliseconds
     }
   };
 
   return (
     <>
-      {loading && <LoadingOverlay />}
+
+      {
+        //Loading screen
+        loading && <LoadingOverlay />
+      }
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -249,7 +265,10 @@ export default function UserAuthForm() {
         </div>
       </div>
 
-      {/* <div className='pt-[50px]'>
+
+      {
+        //wait to link the Google sign in api or service.
+      /* <div className='pt-[50px]'>
         <GoogleSignInButton />
       </div> */}
     </>

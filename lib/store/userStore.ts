@@ -147,7 +147,8 @@ export const useUserTaskStore = create<State & Actions>()(
                 error: undefined
             },
             eWalletBalanceList: {
-                ewalletBalance: 0
+                ewalletBalance: 0,
+                mid: 0
             },
             packageInfoList: {
                 merchantId: 0,

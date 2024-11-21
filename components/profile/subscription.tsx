@@ -1,5 +1,4 @@
 'use client';
-import { useStore } from "@/action/action";
 import { SubscriptionInfo } from "@/constants/data";
 import { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
@@ -20,7 +19,7 @@ import { useDataTaskStore } from "@/lib/store/dataStore";
 export default function Subscriptions() {
     const router = useRouter()
     const t = useTranslations()
-    const { updateSubscription } = useStore();
+    const { updateSubscription } = useDataTaskStore();
     const [unSubscribeModal, setUnSubscribeModal] = useState(false);
     const [subscriptionModal, setSubscriptionModal] = useState(false);
     const [loading, setloading] = useState(false);

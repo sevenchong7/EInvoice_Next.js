@@ -11,17 +11,17 @@ import { GetMerchantListContentParam, GetMerchantListParam } from "@/lib/interfa
 export default function MerchantListContent({ merchantListData, getCountryListData }: { merchantListData: GetMerchantListParam, getCountryListData: any }) {
     const t = useTranslations()
     const setCountryList = useGeneralTaskStore((state) => state.setCountryList)
-    const [merchantData, setMerchantData] = useState<GetMerchantListContentParam[]>([])
+    const [merchantData, setMerchantData] = useState<GetMerchantListParam>()
 
     useEffect(() => {
         setCountryList(getCountryListData)
-
+        // console.log('merchantListData = ', merchantListData)
     }, [])
 
 
     useEffect(() => {
         // console.log('merchantListData = ', merchantListData.content)
-        setMerchantData(merchantListData.content)
+        setMerchantData(merchantListData)
 
     }, [merchantListData])
 

@@ -36,9 +36,10 @@ import React from 'react';
 import { getRoleInfo, putEditRole } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
+import { GetRoleListContentParam, GetRoleListParam } from '@/lib/interface/userInterface';
 
 interface CellActionProps {
-  data: Role;
+  data: GetRoleListContentParam;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -65,7 +66,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   );
 };
 
-const EditUser = ({ data, open, setOpen }: { data: Role, open: boolean, setOpen: any }) => {
+const EditUser = ({ data, open, setOpen }: { data: GetRoleListContentParam, open: boolean, setOpen: any }) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false);
   const t = useTranslations()

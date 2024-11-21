@@ -1,5 +1,4 @@
 'use client';
-import { useStore } from "@/action/action"
 import { Button } from "@/components/ui/button"
 import { jsPDF } from "jspdf";
 import html2pdf from 'jspdf-html2canvas';
@@ -22,11 +21,12 @@ import { useTranslations } from "next-intl";
 import React from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { ConfirmButton } from "@/components/ui/confirmButton";
+import { useDataTaskStore } from "@/lib/store/dataStore";
 
 export default function DocumentDownload() {
     const t = useTranslations()
     const { toast } = useToast()
-    let docDownloadRef = useRef<HTMLDivElement | null>(null);
+    let docDownloadRef = useRef<HTMLDivElement | null>(null); //reference a component
 
     const HandleDownload = async () => {
         try {
@@ -39,6 +39,7 @@ export default function DocumentDownload() {
                         html2canvas: { scale: 2 },
                         margin: { right: 1, top: 1, bottom: 1, left: 1 },
                         imageType: 'image/jpeg',
+                        //change the pdf name here
                         output: 'e-invoice.pdf'
                     }
                 )
@@ -73,7 +74,7 @@ export default function DocumentDownload() {
                                 <div className="lg:p-4 space-y-5 flex flex-col">
                                     <div className="flex">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M15 12h-5" /><path d="M15 8h-5" /><path d="M19 17V5a2 2 0 0 0-2-2H4" /><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" /></svg>
-                                        PDF
+                                        {t('TAG_PDF')}
                                     </div>
 
                                     <div className="border border-black  w-max lg:scale-[1.00] md:scale-[0.80] sm:scale-[0.60] sm:origin-top-left max-[600px]:scale-[0.30] max-[600px]:origin-top-left">
@@ -108,7 +109,7 @@ export default function DocumentDownload() {
 
 const DocumentInfo = () => {
 
-    const { data } = useStore()
+    const { docData: data } = useDataTaskStore()
     let totalSalesTax = 0;
     let totalServiceTax = 0;
     let totalTourismTax = 0;
@@ -117,12 +118,7 @@ const DocumentInfo = () => {
     let totalTaxExemption = 0;
     let value = 0;
 
-    useEffect(() => {
-        data
-    }, [])
-
     return (
-
         <>
             {/* <head>
                 <meta

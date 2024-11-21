@@ -36,9 +36,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { getCountry } from '@/lib/services/generalService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
+import { GetSubscriptionListingContentParam } from '@/lib/interface/userInterface';
 
 interface CellActionProps {
-  data: MerchantContent;
+  data: GetSubscriptionListingContentParam;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {

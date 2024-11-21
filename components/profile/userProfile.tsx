@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Heading } from "../ui/heading";
 import { Separator } from "../ui/separator";
-import { useStore } from "@/action/action";
 import { Divide } from "lucide-react";
 import { CustomeModal } from "../modal/custome-modal";
 import { Button } from "@/components/ui/button"

@@ -34,6 +34,7 @@ import { CountryList, StateList } from "@/constants/data";
 import { ConfirmButton } from "@/components/ui/confirmButton";
 import { useGeneralTaskStore } from "@/lib/store/generalStore";
 import { GetCountryParam, StateListParam } from "@/lib/interface/generalInterface";
+import { getCountry } from "@/lib/services/generalService";
 
 interface MerchantParam {
     address: string;
@@ -68,24 +69,28 @@ export default function DocumentFormStep2(
     const [buyerError, setBuyerError] = useState(false);
 
     const [merchantInfo, setMerchantInfo] = useState<MerchantParam>()
-    const [supplierCountries, setSupplierCountries] = useState<GetCountryParam[]>()
+    const [supplierCountries, setSupplierCountries] = useState<GetCountryParam[]>([])
     const [supplierStates, setSupplierStates] = useState<StateListParam[]>();
-    const [buyerCountries, setBuyerCountries] = useState<GetCountryParam[]>()
+    const [buyerCountries, setBuyerCountries] = useState<GetCountryParam[]>([])
     const [buyerStates, setBuyerStates] = useState<StateListParam[]>();
-    const [deliveryCountries, setDeliveryCountries] = useState<GetCountryParam[]>()
+    const [deliveryCountries, setDeliveryCountries] = useState<GetCountryParam[]>([])
     const [deliveryStates, setDeliveryStates] = useState<StateListParam[]>();
 
-    const countryList = useGeneralTaskStore((state) => state.countryList)
+    // const countryList = useGeneralTaskStore((state) => state.countryList)
 
     async function getMerchant() {
         return await getMerchantInfo();
     };
 
     useEffect(() => {
-        setSupplierCountries(countryList)
-        setBuyerCountries(countryList)
-        setDeliveryCountries(countryList)
+        const GetCountry = async () => {
+            const countryList = await getCountry()
+            setSupplierCountries(countryList)
+            setBuyerCountries(countryList)
+            setDeliveryCountries(countryList)
+        }
 
+        GetCountry()
         getMerchant().then((res) => {
             setMerchantInfo(res)
         });

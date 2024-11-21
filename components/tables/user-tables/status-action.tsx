@@ -1,3 +1,4 @@
+import CustomSwitch from "@/components/customSwitch";
 import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirmButton";
@@ -5,6 +6,7 @@ import { contents, User } from "@/constants/data";
 import { putMerchantUserUpdateStatus } from "@/lib/services/userService";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface StatusActionProps {
@@ -15,6 +17,7 @@ export default function StatusAction({ data }: StatusActionProps) {
     const [openModal, setOpenModal] = useState(false)
     const [textVisible, setTextVisible] = useState(true);
     const t = useTranslations()
+    const router = useRouter()
 
     const HandleStatus = () => {
         let status = data.status
@@ -31,7 +34,15 @@ export default function StatusAction({ data }: StatusActionProps) {
             status = 'Y'
         }
 
-        putMerchantUserUpdateStatus(data.muId, status)
+        const statusParam = {
+            "status": status
+        }
+
+        const merchantStatusUpdate = putMerchantUserUpdateStatus(data.muId, statusParam)
+
+        merchantStatusUpdate.then(() => { router.refresh() })
+
+
     }
 
     return (
@@ -62,30 +73,8 @@ export default function StatusAction({ data }: StatusActionProps) {
             {
                 data.status == 'Pending Verification' ? <p className="text-orange-500 text-center text-nowrap text-xs">{data.status}</p> :
                     <div>
-                        <Button
-                            onClick={() => setOpenModal(true)}
-                            className={cn(
-                                "relative flex items-center transition-all duration-300 m-auto min-w-[100px]",
-                                data.status === "Y" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
-                                "rounded-lg"
-                            )}
-                        >
-                            <div
-                                className={cn(
-                                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400",
-                                    data.status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear"
-                                )}
-                            />
-                            <div
-                                className={cn(
-                                    textVisible ? "opacity-100 " : "opacity-0", data.status === "Y" && 'dark:text-white'
-                                )}
-                            >
-                                {data.status == 'Y' ? <p>Active</p> : <p>Inactive</p>}
-                            </div>
-                        </Button>
+                        <CustomSwitch data={data.status} checkActive={"Y"} onclick={() => { setOpenModal(true) }} activeTitle='Active' inactiveTitle='Inactive' />
                     </div>
-
             }
 
         </>

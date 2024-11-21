@@ -17,9 +17,7 @@ export default function ThemeToggle({ }: CompProps) {
 
   const HandleTheme = (selectTheme: string) => {
     setTheme(selectTheme)
-    localStorage.setItem('theme', selectTheme)
-
-    // console.log('[ThemeToggle] HandleTheme = ', selectTheme)
+    localStorage.setItem('theme', selectTheme) //save the theme in the localStorage
   }
 
   return (

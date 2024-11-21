@@ -45,10 +45,10 @@ export function MerchantSelection({ getSwitchRoleListData }: { getSwitchRoleList
 
         const getSwitchRoleData = await getSwitchRole();
 
+        //update the permission into the session the when session change it will also change the middleware JWT Token session
         await update({ permissions: getSwitchRoleData.permission })
 
         router.refresh()
-
     }
 
     return (

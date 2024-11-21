@@ -8,16 +8,16 @@ import { useUserTaskStore } from '@/lib/store/userStore';
 export default function LocaleSwitcher() {
     const t = useTranslations('TAG_LOCALE_SWITCHER');
     const locale = useLocale();
-    const setLanguage = useUserTaskStore((state) => state.setGetLanguageList)
-    // const [languageData, setLanguageData] = useState()
+    const setLanguage = useUserTaskStore((state) => state.setGetLanguageList) //Store or Redux
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const GetLanguage = async () => {
             const lanData = await getLanguage()
+            //set the value get in to the Redux
             setLanguage(lanData)
-            // setLanguageData(lanData)
         }
+
         GetLanguage()
 
     }, [open])

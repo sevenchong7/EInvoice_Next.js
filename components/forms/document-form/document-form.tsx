@@ -21,9 +21,9 @@ import DocumentFormStep1 from './document-form-step1';
 import DocumentFormStep2 from './document-form-step2';
 import DocumentFormStep3 from './document-form-step3';
 import DocumentFormStep4 from './document-form-step4';
-import { useStore } from '@/action/action';
 import { useTranslations } from 'next-intl';
 import React from 'react';
+import { useDataTaskStore } from '@/lib/store/dataStore';
 
 
 interface ProfileFormType {
@@ -52,7 +52,7 @@ export const DocumentForm: React.FC<ProfileFormType> = ({
     const [data, setData] = useState({});
     const delta = currentStep - previousStep;
 
-    const { setDocData } = useStore()
+    const { setDocData } = useDataTaskStore()
 
     const defaultValues = {
         invoiceId: "",

@@ -22,7 +22,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -46,10 +46,14 @@ import { Checkbox } from '@radix-ui/react-checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/customerAccordion';
 import { useTranslations } from 'next-intl';
 import { MerchantContent } from '@/constants/data';
 import Paginator from './subscriptionList-table-paging';
+import { useDataTaskStore } from '@/lib/store/dataStore';
+import { getSubscriptionDuration } from '@/lib/services/generalService';
+import { useGeneralTaskStore } from '@/lib/store/generalStore';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -57,11 +61,18 @@ interface DataTableProps<TData, TValue> {
   searchParams?: {
     [key: string]: string | string[] | undefined;
   };
+  totalPage: number;
+  currentPage: number;
+  usePageCallback: any;
+  resetAllSelectedTitle: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  currentPage,
+  usePageCallback,
+  resetAllSelectedTitle
 }: DataTableProps<TData, TValue>) {
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
@@ -71,11 +82,9 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState({})
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [checkboxStates, setCheckboxStates] = useState<any>({
-    email: true,
-    regNo: true,
-    tinNo: true
+    subPeriod: true,
   });
-
+  const [globalFilter, setGlobalFilter] = useState<any>('')
   const [sorting, setSorting] = React.useState<SortingState>([])
   const router = useRouter();
   const pathname = usePathname();
@@ -88,6 +97,15 @@ export function DataTable<TData, TValue>({
   const per_page = searchParams?.get('limit') ?? '10';
   const perPageAsNumber = Number(per_page);
   const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
+  const setSubFilterData = useDataTaskStore((state) => state.setSubFilterData)
+  const removeSubFilterDate = useDataTaskStore((state) => state.removeSubFilterData)
+  const setSubDuration = useGeneralTaskStore((state) => state.setSubscriptionDurationList)
+  const subDurationList = useGeneralTaskStore((state) => state.subscriptionDurationList)
+  const [startDateStart, setStartDateStart] = useState('')
+  const [startDateEnd, setStartDateEnd] = useState('')
+  const [endDateStart, setEndDateStart] = useState('')
+  const [endDateEnd, setEndDateEnd] = useState('')
+
 
   const table = useReactTable({
     data,
@@ -101,11 +119,14 @@ export function DataTable<TData, TValue>({
       pagination,
       sorting,
       columnVisibility,
-      columnFilters
+      columnFilters,
+      globalFilter,
     },
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: 'auto'
 
   });
 
@@ -123,6 +144,24 @@ export function DataTable<TData, TValue>({
     // Check if any header exists in the dataKeys
     return dataKeys.includes(headers);
   };
+
+  useEffect(() => {
+    if (resetAllSelectedTitle) {
+      table.getAllLeafColumns().map((column) => {
+        column.setFilterValue('')
+        removeSubFilterDate()
+      })
+    }
+  }, [resetAllSelectedTitle])
+
+  useEffect(() => {
+    removeSubFilterDate()
+    const GetSubscriptionDuration = async () => {
+      const subDurationData = await getSubscriptionDuration()
+      setSubDuration(subDurationData)
+    }
+    GetSubscriptionDuration()
+  }, [])
 
   // const createQueryString = React.useCallback(
   //   (params: Record<string, string | number | null>) => {
@@ -164,64 +203,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className='grid lg:grid-cols-5 gap-4'>
-        <div className='lg:hidden'>
-          <Accordion type="single" collapsible className="w-full" >
-            <AccordionItem value='item1'>
-              <AccordionTrigger></AccordionTrigger>
-              <AccordionContent className='space-y-5'>
-                {
-                  table.getAllLeafColumns().map((column) => {
-                    return (
-                      column.id != 'id' && column.id != 'actions' && checkboxStates[column.id] ?
-                        < div key={column.id} >
-                          {
-                            < Input
-                              placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
-                              value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
-                              onChange={(event) => {
-                                if (checkboxStates[column.id]) {
-                                  column.setFilterValue(event.target.value);
-                                }
-                              }}
-                              className="w-full md:max-w-sm"
-                            />
-                          }
-                        </div> : ''
-                    )
-                  }
-                  )
-                }
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-
-        {
-          table.getAllLeafColumns().map((column) => {
-            return (
-              column.id != 'id' && column.id != 'actions' && checkboxStates[column.id] ?
-                < div key={column.id} className='hidden lg:inline-block'>
-                  {
-                    < Input
-                      placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
-                      value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
-                      onChange={(event) => {
-                        if (checkboxStates[column.id]) {
-                          column.setFilterValue(event.target.value);
-                        }
-                      }}
-                      className="w-full md:max-w-sm"
-                    />
-                  }
-                </div> : ''
-            )
-          }
-          )
-        }
+      <div className='grid lg:grid-cols-2 gap-4 p-2 bg-[#dddddd] dark:bg-gray-700 rounded'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className='bg-gray-300 text-black hover:bg-gray-400'>
+            <Button className='bg-gray-400 text-black hover:bg-gray-500 col-span-2 dark:text-white'>
               + {t('TAG_ADD_FILTER')}
             </Button>
           </DropdownMenuTrigger>
@@ -230,7 +215,7 @@ export function DataTable<TData, TValue>({
               {table.getAllLeafColumns().map((column) => (
                 <div key={column.id}>
                   {
-                    column.id != 'id' && column.id != 'actions' &&
+                    column.id != 'id' && column.id != 'actions' && column.id != 'packageName' &&
                     <DropdownMenuCheckboxItem
                       checked={checkboxStates[column.id] || false}
                       onCheckedChange={() => {
@@ -245,8 +230,251 @@ export function DataTable<TData, TValue>({
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <div className='lg:hidden col-span-2'>
+          <Accordion type="single" collapsible className="w-full" >
+            <AccordionItem value='item1'>
+              <AccordionTrigger></AccordionTrigger>
+              <AccordionContent className='space-y-5'>
+                {
+                  table.getAllLeafColumns().map((column) => {
+                    return (
+                      column.id != 'id' && column.id != 'actions' && checkboxStates[column.id] ?
+                        < div key={column.id} >
+                          <div className='p-1 relative flex items-center'>
+                            < Input
+                              className='bg-white dark:text-black pr-10'
+                              placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
+                              value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                              onChange={(event) => {
+                                if (checkboxStates[column.id]) {
+                                  column.setFilterValue(event.target.value);
+                                  setSubFilterData(column.id, '')
+                                }
+                              }}
+                            />
+                            <button className='absolute right-4 z-10' onClick={() => {
+                              column.setFilterValue('');
+                              setSubFilterData(column.id, '')
+                            }}>
+                              <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                            </button>
+                          </div>
+                        </div> : ''
+                    )
+                  }
+                  )
+                }
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {
+          table.getAllLeafColumns().map((column) => {
+            return (
+              column.id != 'id' && column.id != 'actions' && checkboxStates[column.id] ?
+                < div key={column.id} className={cn(column.id == 'subStartDate' && "col-span-2", column.id == 'subEndDate' && "col-span-2", 'hidden lg:inline-block')}>
+                  {
+                    <Accordion type="single" collapsible className="w-full bg-gray-400 rounded-md px-2" >
+                      <AccordionItem value='item1'>
+                        <AccordionTrigger><div >{t(column.columnDef.header)}</div></AccordionTrigger>
+                        <AccordionContent className='space-y-5'>
+                          {
+                            column.id === 'subPeriod' ?
+                              <div className='p-1'>
+                                <Select
+                                  value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                                  onValueChange={(value) => {
+                                    if (checkboxStates[column.id]) {
+                                      column.setFilterValue(value);
+                                      const matchedPeriod = subDurationList.find((res) => res.subscriptionPeriodMsgTag === value);
+
+                                      if (matchedPeriod) {
+                                        setSubFilterData(column.id, matchedPeriod.subscriptionPeriodCode)
+                                      }
+
+                                    }
+                                  }
+                                  }
+                                >
+                                  <SelectTrigger className='bg-white'>
+                                    <SelectValue placeholder={t('TAG_SELECT_SUB_PERIOD')} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectItem value=''>{t('TAG_SELECT_SUB_PERIOD')} </SelectItem>
+                                      {
+                                        subDurationList.map((res) => (
+                                          <SelectItem key={res.subscriptionPeriodCode} value={res.subscriptionPeriodMsgTag}>
+                                            {res.subscriptionPeriodMsgTag}
+                                          </SelectItem>
+                                        ))
+                                      }
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div> : column.id === 'durationInMonths' || column.id === 'packageAmount' ?
+                                <div className='p-1 relative flex items-center'>
+                                  < Input
+                                    type='number'
+                                    className='bg-white dark:text-black pr-10'
+                                    placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
+                                    value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                                    onChange={(event) => {
+                                      if (checkboxStates[column.id]) {
+                                        column.setFilterValue(event.target.value);
+                                        setSubFilterData(column.id, event.target.value)
+                                      }
+
+                                    }}
+                                  // className="flex flex-1 w-full md:max-w-sm"
+                                  />
+                                  <button className='absolute right-4 z-10' onClick={() => {
+                                    column.setFilterValue('');
+                                    setSubFilterData(column.id, '')
+                                  }}>
+                                    <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                  </button>
+                                </div> : column.id === 'subStatus' ?
+                                  <div className='p-1'>
+                                    <Select
+                                      value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                                      onValueChange={(value) => {
+                                        if (checkboxStates[column.id]) {
+                                          column.setFilterValue(value);
+                                          setSubFilterData(column.id, value)
+                                        }
+                                      }}
+                                    >
+                                      <SelectTrigger className='bg-white'>
+                                        <SelectValue placeholder={t('TAG_SELECT_STATUS')} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectGroup>
+                                          <SelectItem value=''>{t('TAG_SELECT_STATUS')} </SelectItem>
+                                          <SelectItem value='ACTIVE'>{t('TAG_ACTIVE')} </SelectItem>
+                                          <SelectItem value='DISABLE'>{t('TAG_INACTIVE')} </SelectItem>
+                                          <SelectItem value='Pending'>{t('TAG_PENDING')} </SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  : column.id === 'subStartDate' ?
+                                    <div className='p-1 grid grid-cols-2 gap-4'>
+                                      <div className='flex space-x-4 items-center'>
+                                        <p>{t('TAG_START_DATE')} :</p>
+                                        < Input
+                                          type='date'
+                                          className='bg-white dark:text-black pr-10'
+                                          placeholder={t('TAG_START_DATE')}
+                                          value={startDateStart}
+                                          onChange={(value) => {
+                                            setStartDateStart(value.target.value)
+                                            setSubFilterData('startDateStart', value.target.value)
+                                            // if (checkboxStates[column.id]) {
+                                            //   column.setFilterValue(event.target.value);
+                                            //   setMerchantFilterData(column.id, event.target.value)
+                                            // }
+
+                                          }}
+                                        // className="flex flex-1 w-full md:max-w-sm"
+                                        />
+                                      </div>
+                                      <div className='flex space-x-4 items-center'>
+                                        <p>{t('TAG_END_DATE')} :</p>
+                                        < Input
+                                          type='date'
+                                          className='bg-white dark:text-black pr-10'
+                                          placeholder={t('TAG_END_DATE')}
+                                          value={startDateEnd}
+                                          onChange={(value) => {
+                                            setStartDateEnd(value.target.value)
+                                            setSubFilterData('startDateEnd', value.target.value)
+                                          }}
+                                        // className="flex flex-1 w-full md:max-w-sm"
+                                        />
+                                      </div>
+                                    </div> :
+                                    column.id === 'subEndDate' ?
+                                      <div className='p-1 grid grid-cols-2 gap-4'>
+                                        <div className='flex space-x-4 items-center'>
+                                          <p>{t('TAG_START_DATE')} :</p>
+                                          < Input
+                                            type='date'
+                                            className='bg-white dark:text-black pr-10'
+                                            placeholder={t('TAG_START_DATE')}
+                                            value={endDateStart}
+                                            onChange={(value) => {
+                                              setEndDateStart(value.target.value)
+                                              setSubFilterData('endDateStart', value.target.value)
+                                              // if (checkboxStates[column.id]) {
+                                              //   column.setFilterValue(event.target.value);
+                                              //   setMerchantFilterData(column.id, event.target.value)
+                                              // }
+
+                                            }}
+                                          // className="flex flex-1 w-full md:max-w-sm"
+                                          />
+                                        </div>
+                                        <div className='flex space-x-4 items-center'>
+                                          <p>{t('TAG_END_DATE')} :</p>
+                                          < Input
+                                            type='date'
+                                            className='bg-white dark:text-black pr-10'
+                                            placeholder={t('TAG_END_DATE')}
+                                            value={endDateEnd}
+                                            onChange={(value) => {
+                                              setEndDateEnd(value.target.value)
+                                              setSubFilterData('endDateEnd', value.target.value)
+                                            }}
+                                          // className="flex flex-1 w-full md:max-w-sm"
+                                          />
+                                        </div>
+                                      </div> :
+                                      <div className='p-1 relative flex items-center'>
+                                        < Input
+                                          className='bg-white dark:text-black pr-10'
+                                          placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
+                                          value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                                          onChange={(event) => {
+                                            if (checkboxStates[column.id]) {
+                                              column.setFilterValue(event.target.value);
+                                              setSubFilterData(column.id, event.target.value)
+                                            }
+
+                                          }}
+                                        // className="flex flex-1 w-full md:max-w-sm"
+                                        />
+                                        <button className='absolute right-4 z-10' onClick={() => {
+                                          column.setFilterValue('');
+                                          setSubFilterData(column.id, '')
+                                        }}>
+                                          <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                        </button>
+                                      </div>
+                          }
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  }
+                </div> : ''
+            )
+          }
+          )
+        }
+
       </div >
       <Separator />
+      <div className='px-1  grid lg:grid-cols-2 gap-4 items-center'>
+        <div></div>
+        <Input
+          type="text"
+          value={globalFilter || ''} // Ensure it's not undefined
+          onChange={(e) => setGlobalFilter(e.target.value)} // Update the globalFilter state
+          placeholder="Search..."
+        />
+      </div>
       {/* <ScrollArea className=" h-[calc(80vh-210px)]"> */}
       <Table className="flex flex-col">
         <TableHeader className='flex'>
@@ -254,7 +482,11 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id} className='flex flex-auto min-w-screen bg-gray-300 rounded-lg '>
               {headerGroup.headers.map((header, index) => {
                 return (
-                  <TableHead key={header.id} className={cn("flex items-center dark:text-black", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id === 'email' && 'min-w-[300px]', header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-tr rounded-br lg:z-10")} >
+                  <TableHead key={header.id} className={cn("flex items-center dark:text-black",
+                    index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : header.id !== 'actions' && "min-w-[200px]",
+                    header.id === 'email' && 'min-w-[300px]',
+                    header.id == 'subStatus' && "pl-[10px] flex-auto w-[180px] md:sticky lg:right-[30px] lg:z-20 bg-gray-300 ",
+                    header.id == 'actions' && "flex-auto items-center justify-end  w-[30px] lg:sticky lg:right-0 bg-gray-300 rounded-tr rounded-br lg:z-10")} >
                     {header.isPlaceholder
                       ? null
                       : header.id == 'actions' ?
@@ -342,13 +574,13 @@ export function DataTable<TData, TValue>({
                       key={cell.id}
                       className={cn(
                         "flex items-center border-b",
-                        cell.column.id === 'merchantId' ? "min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]",
+                        cell.column.id === 'id' ? "min-w-[70px] max-w-[100px] pl-[20px]" : cell.column.id !== 'actions' && "min-w-[200px]",
                         cell.column.id === 'email' && 'min-w-[300px]',
-                        cell.column.id === 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-20 lg:shadow dark:bg-black dark:shadow-gray-400",
-                        cell.column.id === 'actions' && "flex-auto items-center justify-center max-w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
+                        cell.column.id === 'subStatus' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[30px] bg-white md:z-20 lg:shadow dark:bg-black dark:shadow-gray-400",
+                        cell.column.id === 'actions' && "flex-auto items-center justify-end min-w-[30px] max-w-[30px] bg-white lg:sticky lg:right-0 lg:z-10 dark:bg-black"
                       )}
                     >
-                      {cell.column.id == "merchantId" ? <p>{rowIndex + 1}</p> :
+                      {cell.column.id == "id" ? <p>{rowIndex + 1}</p> :
                         // Show 'NA' if the cell's column ID does not exist in the headers
                         hasValidHeader || cell.column.id === 'actions' ? finaldata : 'NA'
                       }

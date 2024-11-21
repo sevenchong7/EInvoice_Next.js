@@ -1,3 +1,4 @@
+import CustomSwitch from "@/components/customSwitch";
 import { CustomeModal } from "@/components/modal/custome-modal";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirmButton";
@@ -52,29 +53,31 @@ export default function StatusAction({ data }: StatusActionProps) {
 
             </div>
             {
-                data.status == 'Pending Verification' ? <p className="text-orange-500 text-center text-nowrap text-xs">{data.status}</p> :
-                    <Button
-                        onClick={() => setOpenModal(true)}
-                        className={cn(
-                            "relative flex items-center transition-all duration-300 m-auto min-w-[110px]",
-                            data.status === "ACTIVE" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
-                            "rounded-lg"
-                        )}
-                    >
-                        <div
-                            className={cn(
-                                "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 dark:bg-gray-400",
-                                data.status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
-                            )}
-                        />
-                        <p
-                            className={cn(
-                                textVisible ? "opacity-100 " : "opacity-0", data.status === "ACTIVE" && 'dark:text-white'
-                            )}
-                        >
-                            {data.status}
-                        </p>
-                    </Button>
+                data.status == 'Pending Verification' ?
+                    <p className="text-orange-500 text-center text-nowrap text-xs">{data.status}</p> :
+                    <CustomSwitch data={data.status} checkActive={"ACTIVE"} onclick={() => { setOpenModal(true) }} />
+                // <Button
+                //     onClick={() => setOpenModal(true)}
+                //     className={cn(
+                //         "relative flex items-center transition-all duration-300 m-auto min-w-[110px]",
+                //         data.status === "ACTIVE" ? "bg-green-600 hover:bg-green-500 justify-start" : "justify-end text-right  bg-zinc-400 hover:bg-gray-500 ",
+                //         "rounded-full"
+                //     )}
+                // >
+                //     <div
+                //         className={cn(
+                //             "absolute rounded-full bg-white w-6 h-6 transition-all duration-300 ",
+                //             data.status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear"
+                //         )}
+                //     />
+                //     <p
+                //         className={cn(
+                //             textVisible ? "opacity-100 " : "opacity-0", 'text-white'
+                //         )}
+                //     >
+                //         {data.status}
+                //     </p>
+                // </Button>
             }
 
         </>

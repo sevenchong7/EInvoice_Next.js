@@ -33,6 +33,7 @@ import { getMerchantUserInfo, putMerchantUserInfoUpdate } from '@/lib/services/u
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
+import CustomSwitch from '@/components/customSwitch';
 
 
 interface CellActionProps {
@@ -379,29 +380,30 @@ const EditUser = ({ data, open }: { data: contents, open: boolean }) => {
           </Label>
           {
             data.status == 'Pending Verification' ? <p className='text-orange-500 text-center text-sm'>{data.status}</p> :
+              <CustomSwitch data={status} checkActive={"Y"} onclick={() => { HandleStatus() }} activeTitle='Active' inactiveTitle='Inactive' />
 
-              <Button
-                onClick={HandleStatus}
-                className={cn(
-                  "relative flex items-center transition-all duration-300",
-                  status === "Y" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right ",
-                  "rounded-lg"
-                )}
-              >
-                <div
-                  className={cn(
-                    "absolute rounded-full bg-white w-5 h-5 transition-all duration-300 ",
-                    status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear dark:bg-gray-400"
-                  )}
-                />
-                <div
-                  className={cn(
-                    textVisible ? "opacity-100 " : "opacity-0", status === "Y" && 'text-white'
-                  )}
-                >
-                  {status === 'Y' ? <p>Active</p> : <p>Inactive</p>}
-                </div>
-              </Button>
+            // <Button
+            //   onClick={HandleStatus}
+            //   className={cn(
+            //     "relative flex items-center transition-all duration-300",
+            //     status === "Y" ? "bg-green-600 hover:bg-green-500 justify-start" : "justify-end text-right bg-zinc-400 hover:bg-gray-500 ",
+            //     "rounded-full"
+            //   )}
+            // >
+            //   <div
+            //     className={cn(
+            //       "absolute rounded-full bg-white w-6 h-6 transition-all duration-300 ",
+            //       status === "Y" ? "translate-x-14 ease-linear" : "-translate-x-14 ease-linear "
+            //     )}
+            //   />
+            //   <div
+            //     className={cn(
+            //       textVisible ? "opacity-100 " : "opacity-0", 'text-white'
+            //     )}
+            //   >
+            //     {status === 'Y' ? <p>Active</p> : <p>Inactive</p>}
+            //   </div>
+            // </Button>
 
 
             // <Button onClick={() => setStatus("Active")} className='col-span-2'>  <div className='rounded-full bg-white w-5 h-5 mr-[10px] ' /> {status} </Button>

@@ -38,6 +38,7 @@ import { putEditMerchantInfo } from '@/lib/services/userService';
 import { useToast } from '@/components/ui/use-toast';
 import { ConfirmButton } from '@/components/ui/confirmButton';
 import { GetMerchantListContentParam } from '@/lib/interface/userInterface';
+import CustomSwitch from '@/components/customSwitch';
 
 interface CellActionProps {
   data: GetMerchantListContentParam;
@@ -95,10 +96,14 @@ const EditUser = ({ data, open, setOpen }: { data: GetMerchantListContentParam, 
   const [username, setUsername] = useState(data.loginId)
   const [companyEmail, setCompanyEmail] = useState(data.email);
   const [companyName, setCompanyName] = useState(data.companyName);
-  const [regNo, setRegNo] = useState(data.registrationNo);
-  const [tinNo, setTinNo] = useState(data.businessTinNo);
-  const [sstNo, setSSTNo] = useState(data.sstRegNo);
-  const [tourNo, setTourNo] = useState(data.tourRegNo);
+  const [regNo, setRegNo] = useState<any>();
+  // data.registrationNo
+  const [tinNo, setTinNo] = useState<any>();
+  // data.businessTinNo
+  const [sstNo, setSSTNo] = useState<any>();
+  // data.sstRegNo
+  const [tourNo, setTourNo] = useState<any>();
+  // data.tourRegNo
   const [streetAddress, setStreetAddress] = useState(data.address);
   const [zipCode, setZipCode] = useState(data.postcode);
   const [townCity, setTownCity] = useState(data.city);
@@ -177,19 +182,21 @@ const EditUser = ({ data, open, setOpen }: { data: GetMerchantListContentParam, 
   const HandleConfirm = () => {
     const editMerchantParam = {
       "companyName": companyName,
-      "companyEmail": companyEmail,
+      "email": companyEmail,
       "registrationNo": regNo,
-      "busTinNo": tinNo,
+      "businessTinNo": tinNo,
       "sstRegNo": sstNo,
       "tourRegNo": tourNo,
-      "streetAddress": streetAddress,
+      "address": streetAddress,
       "postCode": zipCode,
       "city": townCity,
       "state": state,
       "country": country,
       "contactPrefix": contactPrefix,
-      "contact": contactNo
+      "contact": contactNo,
+      'status': status
     }
+
 
     const control = putEditMerchantInfo(data.merchantId, editMerchantParam)
 
@@ -225,28 +232,7 @@ const EditUser = ({ data, open, setOpen }: { data: GetMerchantListContentParam, 
               </Label>
               {status == 'Pending Verification' ? <p className='text-orange-500 text-center text-sm col-span-2'>{status}</p> :
                 <div className='flex justify-end col-span-2'>
-                  <Button
-                    onClick={HandleStatus}
-                    className={cn(
-                      "relative flex items-center transition-all duration-300 min-w-[110px]",
-                      status === "ACTIVE" ? "bg-blue-800 hover:bg-blue-700 justify-start" : "justify-end text-right",
-                      "rounded-lg"
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "absolute rounded-full bg-white w-5 h-5 transition-all duration-300",
-                        status === "ACTIVE" ? "translate-x-16 ease-linear" : "-translate-x-16 ease-linear dark:bg-black"
-                      )}
-                    />
-                    <p
-                      className={cn(
-                        textVisible ? "opacity-100 " : "opacity-0", status === "ACTIVE" && 'dark:text-white'
-                      )}
-                    >
-                      {status}
-                    </p>
-                  </Button>
+                  <CustomSwitch data={status} checkActive={"ACTIVE"} onclick={() => { HandleStatus() }} />
                 </div>
 
               }

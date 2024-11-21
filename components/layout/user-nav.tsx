@@ -26,7 +26,10 @@ export function UserNav() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full bg-gray-300">
             <h1 className='text-sm'>
-              {session.user.emailDisplay.charAt(0).toUpperCase()}
+              {
+                //To display the 1st letter as the Image
+                session?.user?.emailDisplay?.charAt(0).toUpperCase() ? session.user.emailDisplay.charAt(0).toUpperCase() : ''
+              }
             </h1>
             {/* <Avatar className="h-8 w-8">
               <AvatarImage

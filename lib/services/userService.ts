@@ -3,9 +3,9 @@ import { auth, signOut } from '@/auth';
 import { get, post, put, upload } from '@/lib/api';
 import { redirect } from 'next/navigation';
 
-export const getRoles = async () => {
+export const getRoles = async (body?: any) => {
     const headers = await getHeaders();
-    const response = await get("/v1/role", headers);
+    const response = await get(`/v1/role?${body}`, headers);
 
     return response.data;
 }
@@ -71,9 +71,9 @@ export const postMechantUserInviteNewUser = async (body: any) => {
     return response;
 }
 
-export const getUserList = async () => {
+export const getUserList = async (body?: any) => {
     const headers = await getHeaders();
-    const response = await get('/v1/user/user-list', headers);
+    const response = await get(`/v1/user/user-list?${body}`, headers);
 
     return response.data;
 }
@@ -99,9 +99,9 @@ export const putMerchantUserInfoUpdate = async (id: any, body: any) => {
     return response.data;
 }
 
-export const getMerchantList = async () => {
+export const getMerchantList = async (body?: any) => {
     const headers = await getHeaders();
-    const response = await get("/v1/merchant/list", headers);
+    const response = await get(`/v1/merchant/list?${body}`, headers);
 
     return response.data;
 }
@@ -238,12 +238,16 @@ export const getEwalletBalance = async (id: any) => {
     const headers = await getHeaders();
     const response = await get(`/v1/ewallet/balance/${id}`, headers);
 
+    console.log('getEwalletBalance = ', response)
+
     return response.data;
 }
 
 export const getPackageInfo = async (packageId: any) => {
     const headers = await getHeaders();
     const response = await get(`/v1/role/package/info/${packageId}`, headers);
+
+    // console.log('getPackageInfo = ', response)
 
     return response.data;
 }
@@ -260,6 +264,20 @@ export const postCreateMerchant = async (body: any) => {
     const response = await post('/v1/user/register/merchant', body, headers)
 
     return response
+}
+
+export const getSubscriptionList = async (body?: any) => {
+    const headers = await getHeaders();
+    const response = await get(`/v1/subscriptions/list?${body}`, headers)
+
+    return response.data
+}
+
+export const getEWalletList = async (body?: any) => {
+    const headers = await getHeaders();
+    const response = await get(`/v1/ewallet/list?${body}`, headers);
+
+    return response.data
 }
 
 const getHeaders = async () => {

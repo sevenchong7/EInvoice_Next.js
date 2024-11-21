@@ -127,7 +127,11 @@ const paths = [
     permission: ["updatePassword.update"],
   },
   {
-    path: "/dashboard/subscriptionList",
+    path: "/dashboard/subscriptionListing",
     permission: ["subscriptionList.read"]
+  },
+  {
+    path: "/dashboard/eWalletListing",
+    permission: ["ewallet.read"]
   }
 ];

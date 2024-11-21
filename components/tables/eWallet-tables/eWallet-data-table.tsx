@@ -46,15 +46,11 @@ import { Checkbox } from '@radix-ui/react-checkbox';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import Paginator from './merchant-table-paging';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/customerAccordion';
 import { useTranslations } from 'next-intl';
 import { MerchantContent } from '@/constants/data';
 import { useDataTaskStore } from '@/lib/store/dataStore';
-import { getCountry } from '@/lib/services/generalService';
-import { useGeneralTaskStore } from '@/lib/store/generalStore';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { StateListParam } from '@/lib/interface/generalInterface';
+import Paginator from './eWallet-table-paging';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -85,9 +81,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState<any>('')
   const [checkboxStates, setCheckboxStates] = useState<any>({
-    email: true,
-    sstRegNo: true,
-    tourRegNo: true
+    trxType: true,
   });
   const [sorting, setSorting] = React.useState<SortingState>([])
   const router = useRouter();
@@ -101,15 +95,12 @@ export function DataTable<TData, TValue>({
   const per_page = searchParams?.get('limit') ?? '10';
   const perPageAsNumber = Number(per_page);
   const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
-  const setMerchantFilterData = useDataTaskStore((state) => state.setMerchantFilterData)
-  const removeMerchantFilterData = useDataTaskStore((state) => state.removeMerchantFilterData)
-  const setCountry = useGeneralTaskStore((state) => state.setCountryList)
-  const countryList = useGeneralTaskStore((state) => state.countryList)
-  const [selectedCountry, setSelectedCountry] = useState<string>('')
-  const [stateList, setStateList] = useState<StateListParam[]>()
-  const [selectedState, setSelectedState] = useState<string>()
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const setEwalletFilterData = useDataTaskStore((state) => state.setEwalletFilterData)
+  const removeEwalletFilterData = useDataTaskStore((state) => state.removeEwalletFilterData)
+  const [statementStartDate, setStatementStartDate] = useState('')
+  const [statementEndDate, setStatementEndDate] = useState('')
+
+
 
   const table = useReactTable({
     data,
@@ -153,28 +144,14 @@ export function DataTable<TData, TValue>({
     if (resetAllSelectedTitle) {
       table.getAllLeafColumns().map((column) => {
         column.setFilterValue('')
-        removeMerchantFilterData()
+        removeEwalletFilterData()
       })
     }
   }, [resetAllSelectedTitle])
 
   useEffect(() => {
-    removeMerchantFilterData()
-    const GetCountry = async () => {
-      const getCountryData = await getCountry()
-      setCountry(getCountryData)
-    }
-    GetCountry()
+    removeEwalletFilterData()
   }, [])
-
-  useEffect(() => {
-    countryList.map((res) => {
-      if (selectedCountry === res.countryCode) {
-        setStateList(res.stateList)
-      }
-    })
-
-  }, [selectedCountry])
 
   // const createQueryString = React.useCallback(
   //   (params: Record<string, string | number | null>) => {
@@ -229,7 +206,7 @@ export function DataTable<TData, TValue>({
               {table.getAllLeafColumns().map((column) => (
                 <div key={column.id}>
                   {
-                    column.id != 'merchantId' && column.id != 'actions' && column.id != 'stateId' &&
+                    column.id !== 'id' && column.id !== 'actions' && column.id !== 'amountIn' && column.id !== 'amountOut' && column.id !== 'remark' &&
                     <DropdownMenuCheckboxItem
                       checked={checkboxStates[column.id] || false}
                       onCheckedChange={() => {
@@ -244,7 +221,7 @@ export function DataTable<TData, TValue>({
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        {/* <div /> */}
+
         <div className='lg:hidden col-span-2'>
           <Accordion type="single" collapsible className="" >
             <AccordionItem value='item1' className='flex flex-col flex-1  w-full'>
@@ -253,11 +230,8 @@ export function DataTable<TData, TValue>({
                 {
                   table.getAllLeafColumns().map((column) => {
                     return (
-                      column.id != 'merchantId' && column.id != 'actions' && checkboxStates[column.id] ?
+                      column.id != 'id' && column.id != 'actions' && checkboxStates[column.id] ?
                         < div key={column.id} className='p-1'>
-                          {
-
-                          }
                           <div className='p-1 relative flex items-center'>
                             < Input
                               className='bg-white dark:text-black pr-10'
@@ -266,7 +240,7 @@ export function DataTable<TData, TValue>({
                               onChange={(event) => {
                                 if (checkboxStates[column.id]) {
                                   column.setFilterValue(event.target.value);
-                                  setMerchantFilterData(column.id, event.target.value)
+                                  setEwalletFilterData(column.id, event.target.value)
                                 }
 
                               }}
@@ -274,7 +248,7 @@ export function DataTable<TData, TValue>({
                             />
                             <button className='absolute right-4 z-10' onClick={() => {
                               column.setFilterValue('');
-                              setMerchantFilterData(column.id, '')
+                              setEwalletFilterData(column.id, '')
                             }}>
                               <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
                             </button>
@@ -292,157 +266,75 @@ export function DataTable<TData, TValue>({
         {
           table.getAllLeafColumns().map((column) => {
             return (
-              column.id != 'merchantId' && column.id != 'actions' && checkboxStates[column.id] ?
-                < div key={column.id} className={cn(column.id == 'country' && "col-span-2", column.id == 'joinDate' && "col-span-2", 'hidden lg:inline-block')}>
-                  {
-                    <Accordion type="single" collapsible className="w-full bg-gray-400 rounded-md px-2">
-                      <AccordionItem value='item1'>
-                        <AccordionTrigger><div >{t(column.columnDef.header)}</div></AccordionTrigger>
-                        <AccordionContent className='space-y-5'>
-                          {
-                            column.id == 'country' ?
-                              <div className='p-1 grid grid-cols-2 gap-4'>
-                                <Select
-                                  value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
-                                  onValueChange={(value) => {
-                                    if (checkboxStates[column.id]) {
-                                      column.setFilterValue(value);
-                                      setMerchantFilterData(column.id, value)
-                                      setSelectedCountry(value)
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger className='bg-white'>
-                                    <SelectValue placeholder={t('TAG_SELECT_COUNTRY')} />
-                                  </SelectTrigger>
-                                  <SelectContent className='max-h-[300px] overflow-y-scroll'>
-                                    <SelectGroup>
-                                      <SelectItem value=''>{t('TAG_SELECT_COUNTRY')} </SelectItem>
-                                      {countryList.map((res) => (
-                                        <SelectItem key={res.countryCode} value={res.countryCode}>
-                                          {res.countryName}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-
-                                <Select
-                                  disabled={selectedCountry === ''}
-                                  value={selectedState
-                                    // checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''
-                                  }
-                                  onValueChange={(value) => {
-                                    setSelectedState(value)
-                                    setMerchantFilterData('stateId', value)
+              column.id !== 'id' && column.id !== 'actions' && column.id !== 'amountIn' && column.id !== 'amountOut' && column.id !== 'remark' && checkboxStates[column.id] ?
+                < div key={column.id} className={cn(column.id == 'statementDate' && 'col-span-2', 'hidden lg:inline-block')}>
+                  <Accordion type="single" collapsible className="w-full bg-gray-400 rounded-md px-2" >
+                    <AccordionItem value='item1'>
+                      <AccordionTrigger><div >{t(column.columnDef.header)}</div></AccordionTrigger>
+                      <AccordionContent className='space-y-5'>
+                        {
+                          column.id == 'statementDate' ?
+                            <div className='p-1 grid grid-cols-2 gap-4'>
+                              <div className='flex space-x-4 items-center'>
+                                <p>{t('TAG_START_DATE')} :</p>
+                                < Input
+                                  type='date'
+                                  className='bg-white dark:text-black pr-10'
+                                  placeholder={t('TAG_START_DATE')}
+                                  value={statementStartDate}
+                                  onChange={(value) => {
+                                    setStatementStartDate(value.target.value)
+                                    setEwalletFilterData('statementStartDate', value.target.value)
                                     // if (checkboxStates[column.id]) {
-                                    //   column.setFilterValue(value);
-                                    //   setMerchantFilterData(column.id, value)
+                                    //   column.setFilterValue(event.target.value);
+                                    //   setMerchantFilterData(column.id, event.target.value)
                                     // }
+
                                   }}
-                                >
-                                  <SelectTrigger className='bg-white'>
-                                    <SelectValue placeholder={t('TAG_SELECT_STATE')} />
-                                  </SelectTrigger>
-                                  <SelectContent className='max-h-[300px] overflow-y-scroll'>
-                                    <SelectGroup>
-                                      <SelectItem value=''>{t('TAG_SELECT_STATE')} </SelectItem>
-                                      {
-                                        stateList?.map((res) => {
-                                          return <SelectItem key={res.stateCode} value={res.stateCode}>
-                                            {res.stateName}
-                                          </SelectItem>
-                                        })}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              </div> :
-                              column.id == 'joinDate' ?
-                                <div className='p-1 grid grid-cols-2 gap-4'>
-                                  <div className='flex space-x-4 items-center'>
-                                    <p>{t('TAG_START_DATE')} :</p>
-                                    < Input
-                                      type='date'
-                                      className='bg-white dark:text-black pr-10'
-                                      placeholder={t('TAG_START_DATE')}
-                                      value={startDate}
-                                      onChange={(value) => {
-                                        setStartDate(value.target.value)
-                                        setMerchantFilterData('startDate', value.target.value)
-                                        // if (checkboxStates[column.id]) {
-                                        //   column.setFilterValue(event.target.value);
-                                        //   setMerchantFilterData(column.id, event.target.value)
-                                        // }
+                                // className="flex flex-1 w-full md:max-w-sm"
+                                />
+                              </div>
+                              <div className='flex space-x-4 items-center'>
+                                <p>{t('TAG_END_DATE')} :</p>
+                                < Input
+                                  type='date'
+                                  className='bg-white dark:text-black pr-10'
+                                  placeholder={t('TAG_END_DATE')}
+                                  value={statementEndDate}
+                                  onChange={(value) => {
+                                    setStatementEndDate(value.target.value)
+                                    setEwalletFilterData('statementEndDate', value.target.value)
+                                  }}
+                                // className="flex flex-1 w-full md:max-w-sm"
+                                />
+                              </div>
+                            </div> :
+                            <div className='p-1 relative flex items-center'>
+                              < Input
+                                className='bg-white dark:text-black pr-10'
+                                placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
+                                value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
+                                onChange={(event) => {
+                                  if (checkboxStates[column.id]) {
+                                    column.setFilterValue(event.target.value);
+                                    setEwalletFilterData(column.id, event.target.value)
+                                  }
 
-                                      }}
-                                    // className="flex flex-1 w-full md:max-w-sm"
-                                    />
-                                  </div>
-                                  <div className='flex space-x-4 items-center'>
-                                    <p>{t('TAG_END_DATE')} :</p>
-                                    < Input
-                                      type='date'
-                                      className='bg-white dark:text-black pr-10'
-                                      placeholder={t('TAG_END_DATE')}
-                                      value={endDate}
-                                      onChange={(value) => {
-                                        setEndDate(value.target.value)
-                                        setMerchantFilterData('startDate', value.target.value)
-                                      }}
-                                    // className="flex flex-1 w-full md:max-w-sm"
-                                    />
-                                  </div>
-                                </div> :
-                                column.id == 'status' ?
-                                  <div className='p-1'>
-                                    <Select
-                                      value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
-                                      onValueChange={(value) => {
-                                        if (checkboxStates[column.id]) {
-                                          column.setFilterValue(value);
-                                          setMerchantFilterData(column.id, value)
-                                        }
-                                      }}
-                                    >
-                                      <SelectTrigger className='bg-white'>
-                                        <SelectValue placeholder={t('TAG_SELECT_STATUS')} />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectGroup>
-                                          <SelectItem value=''>{t('TAG_SELECT_STATUS')} </SelectItem>
-                                          <SelectItem value='ACTIVE'>{t('TAG_ACTIVE')} </SelectItem>
-                                          <SelectItem value='DISABLE'>{t('TAG_INACTIVE')} </SelectItem>
-                                          <SelectItem value='Pending'>{t('TAG_PENDING')} </SelectItem>
-                                        </SelectGroup>
-                                      </SelectContent>
-                                    </Select>
-                                  </div> :
-                                  <div className='p-1 relative flex items-center'>
-                                    < Input
-                                      className='bg-white dark:text-black pr-10'
-                                      placeholder={`${t('TAG_SEARCH')} ${t(column.columnDef.header)}...`}
-                                      value={checkboxStates[column.id] ? (column.getFilterValue() as string) ?? '' : ''}
-                                      onChange={(event) => {
-                                        if (checkboxStates[column.id]) {
-                                          column.setFilterValue(event.target.value);
-                                          setMerchantFilterData(column.id, event.target.value)
-                                        }
+                                }}
+                              // className="flex flex-1 w-full md:max-w-sm"
+                              />
+                              <button className='absolute right-4 z-10' onClick={() => {
+                                column.setFilterValue('');
+                                setEwalletFilterData(column.id, '')
+                              }}>
+                                <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                              </button>
+                            </div>
+                        }
 
-                                      }}
-                                    // className="flex flex-1 w-full md:max-w-sm"
-                                    />
-                                    <button className='absolute right-4 z-10' onClick={() => {
-                                      column.setFilterValue('');
-                                      setMerchantFilterData(column.id, '')
-                                    }}>
-                                      <svg className='text-black' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                    </button>
-                                  </div>
-                          }
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  }
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div> : ''
             )
           }
@@ -451,7 +343,7 @@ export function DataTable<TData, TValue>({
 
       </div >
       <Separator />
-      <div className='px-1 grid lg:grid-cols-2 gap-4 items-center'>
+      <div className=' grid lg:grid-cols-2 gap-4 items-center'>
         <div></div>
         <Input
           type="text"
@@ -467,7 +359,12 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id} className='flex flex-auto min-w-screen bg-gray-300 rounded-lg '>
               {headerGroup.headers.map((header, index) => {
                 return (
-                  <TableHead key={header.id} className={cn("flex items-center dark:text-black overflow-hide", index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]", header.id === 'email' && 'min-w-[300px]', header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ", header.id == 'actions' && "flex-auto items-center justify-center  w-[100px] lg:sticky lg:right-0 bg-gray-300 rounded-lg lg:z-10")} >
+                  <TableHead key={header.id}
+                    className={cn("flex items-center dark:text-black overflow-hide",
+                      index == 0 ? " flex-auto min-w-[70px] max-w-[100px] pl-[20px]" : header.id !== 'actions' && "min-w-[200px]",
+                      header.id === 'email' && 'min-w-[300px]',
+                      header.id == 'status' && "pl-[40px] flex-auto w-[180px] md:sticky lg:right-[150px] lg:z-10 bg-gray-300 ",
+                      header.id == 'actions' && "flex-auto items-center justify-center  w-[30px] lg:sticky lg:right-0 bg-gray-300 rounded-lg lg:z-10")} >
                     {header.isPlaceholder
                       ? null
                       : header.id == 'actions' ?
@@ -555,13 +452,13 @@ export function DataTable<TData, TValue>({
                       key={cell.id}
                       className={cn(
                         "flex items-center border-b",
-                        cell.column.id === 'merchantId' ? "min-w-[70px] max-w-[100px] pl-[20px]" : "min-w-[200px]",
+                        cell.column.id === 'id' ? "min-w-[70px] max-w-[100px] pl-[20px]" : cell.column.id !== 'actions' && "min-w-[200px]",
                         cell.column.id === 'email' && 'min-w-[300px]',
                         cell.column.id === 'status' && "flex-auto items-center justify-center w-[180px] lg:sticky lg:right-[150px] bg-white md:z-20  lg:z-20 lg:shadow dark:bg-black dark:shadow-gray-400",
-                        cell.column.id === 'actions' && "flex-auto items-center justify-center w-[100px] bg-white lg:sticky lg:right-0 lg:z-10 md:z-10 dark:bg-black"
+                        cell.column.id === 'actions' && "flex-auto items-center justify-center w-[30px] bg-white lg:sticky lg:right-0 lg:z-10 md:z-10 dark:bg-black"
                       )}
                     >
-                      {cell.column.id == "merchantId" ? <p>{rowIndex + 1}</p> :
+                      {cell.column.id == "id" ? <p>{rowIndex + 1}</p> :
                         // Show 'NA' if the cell's column ID does not exist in the headers
                         hasValidHeader || cell.column.id === 'actions' ? finaldata : 'NA'
                       }

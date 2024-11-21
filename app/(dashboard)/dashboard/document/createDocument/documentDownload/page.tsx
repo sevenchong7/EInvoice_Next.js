@@ -2,6 +2,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
+//to prevent server side rendering
 const DocumentDownload = dynamic(() => import('@/components/forms/document-form/document-form-download'), { ssr: false });
 
 export default function page() {

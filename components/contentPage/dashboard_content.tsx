@@ -26,9 +26,12 @@ export default function DashboardContent() {
 
     useEffect(() => {
         const checkRmbMe = localStorage.getItem('rmbMe')
+        //check the user got tick the remember me or not
         if (checkRmbMe) {
+            //true save the session into the localStorage
             localStorage.setItem('session', JSON.stringify(session))
         } else {
+            //save the access token expiry date into the localStorage
             localStorage.setItem('sessionExpiry', JSON.stringify(session?.user.accessTokenExpiry))
         }
     }, [session])
@@ -36,6 +39,7 @@ export default function DashboardContent() {
     useEffect(() => {
         const checkRmbMe = localStorage.getItem('rmbMe')
         if (checkRmbMe) {
+            //check the previous user theme type
             const themeData = localStorage.getItem('theme') ?? 'light'
             setTheme(themeData)
         }

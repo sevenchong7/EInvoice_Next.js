@@ -197,20 +197,6 @@ export const navItems: NavItem[] = [
     label: 'Dashboard',
     permission: ['dashboard.read']
   },
-  // {
-  //   title: 'User',
-  //   href: '/dashboard/user',
-  //   icon: 'user',
-  //   label: 'user',
-  //   permission: ["user.access", "user.all"]
-  // },
-  // {
-  //   title: 'Employee',
-  //   href: '/dashboard/employee',
-  //   icon: 'employee',
-  //   label: 'employee',
-  //   permission: ["employee.access", "employee.all"]
-  // },
   {
     title: 'TAG_USER',
     href: '/dashboard/user',
@@ -231,15 +217,6 @@ export const navItems: NavItem[] = [
         // icon: 'profile',
         // label: 'profile',
         permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read'],
-        // children: [
-        //   {
-        //     title: 'Add User',
-        //     href: '/dashboard/user/userListing/AddUser',
-        //     // icon: 'profile',
-        //     // label: 'profile',
-        //     permission: ["user.access", "user.all"]
-        //   },
-        // ]
       },
       {
         title: 'TAG_MERCHANT_LISTING',
@@ -247,15 +224,6 @@ export const navItems: NavItem[] = [
         // icon: 'profile',
         // label: 'profile',
         permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update'],
-        // children: [
-        //   {
-        //     title: 'Add User',
-        //     href: '/dashboard/user/userListing/AddUser',
-        //     // icon: 'profile',
-        //     // label: 'profile',
-        //     permission: ["user.access", "user.all"]
-        //   },
-        // ]
       },
       {
         title: 'TAG_ROLE_LISTING',
@@ -263,15 +231,6 @@ export const navItems: NavItem[] = [
         // icon: 'profile',
         // label: 'profile',
         permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create'],
-        // children: [
-        //   {
-        //     title: 'Add User',
-        //     href: '/dashboard/user/userListing/AddUser',
-        //     // icon: 'profile',
-        //     // label: 'profile',
-        //     permission: ["user.access", "user.all"]
-        //   },
-        // ]
       }
     ]
   },
@@ -291,23 +250,16 @@ export const navItems: NavItem[] = [
   },
   {
     title: "TAG_SUBSCRIPTION_LIST",
-    href: '/dashboard/subscriptionList',
+    href: '/dashboard/subscriptionListing',
     icon: "subscription",
     label: "Subscription List",
     permission: ["subscriptionList.read"],
-    // children: [
-    //   {
-    //     title: "TAG_SUBSCRIPTION_LIST",
-    //     href: "/dashboard/subscriptionList",
-    //     permission: ['docCreate.create', 'docCreate.createMyFav']
-    //   }
-    // ]
   },
-  // {
-  //   title: 'Kanban',
-  //   href: '/dashboard/kanban',
-  //   icon: 'kanban',
-  //   label: 'kanban',
-  //   permission: ["kanban.access", "kanban.all"]
-  // }
+  {
+    title: "TAG_EWALLET_LIST",
+    href: '/dashboard/eWalletListing',
+    icon: "ewallet",
+    label: "Ewallet List",
+    permission: ["ewallet.read"],
+  },
 ];

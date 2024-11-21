@@ -1,3 +1,4 @@
+'use client'
 import BreadCrumb from "@/components/breadcrumb";
 import SubscribeInformation from "@/components/profile/subscribe-information";
 import { useTranslations } from "next-intl";

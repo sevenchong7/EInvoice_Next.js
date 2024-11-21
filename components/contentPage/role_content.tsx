@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import BreadCrumb from "../breadcrumb";
 import { RoleClient } from "../tables/role-tables/client";
+import { GetRoleListParam } from "@/lib/interface/userInterface";
 
 
 export default function RoleContent({ roleData }: { roleData: any }) {
@@ -12,10 +13,10 @@ export default function RoleContent({ roleData }: { roleData: any }) {
         { title: t('TAG_USER'), link: '' },
         { title: t('TAG_ROLE_LISTING'), link: '/dashboard/user/roleListing' }
     ];
-    const [roleList, setRoleList] = useState<Role[]>([])
+    const [roleList, setRoleList] = useState<GetRoleListParam>()
 
     useEffect(() => {
-        setRoleList(roleData.content)
+        setRoleList(roleData)
     }, [roleData])
 
     return (

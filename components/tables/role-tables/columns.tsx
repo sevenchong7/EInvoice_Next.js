@@ -3,8 +3,9 @@ import { ColumnDef } from '@tanstack/react-table';
 // import StatusAction from './status-action';
 import { CellAction } from './cell-action';
 import { Merchant, Role, RoleInfo } from '@/constants/data';
+import { GetRoleListContentParam } from '@/lib/interface/userInterface';
 
-export const columns: ColumnDef<Role>[] = [
+export const columns: ColumnDef<GetRoleListContentParam>[] = [
   {
     accessorKey: 'mupId',
     header: 'TAG_NO',

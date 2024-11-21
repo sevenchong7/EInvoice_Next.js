@@ -23,11 +23,14 @@ import useHasAccess from '@/hooks/useHasAccess';
 import { ConfirmModal } from '@/components/modal/confirm-moal';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getDefaultPermission, getMerchantList } from '@/lib/services/userService';
+import { getDefaultPermission, getMerchantList, getRoles } from '@/lib/services/userService';
 import { useSession } from 'next-auth/react';
+import { GetRoleListParam } from '@/lib/interface/userInterface';
+import { useDataTaskStore } from '@/lib/store/dataStore';
+import { ConfirmButton } from '@/components/ui/confirmButton';
 
 interface ProductsClientProps {
-  roleData: Role[];
+  roleData: GetRoleListParam | undefined;
   // merchantData: MerchantContent[];
 }
 
@@ -44,6 +47,10 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
   const session = useSession()
   const [mId, setMId] = useState<any>()
   const [merchantList, setMerchantList] = useState<MerchantContent[]>([])
+  const [selectedTitleChange, setSelectedTitleChange] = useState<any>()
+  const [resetAllSelectedTitle, setResetAllSelectedTitle] = useState(false)
+  const selectedTitle = useDataTaskStore((state) => state.roleFilterData)
+
 
 
   useEffect(() => {
@@ -103,6 +110,28 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
 
   }
 
+
+  const handleSelectedTitle = async (page?: number) => {
+    const params = new URLSearchParams();
+
+    if (page != roleData?.page && page) {
+      params.append('page', page.toString());
+    }
+
+    selectedTitle.forEach(({ key, value }) => {
+      if (value) {
+        params.append(key, value);
+      }
+    });
+
+    const queryString = params.toString();
+
+    // console.log("queryString = ", queryString)
+
+    const merchantList = await getRoles(queryString);
+    setSelectedTitleChange(merchantList)
+  }
+
   return (
     <>
       <ConfirmModal
@@ -160,11 +189,19 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
       <div className='overflow-y-scroll space-y-2'>
         <div className="flex items-start justify-between">
           <Heading
-            title={`${t('TAG_ROLES')} (${roleData.length})`}
+            title={`${t('TAG_ROLES')} (${roleData?.content?.length})`}
             description={t('TAG_MANAGE_ROLES')}
           />
-          <Sheet open={open} onOpenChange={setOpen}>
-            {/* <SheetTrigger asChild> */}
+          <div className='space-x-4'>
+            <ConfirmButton onClick={() => { handleSelectedTitle() }}>
+              {t('TAG_CONFIRM')}
+            </ConfirmButton>
+            <Button onClick={() => { setResetAllSelectedTitle(!resetAllSelectedTitle) }}>
+              {t('TAG_RESET')}
+            </Button>
+          </div>
+          {/* <Sheet open={open} onOpenChange={setOpen}>
+
             <Button
               onClick={() => HandlePermission()}
               className="text-xs md:text-sm"
@@ -172,13 +209,25 @@ export const RoleClient: React.FC<ProductsClientProps> = ({ roleData }) => {
             >
               <Plus className="mr-2 h-4 w-4" /> {t('TAG_ADD_NEW')}
             </Button>
-            {/* </SheetTrigger> */}
             <AddRole openSheet={open} permissionListData={permissionList} setOpen={setOpen} setSelectUserModal={setSelectUserModal} mId={mId} />
-          </Sheet>
+          </Sheet> */}
         </div>
         {/* <Separator /> */}
         <div className='space-y-5'>
-          <DataTable columns={columns} data={roleData} />
+          <DataTable
+            columns={columns}
+            data={selectedTitleChange ? selectedTitleChange.content : roleData?.content ?? []}
+            totalPage={roleData ? roleData.totalPages : 0}
+            currentPage={selectedTitleChange ? selectedTitleChange.page : roleData ? roleData.page : 0}
+            usePageCallback={handleSelectedTitle}
+            resetAllSelectedTitle={resetAllSelectedTitle}
+            open={open}
+            setOpen={setOpen}
+            permissionList={permissionList}
+            setSelectUserModal={setSelectUserModal}
+            HandlePermission={HandlePermission}
+            mId={mId}
+          />
         </div>
       </div>
     </>

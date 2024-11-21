@@ -1,17 +1,17 @@
 'use client'
-import { contents } from "@/constants/data"
 import { useTranslations } from "next-intl"
 import { useState, useEffect } from "react"
 import BreadCrumb from "../breadcrumb"
 import { UserClient } from "../tables/user-tables/client"
+import { GetUserListParam } from "@/lib/interface/userInterface"
 
 
 export default function UserListContent(data: any) {
     const t = useTranslations()
-    const [userList, setUserList] = useState<contents[]>([])
+    const [userList, setUserList] = useState<GetUserListParam>()
 
     useEffect(() => {
-        setUserList(data.data.content)
+        setUserList(data.data)
     }, [data])
 
     const breadcrumbItems = [
