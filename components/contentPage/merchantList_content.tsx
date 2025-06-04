@@ -8,7 +8,7 @@ import { useGeneralTaskStore } from "@/lib/store/generalStore";
 import { GetMerchantListContentParam, GetMerchantListParam } from "@/lib/interface/userInterface";
 
 
-export default function MerchantListContent({ merchantListData, getCountryListData }: { merchantListData: GetMerchantListParam, getCountryListData: any }) {
+export default function MerchantListContent({ merchantListData, getCountryListData }: { merchantListData: any, getCountryListData: any }) {
     const t = useTranslations()
     const setCountryList = useGeneralTaskStore((state) => state.setCountryList)
     const [merchantData, setMerchantData] = useState<GetMerchantListParam>()

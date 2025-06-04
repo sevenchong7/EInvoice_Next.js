@@ -75,15 +75,15 @@ export default function LocaleSwitcherSelect({
         // const locale = value as Locale;
 
 
-        if (session)
-            window.location.reload() //reload the page to call api again to change the data language
+        // if (session)
+        //     window.location.reload() //reload the page to call api again to change the data language
     }
 
     useEffect(() => {
         startTransition(() => {
             setUserLocale(loaclLanguage as Locale); // set the local 
         });
-        router.refresh()
+        // router.refresh()
     }, [localeData, loaclLanguage])
 
     return (
@@ -105,14 +105,32 @@ export default function LocaleSwitcherSelect({
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup >
                     {
-                        languageData?.map((item) => (
-                            <DropdownMenuItem key={item.languageName} onClick={() => onChange(item.languageName)}>
+                        // !languageData ?
+                        <div>
+                            <DropdownMenuItem key={'English'} onClick={() => onChange('English')}>
                                 <div className='flex  items-center gap-4'>
-                                    <Image src={item.languageFlag} alt={item.languageName} height={24} width={24} />
-                                    {item.languageName}
+                                    English
                                 </div>
                             </DropdownMenuItem>
-                        ))
+                            <DropdownMenuItem key={'Melayu'} onClick={() => onChange('Melayu')}>
+                                <div className='flex  items-center gap-4'>
+                                    Melayu
+                                </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem key={'中文'} onClick={() => onChange('中文')}>
+                                <div className='flex  items-center gap-4'>
+                                    中文
+                                </div>
+                            </DropdownMenuItem>
+                        </div>
+                        // :languageData?.map((item) => (
+                        //     <DropdownMenuItem key={item.languageName} onClick={() => onChange(item.languageName)}>
+                        //         <div className='flex  items-center gap-4'>
+                        //             <Image src={item.languageFlag} alt={item.languageName} height={24} width={24} />
+                        //             {item.languageName}
+                        //         </div>
+                        //     </DropdownMenuItem>
+                        // ))
                     }
                 </DropdownMenuGroup>
             </DropdownMenuContent>

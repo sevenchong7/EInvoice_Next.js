@@ -78,66 +78,66 @@ export default function DocumentFormStep2(
 
     // const countryList = useGeneralTaskStore((state) => state.countryList)
 
-    async function getMerchant() {
-        return await getMerchantInfo();
-    };
+    // async function getMerchant() {
+    //     return await getMerchantInfo();
+    // };
 
-    useEffect(() => {
-        const GetCountry = async () => {
-            const countryList = await getCountry()
-            setSupplierCountries(countryList)
-            setBuyerCountries(countryList)
-            setDeliveryCountries(countryList)
-        }
+    // useEffect(() => {
+    //     const GetCountry = async () => {
+    //         const countryList = await getCountry()
+    //         setSupplierCountries(countryList)
+    //         setBuyerCountries(countryList)
+    //         setDeliveryCountries(countryList)
+    //     }
 
-        GetCountry()
-        getMerchant().then((res) => {
-            setMerchantInfo(res)
-        });
-    }, [])
+    //     GetCountry()
+    //     getMerchant().then((res) => {
+    //         setMerchantInfo(res)
+    //     });
+    // }, [])
 
-    useEffect(() => {
-        form.setValue('supplierIndustryName', merchantInfo?.companyName)
-        form.setValue('supplierTaxIndentificationNumber', merchantInfo?.businessTinNo)
-        form.setValue('supplierBusinessRegNumber', merchantInfo?.registrationNo)
-        // form.setValue('sstRegNumber', merchantInfo?.)
-        // form.setValue('supplierIndustryName', merchantInfo?.companyName)
-        form.setValue('supplierLine', merchantInfo?.address)
-        form.setValue('supplierZipCode', merchantInfo?.postcode)
-        form.setValue('supplierCity', merchantInfo?.city)
-        form.setValue('supplierCountry', merchantInfo?.country)
-        form.setValue('supplierState', merchantInfo?.stateId)
-        form.setValue('supplierContactPrefix', merchantInfo?.contactPrefix)
-        form.setValue('supplierContact', merchantInfo?.contact)
-        form.setValue('supplierEmail', merchantInfo?.email || '')
-    }, [merchantInfo])
+    // useEffect(() => {
+    //     form.setValue('supplierIndustryName', merchantInfo?.companyName)
+    //     form.setValue('supplierTaxIndentificationNumber', merchantInfo?.businessTinNo)
+    //     form.setValue('supplierBusinessRegNumber', merchantInfo?.registrationNo)
+    //     // form.setValue('sstRegNumber', merchantInfo?.)
+    //     // form.setValue('supplierIndustryName', merchantInfo?.companyName)
+    //     form.setValue('supplierLine', merchantInfo?.address)
+    //     form.setValue('supplierZipCode', merchantInfo?.postcode)
+    //     form.setValue('supplierCity', merchantInfo?.city)
+    //     form.setValue('supplierCountry', merchantInfo?.country)
+    //     form.setValue('supplierState', merchantInfo?.stateId)
+    //     form.setValue('supplierContactPrefix', merchantInfo?.contactPrefix)
+    //     form.setValue('supplierContact', merchantInfo?.contact)
+    //     form.setValue('supplierEmail', merchantInfo?.email || '')
+    // }, [merchantInfo])
 
-    useEffect(() => {
-        supplierCountries?.map((value) => {
-            if (form.getValues('supplierCountry') == value.countryCode) {
-                setSupplierStates(value.stateList)
-                form.setValue('supplierContactPrefix', value.contactPrefix);
-            }
-        })
+    // useEffect(() => {
+    //     supplierCountries?.map((value) => {
+    //         if (form.getValues('supplierCountry') == value.countryCode) {
+    //             setSupplierStates(value.stateList)
+    //             form.setValue('supplierContactPrefix', value.contactPrefix);
+    //         }
+    //     })
 
-    }, [form.watch('supplierCountry')])
+    // }, [form.watch('supplierCountry')])
 
-    useEffect(() => {
-        buyerCountries?.map((value) => {
-            if (form.getValues('buyerCountry') == value.countryCode) {
-                setBuyerStates(value.stateList)
-                form.setValue('buyerContactPrefix', value.contactPrefix);
-            }
-        })
-    }, [form.watch('buyerCountry')])
+    // useEffect(() => {
+    //     buyerCountries?.map((value) => {
+    //         if (form.getValues('buyerCountry') == value.countryCode) {
+    //             setBuyerStates(value.stateList)
+    //             form.setValue('buyerContactPrefix', value.contactPrefix);
+    //         }
+    //     })
+    // }, [form.watch('buyerCountry')])
 
-    useEffect(() => {
-        deliveryCountries?.map((value) => {
-            if (form.getValues('deliveryCountry') == value.countryCode) {
-                setDeliveryStates(value.stateList)
-            }
-        })
-    }, [form.watch('deliveryCountry')])
+    // useEffect(() => {
+    //     deliveryCountries?.map((value) => {
+    //         if (form.getValues('deliveryCountry') == value.countryCode) {
+    //             setDeliveryStates(value.stateList)
+    //         }
+    //     })
+    // }, [form.watch('deliveryCountry')])
 
 
     const {
@@ -397,11 +397,13 @@ export default function DocumentFormStep2(
                                             </FormControl>
                                             <SelectContent className='max-h-[300px] overflow-y-scroll'>
                                                 {/* @ts-ignore  */}
-                                                {supplierCountries?.map((country, index) => (
-                                                    <SelectItem key={index} value={country.countryCode}>
-                                                        {country.countryName}
-                                                    </SelectItem>
-                                                ))}
+                                                {supplierCountries ?
+                                                    supplierCountries?.map((country, index) => (
+                                                        <SelectItem key={index} value={country.countryCode}>
+                                                            {country.countryName}
+                                                        </SelectItem>
+                                                    )) : <div></div>
+                                                }
                                             </SelectContent>
                                         </Select>
                                     </FormControl>

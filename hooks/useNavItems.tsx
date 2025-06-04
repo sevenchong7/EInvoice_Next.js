@@ -15,7 +15,7 @@ const useNavItems = (navItems: NavItem[]) => {
     }
 
     const filteredList = navItems.filter(item => {
-
+        // console.log('items = ', item)
         return item.permission?.some((p) => session?.user?.permissions.includes(p))
     });
 

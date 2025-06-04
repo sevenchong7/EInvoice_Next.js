@@ -52,7 +52,7 @@ export const MerchantClient: React.FC<ProductsClientProps> = ({ data }) => {
         <div className="flex items-start justify-between">
           <div className='flex-1'>
             <Heading
-              title={`${t('TAG_MERCHANTS')} (${data?.content.length})`}
+              title={`${t('TAG_MERCHANTS')} (${data ? data?.content?.length : 0})`}
               description={t('TAG_MANAGE_MERCHANTS')}
             />
           </div>

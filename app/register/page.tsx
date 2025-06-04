@@ -9,12 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthenticationPage() {
-    const paymentMethod = getpaymentMethod();
-    const registerPackage = getRegisterPackage();
-    const subscriptionDuration = getSubscriptionDuration();
-    const getCountryList = getCountry()
+    // const paymentMethod = getpaymentMethod();
+    // const registerPackage = getRegisterPackage();
+    // const subscriptionDuration = getSubscriptionDuration();
+    // const getCountryList = getCountry()
 
-    const [registerPackageData, paymentMethodData, subscriptionDurationData, getCountryData] = await Promise.all([registerPackage, paymentMethod, subscriptionDuration, getCountryList])
+    // const [registerPackageData, paymentMethodData, subscriptionDurationData, getCountryData] = await Promise.all([registerPackage, paymentMethod, subscriptionDuration, getCountryList])
+    const [registerPackageData, paymentMethodData, subscriptionDurationData, getCountryData] = [true, true, true, true]
     return (
         <RegisterUserForm packageData={registerPackageData} paymentMethodData={paymentMethodData} subscriptionDurationData={subscriptionDurationData} getCountryData={getCountryData} />
     );

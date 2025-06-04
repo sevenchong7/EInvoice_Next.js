@@ -64,74 +64,74 @@ export const config = {
 const paths = [
   {
     path: "/dashboard",
-    permission: ['dashboard.read'],
+    permission: ['dashboard.read', '*'],
   },
   {
     path: "/dashboard/user",
-    permission: ['userList.read', 'roleList.read', 'userList.su.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create'],
+    permission: ['userList.read', 'roleList.read', 'userList.su.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create', '*'],
   },
   {
     path: "/dashboard/document",
-    permission: ['docCreate.create'],
+    permission: ['docCreate.create', '*'],
   },
   {
     path: "/dashboard/document/createDocument",
-    permission: ['docCreate.create', 'docCreate.createMyFav'],
+    permission: ['docCreate.create', 'docCreate.createMyFav', '*'],
   },
   {
     path: "/dashboard/document/createDocument/documentDownload",
-    permission: ['docCreate.create', 'docCreate.createMyFav'],
+    permission: ['docCreate.create', 'docCreate.createMyFav', '*'],
   },
   {
     path: "/dashboard/profile",
-    permission: ['profile.read'],
+    permission: ['profile.read', '*'],
   },
   {
     path: "/dashboard/user/createMerchant",
-    permission: ['merchantCreate.su.create'],
+    permission: ['merchantCreate.su.create', '*'],
   },
   {
     path: "/dashboard/user/userListing",
-    permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read'],
+    permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read', '*'],
   },
   {
     path: "/dashboard/user/merchantListing",
-    permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update'],
+    permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update', '*'],
   },
   {
     path: "/dashboard/user/roleListing",
-    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create'],
+    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create', '*'],
   },
   {
     path: "/dashboard/user/userListing/[id]",
-    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'userList.su.read'],
+    permission: ['roleList.read', 'roleList.create', 'roleList.update', 'userList.su.read', '*'],
   },
   {
     path: "/dashboard/profile/subscription",
-    permission: ['subscription.read'],
+    permission: ['subscription.read', '*'],
   },
   {
     path: "/dashboard/profile/subscription/information",
-    permission: ['subscription.update'],
+    permission: ['subscription.update', '*'],
   },
   {
     path: "/dashboard/profile/subscription/payment",
-    permission: ['subscription.update'],
+    permission: ['subscription.update', '*'],
   },
   {
     path: "/dashboard/profile/subscription/payment/information",
-    permission: ['subscription.update'],
+    permission: ['subscription.update', '*'],
   },
   {
     path: "/dashboard/updatePassword",
-    permission: ["updatePassword.update"],
+    permission: ["updatePassword.update", '*'],
   },
   {
     path: "/dashboard/subscriptionListing",
-    permission: ["subscriptionList.read"]
+    permission: ["subscriptionList.read", '*']
   },
   {
     path: "/dashboard/eWalletListing",
-    permission: ["ewallet.read"]
+    permission: ["ewallet.read", '*']
   }
 ];

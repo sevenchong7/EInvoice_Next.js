@@ -10,16 +10,15 @@ export default function LocaleSwitcher() {
     const locale = useLocale();
     const setLanguage = useUserTaskStore((state) => state.setGetLanguageList) //Store or Redux
     const [open, setOpen] = useState(false);
+    //  const GetLanguage = async () => {
+    //         const lanData = await getLanguage()
+    //         //set the value get in to the Redux
+    //         setLanguage(lanData)
+    //     }
 
     useEffect(() => {
-        const GetLanguage = async () => {
-            const lanData = await getLanguage()
-            //set the value get in to the Redux
-            setLanguage(lanData)
-        }
-
-        GetLanguage()
-
+        // GetLanguage()
+        // setLanguage('en')
     }, [open])
 
     return (

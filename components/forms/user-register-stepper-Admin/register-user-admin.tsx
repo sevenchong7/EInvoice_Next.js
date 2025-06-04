@@ -298,20 +298,20 @@ export const RegisterUserStepperAdmin: React.FC<ProfileFormType> = ({
 
     if (!output) return;
 
-    const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
-    const checkEmailDuplicate = await getValidateEmail(form.getValues('email'))
+    // const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
+    // const checkEmailDuplicate = await getValidateEmail(form.getValues('email'))
 
 
-    if (checkLoginIdDuplicate.status === false || checkEmailDuplicate.status === false) {
-      if (checkLoginIdDuplicate.status === false) {
-        form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
-      }
+    // if (checkLoginIdDuplicate.status === false || checkEmailDuplicate.status === false) {
+    //   if (checkLoginIdDuplicate.status === false) {
+    //     form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
+    //   }
 
-      if (checkEmailDuplicate.status === false) {
-        form.setError('email', { message: checkEmailDuplicate.error.errorMap.companyEmail })
-      }
-      return
-    }
+    //   if (checkEmailDuplicate.status === false) {
+    //     form.setError('email', { message: checkEmailDuplicate.error.errorMap.companyEmail })
+    //   }
+    //   return
+    // }
 
 
 

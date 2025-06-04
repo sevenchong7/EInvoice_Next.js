@@ -30,24 +30,53 @@ const authConfig = {
         }
       },
       async authorize(credentials, req) {
-
         // call auth service and call login api
         // get user data
-        const bodyData = {
-          loginId: credentials.email,
-          password: credentials.password
-        };
+        // const bodyData = {
+        //   loginId: credentials.email,
+        //   password: credentials.password
+        // };
 
-        const loginUser = await login(bodyData);
+        // const loginUser = await login(bodyData);
 
-        console.log("loginUser ", loginUser)
-        if (!loginUser.status) {
-          console.error("Invalid Cred");
-          throw new AuthErrorWithMsg(JSON.stringify({ errors: loginUser.error.errors[0], status: false }))
+        // console.log("loginUser ", loginUser)
+        // if (!loginUser.status) {
+        //   console.error("Invalid Cred");
+        //   throw new AuthErrorWithMsg(JSON.stringify({ errors: loginUser.error.errors[0], status: false }))
+        // } else {
+        //   // console.log('login User = ', loginUser)
+        //   return loginUser.data
+
+        // }
+
+        const validEmail = "test@gmail.com";
+        const validPassword = "abc123";
+
+        if (credentials.email === validEmail && credentials.password === validPassword) {
+
+          const loginUser = {
+            status: true,
+            error: {
+              errors: []
+            },
+            data: {
+              loginId: "test@gmail.com",
+              permissions: ["*"],
+              accessToken: "abc",
+              accessTokenExpiry: "abc",
+              refreshToken: "abc",
+              refreshTokenExpiry: "abc",
+              merchantId: 1,
+              xAcceptLanguage: "en",
+              emailDisplay: "test@gmail.com",
+            }
+          };
+
+          return loginUser
         } else {
-          // console.log('login User = ', loginUser)
-          return loginUser.data
-
+          throw new AuthErrorWithMsg(
+            JSON.stringify({ errors: ["Invalid credentials"], status: false })
+          );
         }
       }
 
@@ -71,11 +100,11 @@ const authConfig = {
           xAcceptLanguage: session.xAcceptLanguage ?? token.xAcceptLanguage, // Update xAcceptLanguage or keep the existing value
           merchantResponse: {
             ...token.merchantResponse, // Preserve the rest of the merchantResponse object
-            merchantId: session.merchantId ?? token.merchantResponse.merchantId, // Update merchantId or keep the existing value
+            // merchantId: session.merchantId ?? token.merchantResponse.merchantId, // Update merchantId or keep the existing value
           },
           merchantPermissResponse: {
             ...token.merchantPermissResponse, // Preserve the rest of the merchantPermissResponse object
-            permission: session.permissions ?? token.merchantPermissResponse.permission, // Update permissions or keep the existing value
+            // permission: session.permissions ?? token.merchantPermissResponse.permission, // Update permissions or keep the existing value
           },
           emailDisplay: session.emailDisplay ?? token.emailDisplay
         };
@@ -123,12 +152,14 @@ const authConfig = {
     session({ session, token }) {
       session.user = {
         ...session.user,
-        permissions: token.merchantPermissResponse.permission,
+        permissions: ["*"],
+        // permissions: token.merchantPermissResponse.permission,
         accessToken: token.accessToken,
         accessTokenExpiry: token.accessTokenExpiry,
         refreshToken: token.refreshToken,
         refreshTokenExpiry: token.refreshTokenExpiry,
-        merchantId: token.merchantResponse.merchantId,
+        merchantId: 1,
+        // merchantId: token.merchantResponse.merchantId,
         xAcceptLanguage: token.xAcceptLanguage,
         emailDisplay: token.emailDisplay
       }

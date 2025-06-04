@@ -8,10 +8,10 @@ import { useEffect } from "react";
 
 export default function DocumentContent({ getCountryData }: { getCountryData: any }) {
     const t = useTranslations()
-    const setCountryList = useGeneralTaskStore((state) => state.setCountryList)
+    // const setCountryList = useGeneralTaskStore((state) => state.setCountryList)
 
     useEffect(() => {
-        setCountryList(getCountryData)
+        // setCountryList(getCountryData)
     }, [])
 
     const breadcrumbItems = [

@@ -33,14 +33,14 @@ export default function Subscriptions() {
     //     return getMerchantInfo()
     // }
 
-    const GetSubscription = () => {
-        return getSubscription()
-    }
+    // const GetSubscription = () => {
+    //     return getSubscription()
+    // }
 
-    useEffect(() => {
-        // GetMerchantInfo().then((data) => setMerchantInfo(data))
-        GetSubscription().then((subData) => setSubscriptionInfo(subData))
-    }, [])
+    // useEffect(() => {
+    //     // GetMerchantInfo().then((data) => setMerchantInfo(data))
+    //     GetSubscription().then((subData) => setSubscriptionInfo(subData))
+    // }, [])
 
     const HandleUnsubscribe = async () => {
         putUnsubscribe().then((res) => {

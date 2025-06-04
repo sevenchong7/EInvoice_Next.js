@@ -76,11 +76,18 @@ export default function RegisterUserStep3({ form, packageData, selectDuration, s
                         <FormControl>
                             <div className="lg:flex lg:flex-row lg:justify-evenly lg:w-full grid-col-none">
                                 {
-                                    packageListData?.packageList.map((res: any, index: number) => {
-                                        return <div key={index}>
-                                            <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                    !packageListData ?
+                                        packageListData?.packageList.map((res: any, index: number) => {
+                                            return <div key={index}>
+                                                <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                            </div>
+                                        }) : <div className="flex ">
+                                            <div className="w-[250px] flex-auto flex  justify-between">
+                                                <Button onClick={() => HandlePackageSelect(1)} >1</Button>
+                                                <Button onClick={() => HandlePackageSelect(2)} >2</Button>
+                                                <Button onClick={() => HandlePackageSelect(3)} >3</Button>
+                                            </div>
                                         </div>
-                                    })
                                 }
                                 {/* <div className='col-span-1 mr-[10px]'>
                                 </div>

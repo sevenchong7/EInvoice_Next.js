@@ -106,11 +106,12 @@ export default function RegisterUserStep3Admin({ form, packageData, subscribeDur
                         <FormControl>
                             <div className="md:flex md:flex-row justify-around w-full md:grid-col-3 ">
                                 {
-                                    packageListData?.packageList.map((res: any, index: number) => {
-                                        return <div key={index}>
-                                            <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
-                                        </div>
-                                    })
+                                    packageListData ?
+                                        packageListData?.packageList?.map((res: any, index: number) => {
+                                            return <div key={index}>
+                                                <PackageSelection data={res} selectDuration={selectDuration} onClick={() => HandlePackageSelect(res.PackageIdentifier)} />
+                                            </div>
+                                        }) : <div></div>
                                 }
                             </div>
                         </FormControl>

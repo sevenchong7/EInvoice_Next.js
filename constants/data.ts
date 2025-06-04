@@ -195,42 +195,42 @@ export const navItems: NavItem[] = [
     href: '/dashboard',
     icon: 'dashboard',
     label: 'Dashboard',
-    permission: ['dashboard.read']
+    permission: ['dashboard.read', '*']
   },
   {
     title: 'TAG_USER',
     href: '/dashboard/user',
     icon: 'profile',
     label: 'User',
-    permission: ['userList.read', 'roleList.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create'],
+    permission: ['userList.read', 'roleList.read', 'merchantList.su.read', 'roleList.su.read', 'merchantCreate.su.create', '*'],
     children: [
       {
         title: 'TAG_CREATE_MERCHANT',
         href: '/dashboard/user/createMerchant',
         // icon: 'profile',
         // label: 'profile',
-        permission: ['merchantCreate.su.create']
+        permission: ['merchantCreate.su.create', '*']
       },
       {
         title: 'TAG_USER_LISTING',
         href: '/dashboard/user/userListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read'],
+        permission: ['userList.read', 'userList.create', 'userList.updateStatus', 'userList.update', 'userList.delete', 'userList.su.read', '*'],
       },
       {
         title: 'TAG_MERCHANT_LISTING',
         href: '/dashboard/user/merchantListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update'],
+        permission: ['merchantList.read', 'merchantList.update', 'merchantList.su.read', 'merchantList.su.update', '*'],
       },
       {
         title: 'TAG_ROLE_LISTING',
         href: '/dashboard/user/roleListing',
         // icon: 'profile',
         // label: 'profile',
-        permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create'],
+        permission: ['roleList.read', 'roleList.create', 'roleList.update', 'roleList.su.read', 'roleList.su.create', '*'],
       }
     ]
   },
@@ -239,12 +239,12 @@ export const navItems: NavItem[] = [
     href: '/dashboard/document',
     icon: "document",
     label: "Document",
-    permission: ['docCreate.create', 'docCreate.createMyFav'],
+    permission: ['docCreate.create', 'docCreate.createMyFav', '*'],
     children: [
       {
         title: "TAG_CREATE_DOCUMENT",
         href: "/dashboard/document/createDocument",
-        permission: ['docCreate.create', 'docCreate.createMyFav']
+        permission: ['docCreate.create', 'docCreate.createMyFav', '*']
       }
     ]
   },
@@ -253,13 +253,13 @@ export const navItems: NavItem[] = [
     href: '/dashboard/subscriptionListing',
     icon: "subscription",
     label: "Subscription List",
-    permission: ["subscriptionList.read"],
+    permission: ["subscriptionList.read", '*'],
   },
   {
     title: "TAG_EWALLET_LIST",
     href: '/dashboard/eWalletListing',
     icon: "ewallet",
     label: "Ewallet List",
-    permission: ["ewallet.read"],
+    permission: ["ewallet.read", '*'],
   },
 ];

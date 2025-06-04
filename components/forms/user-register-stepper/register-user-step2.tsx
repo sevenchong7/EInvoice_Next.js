@@ -18,14 +18,14 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
     // const countries = useGeneralTaskStore((state) => state.countryList)
     const [states, setStates] = useState<StateListParam[]>();
 
-    useEffect(() => {
-        const GetCountry = async () => {
-            const getCountryData = await getCountry()
-            setCountries(getCountryData)
-        }
+    // const GetCountry = async () => {
+    //      const getCountryData = await getCountry()
+    //      setCountries(getCountryData)
+    // }
 
-        GetCountry()
-    }, [])
+    // useEffect(() => {
+    //     GetCountry()
+    // }, [])
 
     useEffect(() => {
         countries?.map((value) => {
@@ -148,11 +148,14 @@ export default function RegisterUserStep2({ form }: { form: UseFormReturn<Regist
                                     </FormControl>
                                     <SelectContent className='max-h-[300px] overflow-y-scroll'>
                                         {/* @ts-ignore  */}
-                                        {countries?.map((country, index) => (
-                                            <SelectItem key={index} value={country.countryCode}>
-                                                {country.countryName}
-                                            </SelectItem>
-                                        ))}
+                                        {
+                                            countries ?
+                                                countries?.map((country, index) => (
+                                                    <SelectItem key={index} value={country.countryCode}>
+                                                        {country.countryName}
+                                                    </SelectItem>
+                                                )) : <div></div>
+                                        }
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

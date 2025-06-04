@@ -146,7 +146,7 @@ export default function RegisterUserStep4Admin(
     return (
         <>
             <div className="flex flex-col w-3/4 items-center justify-center mx-auto">
-                <Summary form={form} packageData={form.getValues('package')} subscriptionDurationListData={subscriptionDurationLisstData} />
+                {/* <Summary form={form} packageData={form.getValues('package')} subscriptionDurationListData={subscriptionDurationLisstData} /> */}
                 {
                     form.getValues('package') !== 1 &&
                     <div className="w-full pt-[20px]">
@@ -213,11 +213,14 @@ export default function RegisterUserStep4Admin(
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent className='max-h-[300px] overflow-y-scroll'>
-                                                                {paymentTypeData?.map((res: any, index: number) => (
-                                                                    <SelectItem key={index} value={res.paymentMethodCode}>
-                                                                        {res.paymentMethodDisplayName}
-                                                                    </SelectItem>
-                                                                ))}
+                                                                {
+                                                                    paymentTypeData ?
+                                                                        paymentTypeData?.map((res: any, index: number) => (
+                                                                            <SelectItem key={index} value={res.paymentMethodCode}>
+                                                                                {res.paymentMethodDisplayName}
+                                                                            </SelectItem>
+                                                                        )) : <div></div>
+                                                                }
                                                             </SelectContent>
 
                                                         </Select>

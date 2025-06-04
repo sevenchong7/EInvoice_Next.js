@@ -7,7 +7,7 @@ import LocaleSwitcher from '../ui/localesSwitch';
 import { getSwitchRoleList } from '@/lib/services/userService';
 
 export default async function Header() {
-  const getSwitchRoleListData = await getSwitchRoleList();
+  // const getSwitchRoleListData = await getSwitchRoleList();
   return (
     <div className="supports-backdrop-blur:bg-background/60 fixed left-0 right-0 top-0 z-20 border-b bg-background/95 backdrop-blur">
       <nav className="flex h-14 items-center justify-between px-4">
@@ -17,7 +17,7 @@ export default async function Header() {
             <MobileSidebar />
           </div>
           <div className="flex items-center ">
-            <MerchantSelection getSwitchRoleListData={getSwitchRoleListData} />
+            {/* <MerchantSelection getSwitchRoleListData={getSwitchRoleListData} /> */}
           </div>
         </div>
 

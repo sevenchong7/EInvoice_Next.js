@@ -73,10 +73,10 @@ export default function UserProfile() {
                         <div className="flex flex-row items-center justify-between">
                             <div className="flex flex-row space-x-5">
                                 <div className="flex flex-col bg-gray-400 text-center items-center justify-center rounded-full h-10 w-10">
-                                    <h1 className="text-lg font-medium">{merchantInfo?.companyName.charAt(0).toUpperCase()}</h1>
+                                    <h1 className="text-lg font-medium">{merchantInfo ? merchantInfo?.companyName?.charAt(0).toUpperCase() : null}</h1>
                                 </div>
                                 <div className="flex flex-col text-left">
-                                    <h1>{merchantInfo?.companyName}</h1>
+                                    <h1>{merchantInfo ? merchantInfo?.companyName : null}</h1>
                                     <p className="text-sm text-gray-400">{merchantInfo?.registrationNo}</p>
                                 </div>
                             </div>
@@ -168,11 +168,12 @@ export default function UserProfile() {
                             <h1>{t('TAG_CURRENT_SUBSCRIPTIONS')}</h1>
                             <p className="font-light">
                                 {
-                                    subscriptionInfo?.packageList.map((res) => {
-                                        if (res.PackageIdentifier === subscriptionInfo?.currentPackageId) {
-                                            return res.PackageName
-                                        }
-                                    })
+                                    subscriptionInfo ?
+                                        subscriptionInfo?.packageList?.map((res) => {
+                                            if (res.PackageIdentifier === subscriptionInfo?.currentPackageId) {
+                                                return res.PackageName
+                                            }
+                                        }) : <div></div>
                                 }
                             </p>
                         </div>

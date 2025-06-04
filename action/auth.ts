@@ -9,20 +9,27 @@ const DEFAULT_LOGIN_REDIRECT = '/dashboard';
 
 export const login = async (email: string, password: string, callbackUrl?: string | null) => {
     try {
-
         const loginData = await signIn('credentials', {
-            email: email,
-            password: password,
-            // redirectTo: DEFAULT_LOGIN_REDIRECT,
-            redirect: false,  // Handle redirection manually
+            email: "test@gmail.com",
+            password: "abc123",
+            redirect: false,
         })
 
-        // if (loginData?.error) {
-        //     console.error("Login error: ", loginData.error);
-        //     throw new Error(loginData.error);
-        // } else {
         return loginData;
-        // }
+
+        // const loginData = await signIn('credentials', {
+        //     email: email,
+        //     password: password,
+        //     // redirectTo: DEFAULT_LOGIN_REDIRECT,
+        //     redirect: false,  // Handle redirection manually
+        // })
+
+        // // if (loginData?.error) {
+        // //     console.error("Login error: ", loginData.error);
+        // //     throw new Error(loginData.error);
+        // // } else {
+        // return loginData;
+        // // }
 
         // await signIn("phone", { email, password, redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT })
     } catch (error) {

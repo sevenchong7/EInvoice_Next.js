@@ -52,83 +52,83 @@ export default function UserAuthForm() {
     defaultValues
   });
 
-  const checkRemeberMe = () => {
-    const storedRmbMe = localStorage.getItem('rmbMe');
-    const sessionExpiry = localStorage.getItem('sessionExpiry');
-    const accessExpiry = sessionExpiry ? JSON.parse(sessionExpiry) : null
-    const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null
+  // const checkRemeberMe = () => {
+  //   const storedRmbMe = localStorage.getItem('rmbMe');
+  //   const sessionExpiry = localStorage.getItem('sessionExpiry');
+  //   const accessExpiry = sessionExpiry ? JSON.parse(sessionExpiry) : null
+  //   const rememberMe = storedRmbMe ? JSON.parse(storedRmbMe) : null
 
-    //check the rmb me 
-    if (rememberMe === true) {
-      setLoading(true)
-      const storeSession = localStorage.getItem('session')
-      const sessionData = storeSession ? JSON.parse(storeSession) : null
-      const username = localStorage.getItem('username')
+  //   //check the rmb me 
+  //   if (rememberMe === true) {
+  //     setLoading(true)
+  //     const storeSession = localStorage.getItem('session')
+  //     const sessionData = storeSession ? JSON.parse(storeSession) : null
+  //     const username = localStorage.getItem('username')
 
-      //if the localStorage 'session' is not null
-      if (sessionData != null) {
-        const currentDate = new Date;
-        const compareDate = new Date(sessionData.user.accessTokenExpiry);
+  //     //if the localStorage 'session' is not null
+  //     if (sessionData != null) {
+  //       const currentDate = new Date;
+  //       const compareDate = new Date(sessionData.user.accessTokenExpiry);
 
-        if (currentDate > compareDate) {
-          //if the accessToken is expiry remove all the localStorage and session and reset the theme
-          localStorage.removeItem('username')
-          localStorage.removeItem('rmbMe')
-          localStorage.removeItem('session')
-          localStorage.removeItem('theme')
-          setTheme('light')
+  //       if (currentDate > compareDate) {
+  //         //if the accessToken is expiry remove all the localStorage and session and reset the theme
+  //         localStorage.removeItem('username')
+  //         localStorage.removeItem('rmbMe')
+  //         localStorage.removeItem('session')
+  //         localStorage.removeItem('theme')
+  //         setTheme('light')
 
-        } else if (currentDate < compareDate) {
-          //if the accessToken still valid update the session using the localStorage
-          const sessionUpdate = update({
-            loginId: username,
-            permission: sessionData.user.permissions,
-            accessToken: sessionData.user.accessToken,
-            accessTokenExpiry: sessionData.user.accessTokenExpiry,
-            refreshToken: sessionData.user.refreshToken,
-            refreshTokenExpiry: sessionData.user.refreshTokenExpiry,
-            merchantId: sessionData.user.merchantId,
-            xAcceptLanguage: sessionData.user.xAcceptLanguage,
-            emailDisplay: sessionData.user.emailDisplay
-          })
+  //       } else if (currentDate < compareDate) {
+  //         //if the accessToken still valid update the session using the localStorage
+  //         const sessionUpdate = update({
+  //           loginId: username,
+  //           permission: sessionData.user.permissions,
+  //           accessToken: sessionData.user.accessToken,
+  //           accessTokenExpiry: sessionData.user.accessTokenExpiry,
+  //           refreshToken: sessionData.user.refreshToken,
+  //           refreshTokenExpiry: sessionData.user.refreshTokenExpiry,
+  //           merchantId: sessionData.user.merchantId,
+  //           xAcceptLanguage: sessionData.user.xAcceptLanguage,
+  //           emailDisplay: sessionData.user.emailDisplay
+  //         })
 
-          //then redirect to main page
-          sessionUpdate.then(() => {
-            router.replace('/dashboard')
-          })
-        }
-      } else {
-        //remove and reset all localStorage and theme
-        setLoading(false)
-        localStorage.removeItem('username')
-        localStorage.removeItem('rmbMe')
-        localStorage.removeItem('session')
-        localStorage.removeItem('theme')
-        setTheme('light')
-      }
-    }
-    else if (sessionExpiry != null) {
-      setLoading(true)
-      const currentDate = new Date;
-      const compareDate = new Date(accessExpiry);
+  //         //then redirect to main page
+  //         sessionUpdate.then(() => {
+  //           router.replace('/dashboard')
+  //         })
+  //       }
+  //     } else {
+  //       //remove and reset all localStorage and theme
+  //       setLoading(false)
+  //       localStorage.removeItem('username')
+  //       localStorage.removeItem('rmbMe')
+  //       localStorage.removeItem('session')
+  //       localStorage.removeItem('theme')
+  //       setTheme('light')
+  //     }
+  //   }
+  //   else if (sessionExpiry != null) {
+  //     setLoading(true)
+  //     const currentDate = new Date;
+  //     const compareDate = new Date(accessExpiry);
 
-      if (compareDate > currentDate) {
-        router.replace('/dashboard')
-      } else {
-        localStorage.removeItem('sessionExpiry')
-      }
-      setLoading(false)
-    }
-    else {
-      setLoading(false)
-      localStorage.removeItem('username')
-      localStorage.removeItem('rmbMe')
-      localStorage.removeItem('session')
-      localStorage.removeItem('theme')
-      localStorage.removeItem('sessionExpiry')
-      setTheme('light')
-    }
-  }
+  //     if (compareDate > currentDate) {
+  //       router.replace('/dashboard')
+  //     } else {
+  //       localStorage.removeItem('sessionExpiry')
+  //     }
+  //     setLoading(false)
+  //   }
+  //   else {
+  //     setLoading(false)
+  //     localStorage.removeItem('username')
+  //     localStorage.removeItem('rmbMe')
+  //     localStorage.removeItem('session')
+  //     localStorage.removeItem('theme')
+  //     localStorage.removeItem('sessionExpiry')
+  //     setTheme('light')
+  //   }
+  // }
 
   useEffect(() => {
     // localStorage.removeItem('username')
@@ -136,13 +136,16 @@ export default function UserAuthForm() {
     // localStorage.removeItem('session')
     // localStorage.removeItem('theme')
     // setTheme('light')
-    setLoading(true)
-    checkRemeberMe()
+    // setLoading(true)
+    // checkRemeberMe()
   }, [])
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true)
     const signInStatus = await login(data.username, data.password);
+    console.log("signInStatus = ", signInStatus)
+
+
     if (signInStatus?.error) {
       setLoading(false)
       toast({

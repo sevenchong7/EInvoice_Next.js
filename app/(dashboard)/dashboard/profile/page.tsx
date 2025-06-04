@@ -3,14 +3,14 @@ import { getCountry } from "@/lib/services/generalService";
 import { getMerchantInfo, getSubscription } from "@/lib/services/userService";
 
 export default async function page() {
-  const getSubscriptionData = getSubscription();
-  const getMerchantInfoData = getMerchantInfo();
-  const getCountryData = getCountry();
+  // const getSubscriptionData = getSubscription();
+  // const getMerchantInfoData = getMerchantInfo();
+  // const getCountryData = getCountry();
 
-  const [subscriptionData, merchantInfoData, countryData] = await Promise.all([getSubscriptionData, getMerchantInfoData, getCountryData])
+  // const [subscriptionData, merchantInfoData, countryData] = await Promise.all([getSubscriptionData, getMerchantInfoData, getCountryData])
 
 
   return (
-    <ProfileContent subscriptionData={subscriptionData} merchantInfoData={merchantInfoData} countryData={countryData} />
+    <ProfileContent subscriptionData={[]} merchantInfoData={null} countryData={[]} />
   );
 }

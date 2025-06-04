@@ -251,20 +251,21 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
 
         if (!output) return;
 
-        const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
-        const checkEmailDuplicate = await getValidateEmail(form.getValues('email'))
+        // const checkLoginIdDuplicate = await getLoginIdValidation(form.getValues('username'))
+        // const checkEmailDuplicate = await getValidateEmail(form.getValues('email'))
 
 
-        if (checkLoginIdDuplicate.status === false || checkEmailDuplicate.status === false) {
-            if (checkLoginIdDuplicate.status === false) {
-                form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
-            }
+        // if (checkLoginIdDuplicate.status === false || checkEmailDuplicate.status === false) {
+        //     if (checkLoginIdDuplicate.status === false) {
+        //         form.setError('username', { message: checkLoginIdDuplicate.error.errorMap.username })
+        //     }
 
-            if (checkEmailDuplicate.status === false) {
-                form.setError('email', { message: checkEmailDuplicate.error.errorMap.companyEmail })
-            }
-            return
-        }
+        //     if (checkEmailDuplicate.status === false) {
+        //         form.setError('email', { message: checkEmailDuplicate.error.errorMap.companyEmail })
+        //     }
+        //     return
+        // }
+
         if (currentStep < steps.length - 1) {
             setPreviousStep(currentStep);
             if (currentStep === steps.length - 2) {
@@ -334,7 +335,8 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                                     {/* <p className='text-base font-light '>{currentStep == index && "Required field *"}</p> */}
                                                 </div>
                                                 <div className='flex'>
-                                                    {currentStep == index &&
+                                                    {
+                                                    currentStep == index && !subscriptionDurationListData ?
                                                         <Tabs value={selectDuration} onValueChange={(value) => { HandleSelectSubDuration(value) }}>
                                                             <TabsList>
                                                                 {
@@ -343,7 +345,7 @@ export default function RegisterUserForm({ packageData, paymentMethodData, subsc
                                                                     ))
                                                                 }
                                                             </TabsList>
-                                                        </Tabs>
+                                                        </Tabs> : <div></div>
                                                     }
                                                 </div>
                                             </div> : currentStep == 4 ?
